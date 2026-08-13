@@ -1,0 +1,209 @@
+{
+  "version": "v1",
+  "title": "Makro-Scoring · Regime-Check",
+  "derivedFrom": "doc/MakroScoringInfoScreen.jpg (KW 32/2026, Datenstand 07.08.2026)",
+  "note": "Baender werden der Reihe nach geprueft, der erste Treffer gewinnt. Ein Band ohne Vergleichsoperator ist der Auffangfall. 'assumed: true' markiert Schwellen, die NICHT aus der Vorlage belegbar waren.",
+
+  "factors": [
+    { "id": "business_cycle", "label": "Business Cycle", "ordinal": 1 },
+    { "id": "liquidity", "label": "Globale Liquiditaet", "ordinal": 2 },
+    { "id": "sentiment", "label": "Sentiment", "ordinal": 3 }
+  ],
+
+  "indicators": {
+    "ism_mfg_pmi": {
+      "ordinal": 1,
+      "factor": "business_cycle",
+      "label": "ISM Mfg PMI · 3m-Change",
+      "measure": "change3m",
+      "unit": "Pkt",
+      "decimals": 1,
+      "assumed": true,
+      "assumptionNote": "Die Vorlage belegt nur, dass +2,9 Pkt zu +1 fuehren. Die Rauschgrenze von 1,0 Pkt ist gesetzt, nicht belegt.",
+      "bands": [
+        { "gte": 1.0, "score": 1, "note": "Beschleunigung im Verarbeitenden Gewerbe" },
+        { "lte": -1.0, "score": -1, "note": "Abkuehlung" },
+        { "score": 0, "note": "Seitwaerts" }
+      ]
+    },
+
+    "nfci": {
+      "ordinal": 2,
+      "factor": "business_cycle",
+      "label": "Chicago Fed NFCI · 3m",
+      "measure": "change3m",
+      "unit": "Idx",
+      "decimals": 3,
+      "invertedScale": true,
+      "assumed": true,
+      "assumptionNote": "Die Vorlage belegt nur, dass -0,030 (lockerer) zu +1 fuehren. Die Schwelle 0,02 ist gesetzt. NFCI ist invertiert: fallend = lockerere Finanzbedingungen = gut.",
+      "bands": [
+        { "lte": -0.02, "score": 1, "note": "Finanzbedingungen lockern sich" },
+        { "gte": 0.02, "score": -1, "note": "Finanzbedingungen straffen sich" },
+        { "score": 0, "note": "unveraendert" }
+      ]
+    },
+
+    "t10y2y": {
+      "ordinal": 3,
+      "factor": "business_cycle",
+      "label": "10y – 2y Spread · 3m",
+      "measure": "change3mBp",
+      "unit": "bps",
+      "decimals": 0,
+      "assumed": true,
+      "assumptionNote": "Belegt ist nur, dass -3 bps im neutralen Korridor liegen. Die Grenze bei 10 bps ist gesetzt.",
+      "bands": [
+        { "gte": 10, "score": 1, "note": "Versteilerung" },
+        { "lte": -10, "score": -1, "note": "Verflachung" },
+        { "score": 0, "note": "leichte Bewegung, neutral" }
+      ]
+    },
+
+    "gli": {
+      "ordinal": 4,
+      "factor": "liquidity",
+      "label": "Howell GLI · Richtung",
+      "proxyLabel": "Fed Net Liquidity · Richtung",
+      "measure": "rate3mAnnDelta",
+      "unit": "pp",
+      "decimals": 1,
+      "quality": "proxy",
+      "proxyNote": "Howell GLI (CrossBorder Capital) ist kostenpflichtig und hat keine offene Schnittstelle. Ersatz: Fed Net Liquidity = WALCL - WTREGEN - RRPONTSYD. Gleiche Form (3m annualisierte Rate + Richtung), anderer Aggregatbegriff.",
+      "assumed": true,
+      "assumptionNote": "Bewertet wird laut Label die RICHTUNG, nicht das Niveau: in der Vorlage +5,1 % 3m ann., aber fallend -> -1. Die Rauschgrenze von 0,5 pp ist gesetzt.",
+      "bands": [
+        { "gte": 0.5, "score": 1, "note": "Liquiditaetsimpuls steigt" },
+        { "lte": -0.5, "score": -1, "note": "Liquiditaetsimpuls faellt" },
+        { "score": 0, "note": "Richtung unklar" }
+      ]
+    },
+
+    "move": {
+      "ordinal": 5,
+      "factor": "liquidity",
+      "label": "MOVE · Level",
+      "measure": "level",
+      "unit": "Idx",
+      "decimals": 0,
+      "assumed": true,
+      "assumptionNote": "Die Schwelle 80 ist aus der Vorlage belegt ('unter 80' -> +1). Die obere Stressgrenze 100 ist gesetzt.",
+      "bands": [
+        { "lt": 80, "score": 1, "note": "ruhiger Anleihemarkt" },
+        { "gt": 100, "score": -1, "note": "Stress am Anleihemarkt" },
+        { "score": 0, "note": "erhoeht, aber kein Stress" }
+      ]
+    },
+
+    "sofr_iorb": {
+      "ordinal": 6,
+      "factor": "liquidity",
+      "label": "SOFR – IORB · Level/Richtung",
+      "measure": "spreadBp",
+      "unit": "bp",
+      "decimals": 0,
+      "assumed": true,
+      "assumptionNote": "Die Vorlage formuliert die Regel als 'negativ bis nahe null' = +1 und wendet sie bei -1 bp an. Die Obergrenze fuer 'nahe null' (2 bp) und die Stressgrenze (10 bp) sind gesetzt. Der rote Kasten der Vorlage nennt ausdruecklich die Alternativlesart, -1 bis +1 bp als Rauschen mit 0 zu bewerten.",
+      "bands": [
+        { "lte": 2, "score": 1, "note": "reichliche Reserven, kein Funding-Druck" },
+        { "gte": 10, "score": -1, "note": "Funding-Druck, Reserven knapp" },
+        { "score": 0, "note": "leicht positiv, unauffaellig" }
+      ]
+    },
+
+    "vix": {
+      "ordinal": 7,
+      "factor": "sentiment",
+      "label": "VIX · Level",
+      "measure": "level",
+      "unit": "Idx",
+      "decimals": 2,
+      "contrarian": true,
+      "corridor": [15, 25],
+      "assumed": true,
+      "assumptionNote": "Korridor 15-25 und die Complacency-Schwelle bei 15 sind belegt (der rote Kasten der Vorlage: 'VIX steht 0,15 Punkte ueber der Complacency-Schwelle - ein ruhiger Tag kippt ihn auf -1'). Der Ast oberhalb 25 ist gesetzt: kontrarisch als Kapitulation gelesen.",
+      "bands": [
+        { "lt": 15, "score": -1, "note": "Complacency" },
+        { "gt": 25, "score": 1, "note": "Kapitulation, kontrarisch positiv" },
+        { "score": 0, "note": "im Korridor" }
+      ]
+    },
+
+    "aaii": {
+      "ordinal": 8,
+      "factor": "sentiment",
+      "label": "AAII Bull-Bear · 4w-Ø",
+      "measure": "avg4w",
+      "unit": "%",
+      "decimals": 1,
+      "contrarian": true,
+      "corridor": [-10, 20],
+      "assumed": true,
+      "assumptionNote": "Korridor -10 bis +20 ist belegt. Das Verhalten ausserhalb ist gesetzt: kontrarische Lesart, zu bullisch = negativ.",
+      "bands": [
+        { "gt": 20, "score": -1, "note": "zu bullisch, kontrarisch negativ" },
+        { "lt": -10, "score": 1, "note": "zu baerisch, kontrarisch positiv" },
+        { "score": 0, "note": "im Korridor" }
+      ]
+    },
+
+    "fear_greed": {
+      "ordinal": 9,
+      "factor": "sentiment",
+      "label": "CNN Fear & Greed · Level",
+      "measure": "level",
+      "unit": "",
+      "decimals": 0,
+      "contrarian": true,
+      "corridor": [20, 70],
+      "assumed": true,
+      "assumptionNote": "Korridor 20-70 ist belegt. Das Verhalten ausserhalb ist gesetzt: kontrarische Lesart, Extreme Greed = negativ.",
+      "bands": [
+        { "gt": 70, "score": -1, "note": "Extreme Greed, kontrarisch negativ" },
+        { "lt": 20, "score": 1, "note": "Extreme Fear, kontrarisch positiv" },
+        { "score": 0, "note": "im Korridor" }
+      ]
+    }
+  },
+
+  "factorAggregation": {
+    "rule": "majority",
+    "minCount": 2,
+    "note": "Mindestens 2 von 3 positiv -> Faktor +1; mindestens 2 von 3 negativ -> Faktor -1; sonst 0. Aus der Vorlage belegt: 'ERGEBNIS 2 von 3 positiv -> +1' und 'alle drei neutral -> 0'."
+  },
+
+  "regimeBands": [
+    {
+      "min": 2,
+      "max": 3,
+      "label": "Risk On",
+      "cashBand": [5, 15],
+      "assumed": false,
+      "note": "Aus der Vorlage belegt: Gesamtscore +2 -> Risk On -> 5-15 %."
+    },
+    {
+      "min": 0,
+      "max": 1,
+      "label": "Neutral",
+      "cashBand": [20, 35],
+      "assumed": false,
+      "note": "Aus der Vorlage belegt: der rote Kasten rechnet Gesamtscore +1 auf 'Neutral, 20-35 %'."
+    },
+    {
+      "min": -2,
+      "max": -1,
+      "label": "Risk Off",
+      "cashBand": [35, 50],
+      "assumed": true,
+      "note": "Gesetzt. Die Vorlage zeigt keinen negativen Gesamtscore."
+    },
+    {
+      "min": -3,
+      "max": -3,
+      "label": "Defensiv",
+      "cashBand": [50, 70],
+      "assumed": true,
+      "note": "Gesetzt. Die Vorlage zeigt keinen negativen Gesamtscore."
+    }
+  ]
+}

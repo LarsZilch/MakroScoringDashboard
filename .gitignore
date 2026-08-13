@@ -1,0 +1,7 @@
+node_modules/
+dist/
+*.log
+
+# Rohdaten-Cache: jederzeit neu abrufbar, gehoert nicht in die Historie.
+# Die Snapshots unter data/snapshots/ sind dagegen bewusst versioniert.
+data/series/
