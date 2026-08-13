@@ -188,19 +188,42 @@ export function aggregateFactor(
   members: ScoredIndicator[],
   minCount: number,
 ): ScoredFactor {
-  const positives = members.filter((m) => m.score === 1).length;
-  const negatives = members.filter((m) => m.score === -1).length;
-  const neutrals = members.length - positives - negatives;
+  const missing = members.filter((m) => m.quality === 'missing').length;
+  const present = members.filter((m) => m.quality !== 'missing');
+  const positives = present.filter((m) => m.score === 1).length;
+  const negatives = present.filter((m) => m.score === -1).length;
+  const neutrals = present.length - positives - negatives;
 
   let score: Score = 0;
   if (positives >= minCount && positives > negatives) score = 1;
   else if (negatives >= minCount && negatives > positives) score = -1;
 
+  /*
+   * Ohne genug vorhandene Werte kann die Mehrheitsregel gar nicht greifen.
+   * Der Faktor faellt dann zwar rechnerisch auf 0, ist aber nicht "neutral"
+   * im Sinne einer Marktaussage, sondern schlicht unbestimmt. Diese
+   * Unterscheidung muss bis in die Anzeige durchschlagen — sonst liest sich
+   * eine Datenluecke wie ein Befund.
+   */
+  const determinable = present.length >= minCount;
+
   let rationale: string;
-  if (score === 1) rationale = `${positives} von ${members.length} positiv`;
-  else if (score === -1) rationale = `${negatives} von ${members.length} negativ`;
-  else if (neutrals === members.length) rationale = `alle ${members.length} neutral`;
-  else rationale = `${positives} positiv, ${negatives} negativ — keine Mehrheit`;
+  if (!determinable) {
+    rationale =
+      missing === members.length
+        ? `kein Wert verfuegbar — nicht bestimmbar`
+        : `${missing} von ${members.length} ohne Wert — nicht bestimmbar`;
+  } else if (score === 1) {
+    rationale = `${positives} von ${members.length} positiv`;
+  } else if (score === -1) {
+    rationale = `${negatives} von ${members.length} negativ`;
+  } else if (neutrals === members.length) {
+    rationale = `alle ${members.length} neutral`;
+  } else if (missing > 0) {
+    rationale = `${positives} positiv, ${negatives} negativ, ${missing} ohne Wert — keine Mehrheit`;
+  } else {
+    rationale = `${positives} positiv, ${negatives} negativ — keine Mehrheit`;
+  }
 
   return {
     id: factorId,
@@ -209,6 +232,8 @@ export function aggregateFactor(
     positives,
     negatives,
     neutrals,
+    missing,
+    determinable,
     rationale,
     indicators: members.map((m) => m.id),
   };
@@ -252,6 +277,9 @@ export function computeScoring(
   const degraded = INDICATOR_IDS.some((id) =>
     ['missing', 'stale'].includes(indicators[id].quality),
   );
+  const undeterminableFactors = (Object.keys(factors) as FactorId[]).filter(
+    (id) => !factors[id].determinable,
+  );
 
   return {
     rulesVersion: rules.version,
@@ -261,6 +289,8 @@ export function computeScoring(
     regime: resolveRegime(rules, total),
     degraded,
     missing,
+    undeterminableFactors,
+    meaningful: undeterminableFactors.length === 0,
   };
 }
 

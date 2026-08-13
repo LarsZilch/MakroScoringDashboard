@@ -1,0 +1,373 @@
+{
+  "builtAt": "2026-08-13T13:11:22.603Z",
+  "completeness": "sparse",
+  "dataAsOf": "2013-11-03",
+  "factors": {
+    "business_cycle": {
+      "determinable": true,
+      "id": "business_cycle",
+      "indicators": [
+        "ism_mfg_pmi",
+        "nfci",
+        "t10y2y"
+      ],
+      "label": "Business Cycle",
+      "missing": 1,
+      "negatives": 0,
+      "neutrals": 1,
+      "positives": 1,
+      "rationale": "1 positiv, 0 negativ, 1 ohne Wert — keine Mehrheit",
+      "score": 0
+    },
+    "liquidity": {
+      "determinable": true,
+      "id": "liquidity",
+      "indicators": [
+        "gli",
+        "move",
+        "sofr_iorb"
+      ],
+      "label": "Globale Liquiditaet",
+      "missing": 1,
+      "negatives": 1,
+      "neutrals": 0,
+      "positives": 1,
+      "rationale": "1 positiv, 1 negativ, 1 ohne Wert — keine Mehrheit",
+      "score": 0
+    },
+    "sentiment": {
+      "determinable": false,
+      "id": "sentiment",
+      "indicators": [
+        "vix",
+        "aaii",
+        "fear_greed"
+      ],
+      "label": "Sentiment",
+      "missing": 2,
+      "negatives": 1,
+      "neutrals": 0,
+      "positives": 0,
+      "rationale": "2 von 3 ohne Wert — nicht bestimmbar",
+      "score": 0
+    }
+  },
+  "indicators": {
+    "aaii": {
+      "factor": "sentiment",
+      "flips": [],
+      "id": "aaii",
+      "label": "AAII Bull-Bear · 4w-Ø",
+      "measure": "avg4w",
+      "measureValue": null,
+      "nearestFlip": null,
+      "quality": "missing",
+      "score": 0,
+      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "unit": "%",
+      "value": null
+    },
+    "fear_greed": {
+      "factor": "sentiment",
+      "flips": [],
+      "id": "fear_greed",
+      "label": "CNN Fear & Greed · Level",
+      "measure": "level",
+      "measureValue": null,
+      "nearestFlip": null,
+      "quality": "missing",
+      "score": 0,
+      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "unit": "",
+      "value": null
+    },
+    "gli": {
+      "derived": {
+        "levelMioUsd": 3806134,
+        "rate3mAnn": 37.48153399950213,
+        "rate3mAnnDelta": -7.1141851895973005,
+        "rate3mAnnPrev": 44.595719189099434
+      },
+      "display": {
+        "primary": "37,5 % 3m ann.",
+        "secondary": "fallend"
+      },
+      "factor": "liquidity",
+      "flips": [
+        {
+          "boundary": -6,
+          "direction": "up",
+          "gap": 1.1141851895973005,
+          "gapSigma": 0.13262018153689223,
+          "gapTicks": 11.141851895973005,
+          "toScore": 0
+        },
+        {
+          "boundary": 6,
+          "direction": "up",
+          "gap": 13.1141851895973,
+          "gapSigma": 1.5609663786514858,
+          "gapTicks": 131.141851895973,
+          "toScore": 1
+        }
+      ],
+      "id": "gli",
+      "label": "Fed Net Liquidity · Richtung",
+      "measure": "rate3mAnnDelta",
+      "measureValue": -7.1141851895973005,
+      "nearestFlip": {
+        "boundary": -6,
+        "direction": "up",
+        "gap": 1.1141851895973005,
+        "gapSigma": 0.13262018153689223,
+        "gapTicks": 11.141851895973005,
+        "toScore": 0
+      },
+      "obsDate": "2013-10-30",
+      "quality": "proxy",
+      "score": -1,
+      "scoreNote": "Liquiditaetsimpuls faellt",
+      "unit": "pp",
+      "value": 37.48153399950213
+    },
+    "ism_mfg_pmi": {
+      "factor": "business_cycle",
+      "flips": [],
+      "id": "ism_mfg_pmi",
+      "label": "ISM Mfg PMI · 3m-Change",
+      "measure": "change3m",
+      "measureValue": null,
+      "nearestFlip": null,
+      "quality": "missing",
+      "score": 0,
+      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "unit": "Pkt",
+      "value": null
+    },
+    "move": {
+      "display": {
+        "primary": "≈ 68",
+        "secondary": "unter 80"
+      },
+      "factor": "liquidity",
+      "flips": [
+        {
+          "boundary": 80,
+          "direction": "up",
+          "gap": 12,
+          "gapSigma": 1.867031472115059,
+          "gapTicks": 12,
+          "toScore": 0
+        },
+        {
+          "boundary": 100,
+          "direction": "up",
+          "gap": 32,
+          "gapSigma": 4.978750592306824,
+          "gapTicks": 32,
+          "toScore": 0
+        }
+      ],
+      "id": "move",
+      "label": "MOVE · Level",
+      "measure": "level",
+      "measureValue": 68,
+      "nearestFlip": {
+        "boundary": 80,
+        "direction": "up",
+        "gap": 12,
+        "gapSigma": 1.867031472115059,
+        "gapTicks": 12,
+        "toScore": 0
+      },
+      "obsDate": "2013-11-01",
+      "quality": "ok",
+      "score": 1,
+      "scoreNote": "ruhiger Anleihemarkt",
+      "unit": "Idx",
+      "value": 68
+    },
+    "nfci": {
+      "derived": {
+        "change3m": -0.07399999999999995
+      },
+      "display": {
+        "primary": "−0,761",
+        "secondary": "lockerer (−0,074)"
+      },
+      "factor": "business_cycle",
+      "flips": [
+        {
+          "boundary": -0.02,
+          "direction": "up",
+          "gap": 0.05399999999999995,
+          "gapSigma": 1.7017158542444153,
+          "gapTicks": 53.99999999999995,
+          "toScore": 0
+        },
+        {
+          "boundary": 0.02,
+          "direction": "up",
+          "gap": 0.09399999999999996,
+          "gapSigma": 2.9622461166476874,
+          "gapTicks": 93.99999999999996,
+          "toScore": -1
+        }
+      ],
+      "id": "nfci",
+      "label": "Chicago Fed NFCI · 3m",
+      "measure": "change3m",
+      "measureValue": -0.07399999999999995,
+      "nearestFlip": {
+        "boundary": -0.02,
+        "direction": "up",
+        "gap": 0.05399999999999995,
+        "gapSigma": 1.7017158542444153,
+        "gapTicks": 53.99999999999995,
+        "toScore": 0
+      },
+      "obsDate": "2013-11-01",
+      "quality": "ok",
+      "score": 1,
+      "scoreNote": "Finanzbedingungen lockern sich",
+      "unit": "Idx",
+      "value": -0.761
+    },
+    "sofr_iorb": {
+      "factor": "liquidity",
+      "flips": [],
+      "id": "sofr_iorb",
+      "label": "SOFR – IORB · Level/Richtung",
+      "measure": "spreadBp",
+      "measureValue": null,
+      "nearestFlip": null,
+      "quality": "missing",
+      "score": 0,
+      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "unit": "bp",
+      "value": null
+    },
+    "t10y2y": {
+      "derived": {
+        "change3mBp": -7.000000000000028,
+        "level": 2.32
+      },
+      "display": {
+        "primary": "+2,32 %",
+        "secondary": "leicht unveraendert (−7 bps)"
+      },
+      "factor": "business_cycle",
+      "flips": [
+        {
+          "boundary": -10,
+          "direction": "down",
+          "gap": 2.9999999999999716,
+          "gapSigma": 0.19917727909997457,
+          "gapTicks": 2.9999999999999716,
+          "toScore": -1
+        },
+        {
+          "boundary": 10,
+          "direction": "up",
+          "gap": 17.00000000000003,
+          "gapSigma": 1.1286712482332018,
+          "gapTicks": 17.00000000000003,
+          "toScore": 1
+        }
+      ],
+      "id": "t10y2y",
+      "label": "10y – 2y Spread · 3m",
+      "measure": "change3mBp",
+      "measureValue": -7.000000000000028,
+      "nearestFlip": {
+        "boundary": -10,
+        "direction": "down",
+        "gap": 2.9999999999999716,
+        "gapSigma": 0.19917727909997457,
+        "gapTicks": 2.9999999999999716,
+        "toScore": -1
+      },
+      "obsDate": "2013-11-01",
+      "quality": "ok",
+      "score": 0,
+      "scoreNote": "leichte Bewegung, neutral",
+      "unit": "bps",
+      "value": 2.32
+    },
+    "vix": {
+      "display": {
+        "primary": "13,28",
+        "secondary": "Korridor 15–25"
+      },
+      "factor": "sentiment",
+      "flips": [
+        {
+          "boundary": 15,
+          "direction": "up",
+          "gap": 1.7200000000000006,
+          "gapSigma": 0.5020220419960312,
+          "gapTicks": 172.00000000000006,
+          "toScore": 0
+        },
+        {
+          "boundary": 25,
+          "direction": "up",
+          "gap": 11.72,
+          "gapSigma": 3.420754844298537,
+          "gapTicks": 1172,
+          "toScore": 0
+        }
+      ],
+      "id": "vix",
+      "label": "VIX · Level",
+      "measure": "level",
+      "measureValue": 13.28,
+      "nearestFlip": {
+        "boundary": 15,
+        "direction": "up",
+        "gap": 1.7200000000000006,
+        "gapSigma": 0.5020220419960312,
+        "gapTicks": 172.00000000000006,
+        "toScore": 0
+      },
+      "obsDate": "2013-11-01",
+      "quality": "ok",
+      "score": -1,
+      "scoreNote": "Complacency",
+      "unit": "Idx",
+      "value": 13.28
+    }
+  },
+  "isoWeek": 44,
+  "isoYear": 2013,
+  "meaningful": false,
+  "missing": [
+    "ism_mfg_pmi",
+    "sofr_iorb",
+    "aaii",
+    "fear_greed"
+  ],
+  "notes": [
+    "Nachtraeglich gefuellte Woche (Backfill) — kein veroeffentlichter Stand",
+    "4 von 9 Indikatoren ohne Wert: ism_mfg_pmi, sofr_iorb, aaii, fear_greed",
+    "Nicht bestimmbare Faktoren: sentiment — sie gehen als 0 in die Summe ein. Der Gesamtscore 0 und das Regime \"Neutral\" sind daher KEINE Marktaussage, sondern Ausdruck einer Datenluecke und duerfen nicht als Stand gelesen werden."
+  ],
+  "regime": {
+    "assumed": false,
+    "cashBand": [
+      20,
+      35
+    ],
+    "label": "Neutral"
+  },
+  "rulesVersion": "v1",
+  "schemaVersion": 1,
+  "stale": [],
+  "total": 0,
+  "undeterminableFactors": [
+    "sentiment"
+  ],
+  "weekEnd": "2013-11-03",
+  "weekKey": "2013-W44",
+  "weekStart": "2013-10-28"
+}

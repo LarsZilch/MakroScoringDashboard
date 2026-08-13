@@ -1,0 +1,376 @@
+{
+  "builtAt": "2026-08-13T13:11:23.262Z",
+  "completeness": "sparse",
+  "dataAsOf": "2015-01-18",
+  "factors": {
+    "business_cycle": {
+      "determinable": true,
+      "id": "business_cycle",
+      "indicators": [
+        "ism_mfg_pmi",
+        "nfci",
+        "t10y2y"
+      ],
+      "label": "Business Cycle",
+      "missing": 1,
+      "negatives": 2,
+      "neutrals": 0,
+      "positives": 0,
+      "rationale": "2 von 3 negativ",
+      "score": -1
+    },
+    "liquidity": {
+      "determinable": true,
+      "id": "liquidity",
+      "indicators": [
+        "gli",
+        "move",
+        "sofr_iorb"
+      ],
+      "label": "Globale Liquiditaet",
+      "missing": 1,
+      "negatives": 0,
+      "neutrals": 2,
+      "positives": 0,
+      "rationale": "0 positiv, 0 negativ, 1 ohne Wert — keine Mehrheit",
+      "score": 0
+    },
+    "sentiment": {
+      "determinable": false,
+      "id": "sentiment",
+      "indicators": [
+        "vix",
+        "aaii",
+        "fear_greed"
+      ],
+      "label": "Sentiment",
+      "missing": 2,
+      "negatives": 0,
+      "neutrals": 1,
+      "positives": 0,
+      "rationale": "2 von 3 ohne Wert — nicht bestimmbar",
+      "score": 0
+    }
+  },
+  "indicators": {
+    "aaii": {
+      "factor": "sentiment",
+      "flips": [],
+      "id": "aaii",
+      "label": "AAII Bull-Bear · 4w-Ø",
+      "measure": "avg4w",
+      "measureValue": null,
+      "nearestFlip": null,
+      "quality": "missing",
+      "score": 0,
+      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "unit": "%",
+      "value": null
+    },
+    "fear_greed": {
+      "factor": "sentiment",
+      "flips": [],
+      "id": "fear_greed",
+      "label": "CNN Fear & Greed · Level",
+      "measure": "level",
+      "measureValue": null,
+      "nearestFlip": null,
+      "quality": "missing",
+      "score": 0,
+      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "unit": "",
+      "value": null
+    },
+    "gli": {
+      "derived": {
+        "levelMioUsd": 4262409,
+        "rate3mAnn": 8.494458561453055,
+        "rate3mAnnDelta": -4.332396947590713,
+        "rate3mAnnPrev": 12.826855509043767
+      },
+      "display": {
+        "primary": "8,5 % 3m ann.",
+        "secondary": "fallend"
+      },
+      "factor": "liquidity",
+      "flips": [
+        {
+          "boundary": -6,
+          "direction": "down",
+          "gap": 1.6676030524092873,
+          "gapSigma": 0.19469772962197554,
+          "gapTicks": 16.676030524092873,
+          "toScore": -1
+        },
+        {
+          "boundary": 6,
+          "direction": "up",
+          "gap": 10.332396947590713,
+          "gapSigma": 1.2063387772902703,
+          "gapTicks": 103.32396947590712,
+          "toScore": 1
+        }
+      ],
+      "id": "gli",
+      "label": "Fed Net Liquidity · Richtung",
+      "measure": "rate3mAnnDelta",
+      "measureValue": -4.332396947590713,
+      "nearestFlip": {
+        "boundary": -6,
+        "direction": "down",
+        "gap": 1.6676030524092873,
+        "gapSigma": 0.19469772962197554,
+        "gapTicks": 16.676030524092873,
+        "toScore": -1
+      },
+      "obsDate": "2015-01-14",
+      "quality": "proxy",
+      "score": 0,
+      "scoreNote": "Richtung unklar",
+      "unit": "pp",
+      "value": 8.494458561453055
+    },
+    "ism_mfg_pmi": {
+      "factor": "business_cycle",
+      "flips": [],
+      "id": "ism_mfg_pmi",
+      "label": "ISM Mfg PMI · 3m-Change",
+      "measure": "change3m",
+      "measureValue": null,
+      "nearestFlip": null,
+      "quality": "missing",
+      "score": 0,
+      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "unit": "Pkt",
+      "value": null
+    },
+    "move": {
+      "display": {
+        "primary": "≈ 87",
+        "secondary": "zwischen 80 und 100"
+      },
+      "factor": "liquidity",
+      "flips": [
+        {
+          "boundary": 80,
+          "direction": "down",
+          "gap": 6.599998474121094,
+          "gapSigma": 1.1428854323361037,
+          "gapTicks": 6.599998474121094,
+          "toScore": 1
+        },
+        {
+          "boundary": 100,
+          "direction": "up",
+          "gap": 13.400001525878906,
+          "gapSigma": 2.3204045572522625,
+          "gapTicks": 13.400001525878906,
+          "toScore": -1
+        }
+      ],
+      "id": "move",
+      "label": "MOVE · Level",
+      "measure": "level",
+      "measureValue": 86.5999984741211,
+      "nearestFlip": {
+        "boundary": 80,
+        "direction": "down",
+        "gap": 6.599998474121094,
+        "gapSigma": 1.1428854323361037,
+        "gapTicks": 6.599998474121094,
+        "toScore": 1
+      },
+      "obsDate": "2015-01-01",
+      "quality": "stale",
+      "score": 0,
+      "scoreNote": "erhoeht, aber kein Stress",
+      "unit": "Idx",
+      "value": 86.5999984741211
+    },
+    "nfci": {
+      "derived": {
+        "change3m": 0.131
+      },
+      "display": {
+        "primary": "−0,526",
+        "secondary": "straffer (+0,131)"
+      },
+      "factor": "business_cycle",
+      "flips": [
+        {
+          "boundary": 0.02,
+          "direction": "down",
+          "gap": 0.111,
+          "gapSigma": 4.012874629031897,
+          "gapTicks": 111,
+          "toScore": 0
+        },
+        {
+          "boundary": -0.02,
+          "direction": "down",
+          "gap": 0.151,
+          "gapSigma": 5.458955576430778,
+          "gapTicks": 151,
+          "toScore": 1
+        }
+      ],
+      "id": "nfci",
+      "label": "Chicago Fed NFCI · 3m",
+      "measure": "change3m",
+      "measureValue": 0.131,
+      "nearestFlip": {
+        "boundary": 0.02,
+        "direction": "down",
+        "gap": 0.111,
+        "gapSigma": 4.012874629031897,
+        "gapTicks": 111,
+        "toScore": 0
+      },
+      "obsDate": "2015-01-16",
+      "quality": "ok",
+      "score": -1,
+      "scoreNote": "Finanzbedingungen straffen sich",
+      "unit": "Idx",
+      "value": -0.526
+    },
+    "sofr_iorb": {
+      "factor": "liquidity",
+      "flips": [],
+      "id": "sofr_iorb",
+      "label": "SOFR – IORB · Level/Richtung",
+      "measure": "spreadBp",
+      "measureValue": null,
+      "nearestFlip": null,
+      "quality": "missing",
+      "score": 0,
+      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "unit": "bp",
+      "value": null
+    },
+    "t10y2y": {
+      "derived": {
+        "change3mBp": -48,
+        "level": 1.34
+      },
+      "display": {
+        "primary": "+1,34 %",
+        "secondary": "flacher (−48 bps)"
+      },
+      "factor": "business_cycle",
+      "flips": [
+        {
+          "boundary": -10,
+          "direction": "up",
+          "gap": 38,
+          "gapSigma": 2.770368356052851,
+          "gapTicks": 38,
+          "toScore": 0
+        },
+        {
+          "boundary": 10,
+          "direction": "up",
+          "gap": 58,
+          "gapSigma": 4.22845696450172,
+          "gapTicks": 58,
+          "toScore": 1
+        }
+      ],
+      "id": "t10y2y",
+      "label": "10y – 2y Spread · 3m",
+      "measure": "change3mBp",
+      "measureValue": -48,
+      "nearestFlip": {
+        "boundary": -10,
+        "direction": "up",
+        "gap": 38,
+        "gapSigma": 2.770368356052851,
+        "gapTicks": 38,
+        "toScore": 0
+      },
+      "obsDate": "2015-01-16",
+      "quality": "ok",
+      "score": -1,
+      "scoreNote": "Verflachung",
+      "unit": "bps",
+      "value": 1.34
+    },
+    "vix": {
+      "display": {
+        "primary": "20,95",
+        "secondary": "Korridor 15–25"
+      },
+      "factor": "sentiment",
+      "flips": [
+        {
+          "boundary": 25,
+          "direction": "up",
+          "gap": 4.050000000000001,
+          "gapSigma": 1.2658397218088009,
+          "gapTicks": 405.00000000000006,
+          "toScore": 1
+        },
+        {
+          "boundary": 15,
+          "direction": "down",
+          "gap": 5.949999999999999,
+          "gapSigma": 1.8596904554968798,
+          "gapTicks": 594.9999999999999,
+          "toScore": -1
+        }
+      ],
+      "id": "vix",
+      "label": "VIX · Level",
+      "measure": "level",
+      "measureValue": 20.95,
+      "nearestFlip": {
+        "boundary": 25,
+        "direction": "up",
+        "gap": 4.050000000000001,
+        "gapSigma": 1.2658397218088009,
+        "gapTicks": 405.00000000000006,
+        "toScore": 1
+      },
+      "obsDate": "2015-01-16",
+      "quality": "ok",
+      "score": 0,
+      "scoreNote": "im Korridor",
+      "unit": "Idx",
+      "value": 20.95
+    }
+  },
+  "isoWeek": 3,
+  "isoYear": 2015,
+  "meaningful": false,
+  "missing": [
+    "ism_mfg_pmi",
+    "sofr_iorb",
+    "aaii",
+    "fear_greed"
+  ],
+  "notes": [
+    "Nachtraeglich gefuellte Woche (Backfill) — kein veroeffentlichter Stand",
+    "move: Stand 2015-01-01 ist am Stichtag 2015-01-18 bereits 17 Tage alt (erwartet hoechstens 10) — Wert wird als veraltet gefuehrt",
+    "4 von 9 Indikatoren ohne Wert: ism_mfg_pmi, sofr_iorb, aaii, fear_greed",
+    "Nicht bestimmbare Faktoren: sentiment — sie gehen als 0 in die Summe ein. Der Gesamtscore -1 und das Regime \"Risk Off\" sind daher KEINE Marktaussage, sondern Ausdruck einer Datenluecke und duerfen nicht als Stand gelesen werden."
+  ],
+  "regime": {
+    "assumed": true,
+    "cashBand": [
+      35,
+      50
+    ],
+    "label": "Risk Off"
+  },
+  "rulesVersion": "v1",
+  "schemaVersion": 1,
+  "stale": [
+    "move"
+  ],
+  "total": -1,
+  "undeterminableFactors": [
+    "sentiment"
+  ],
+  "weekEnd": "2015-01-18",
+  "weekKey": "2015-W03",
+  "weekStart": "2015-01-12"
+}

@@ -1,0 +1,463 @@
+{
+  "builtAt": "2026-08-13T13:11:29.408Z",
+  "completeness": "partial",
+  "dataAsOf": "2025-12-07",
+  "factors": {
+    "business_cycle": {
+      "determinable": true,
+      "id": "business_cycle",
+      "indicators": [
+        "ism_mfg_pmi",
+        "nfci",
+        "t10y2y"
+      ],
+      "label": "Business Cycle",
+      "missing": 0,
+      "negatives": 1,
+      "neutrals": 2,
+      "positives": 0,
+      "rationale": "0 positiv, 1 negativ — keine Mehrheit",
+      "score": 0
+    },
+    "liquidity": {
+      "determinable": true,
+      "id": "liquidity",
+      "indicators": [
+        "gli",
+        "move",
+        "sofr_iorb"
+      ],
+      "label": "Globale Liquiditaet",
+      "missing": 0,
+      "negatives": 0,
+      "neutrals": 2,
+      "positives": 1,
+      "rationale": "1 positiv, 0 negativ — keine Mehrheit",
+      "score": 0
+    },
+    "sentiment": {
+      "determinable": true,
+      "id": "sentiment",
+      "indicators": [
+        "vix",
+        "aaii",
+        "fear_greed"
+      ],
+      "label": "Sentiment",
+      "missing": 1,
+      "negatives": 0,
+      "neutrals": 2,
+      "positives": 0,
+      "rationale": "0 positiv, 0 negativ, 1 ohne Wert — keine Mehrheit",
+      "score": 0
+    }
+  },
+  "indicators": {
+    "aaii": {
+      "factor": "sentiment",
+      "flips": [],
+      "id": "aaii",
+      "label": "AAII Bull-Bear · 4w-Ø",
+      "measure": "avg4w",
+      "measureValue": null,
+      "nearestFlip": null,
+      "quality": "missing",
+      "score": 0,
+      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "unit": "%",
+      "value": null
+    },
+    "fear_greed": {
+      "display": {
+        "primary": "38 (Fear)",
+        "secondary": "Korridor 20–70"
+      },
+      "factor": "sentiment",
+      "flips": [
+        {
+          "boundary": 20,
+          "direction": "down",
+          "gap": 18.142857142857146,
+          "gapSigma": 1.7316977256790496,
+          "gapTicks": 18.142857142857146,
+          "toScore": 1
+        },
+        {
+          "boundary": 70,
+          "direction": "up",
+          "gap": 31.857142857142854,
+          "gapSigma": 3.0406975813104564,
+          "gapTicks": 31.857142857142854,
+          "toScore": -1
+        }
+      ],
+      "id": "fear_greed",
+      "label": "CNN Fear & Greed · Level",
+      "measure": "level",
+      "measureValue": 38.142857142857146,
+      "nearestFlip": {
+        "boundary": 20,
+        "direction": "down",
+        "gap": 18.142857142857146,
+        "gapSigma": 1.7316977256790496,
+        "gapTicks": 18.142857142857146,
+        "toScore": 1
+      },
+      "obsDate": "2025-12-05",
+      "quality": "ok",
+      "score": 0,
+      "scoreNote": "im Korridor",
+      "unit": "",
+      "value": 38.142857142857146
+    },
+    "gli": {
+      "derived": {
+        "levelMioUsd": 5596100,
+        "rate3mAnn": -23.64970056331026,
+        "rate3mAnnDelta": 5.133936866107213,
+        "rate3mAnnPrev": -28.783637429417475
+      },
+      "display": {
+        "primary": "-23,6 % 3m ann.",
+        "secondary": "steigend"
+      },
+      "factor": "liquidity",
+      "flips": [
+        {
+          "boundary": 6,
+          "direction": "up",
+          "gap": 0.8660631338927871,
+          "gapSigma": 0.04955819871565377,
+          "gapTicks": 8.660631338927871,
+          "toScore": 1
+        },
+        {
+          "boundary": -6,
+          "direction": "down",
+          "gap": 11.133936866107213,
+          "gapSigma": 0.6371104300652417,
+          "gapTicks": 111.33936866107213,
+          "toScore": -1
+        }
+      ],
+      "id": "gli",
+      "label": "Fed Net Liquidity · Richtung",
+      "measure": "rate3mAnnDelta",
+      "measureValue": 5.133936866107213,
+      "nearestFlip": {
+        "boundary": 6,
+        "direction": "up",
+        "gap": 0.8660631338927871,
+        "gapSigma": 0.04955819871565377,
+        "gapTicks": 8.660631338927871,
+        "toScore": 1
+      },
+      "obsDate": "2025-12-03",
+      "quality": "proxy",
+      "score": 0,
+      "scoreNote": "Richtung unklar",
+      "unit": "pp",
+      "value": -23.64970056331026
+    },
+    "ism_mfg_pmi": {
+      "derived": {
+        "change3m": -1.2000000000000028,
+        "previous": 49.1
+      },
+      "display": {
+        "primary": "47,9 (Dezember)",
+        "secondary": "−1,2 Pkt vs. September"
+      },
+      "factor": "business_cycle",
+      "flips": [
+        {
+          "boundary": -1,
+          "direction": "up",
+          "gap": 0.20000000000000284,
+          "gapSigma": null,
+          "gapTicks": 2.0000000000000284,
+          "toScore": 0
+        },
+        {
+          "boundary": 1,
+          "direction": "up",
+          "gap": 2.200000000000003,
+          "gapSigma": null,
+          "gapTicks": 22.00000000000003,
+          "toScore": 1
+        }
+      ],
+      "id": "ism_mfg_pmi",
+      "label": "ISM Mfg PMI · 3m-Change",
+      "measure": "change3m",
+      "measureValue": -1.2000000000000028,
+      "nearestFlip": {
+        "boundary": -1,
+        "direction": "up",
+        "gap": 0.20000000000000284,
+        "gapSigma": null,
+        "gapTicks": 2.0000000000000284,
+        "toScore": 0
+      },
+      "obsDate": "2025-12-01",
+      "quality": "ok",
+      "score": -1,
+      "scoreNote": "Abkuehlung",
+      "unit": "Pkt",
+      "value": 47.9
+    },
+    "move": {
+      "display": {
+        "primary": "≈ 67",
+        "secondary": "unter 80"
+      },
+      "factor": "liquidity",
+      "flips": [
+        {
+          "boundary": 80,
+          "direction": "up",
+          "gap": 12.720001220703125,
+          "gapSigma": 1.731615911278824,
+          "gapTicks": 12.720001220703125,
+          "toScore": 0
+        },
+        {
+          "boundary": 100,
+          "direction": "up",
+          "gap": 32.720001220703125,
+          "gapSigma": 4.454282177160056,
+          "gapTicks": 32.720001220703125,
+          "toScore": 0
+        }
+      ],
+      "id": "move",
+      "label": "MOVE · Level",
+      "measure": "level",
+      "measureValue": 67.27999877929688,
+      "nearestFlip": {
+        "boundary": 80,
+        "direction": "up",
+        "gap": 12.720001220703125,
+        "gapSigma": 1.731615911278824,
+        "gapTicks": 12.720001220703125,
+        "toScore": 0
+      },
+      "obsDate": "2025-12-05",
+      "quality": "ok",
+      "score": 1,
+      "scoreNote": "ruhiger Anleihemarkt",
+      "unit": "Idx",
+      "value": 67.27999877929688
+    },
+    "nfci": {
+      "derived": {
+        "change3m": 0.014000000000000012
+      },
+      "display": {
+        "primary": "−0,514",
+        "secondary": "unveraendert (+0,014)"
+      },
+      "factor": "business_cycle",
+      "flips": [
+        {
+          "boundary": 0.02,
+          "direction": "up",
+          "gap": 0.005999999999999988,
+          "gapSigma": 0.2021903743061857,
+          "gapTicks": 5.999999999999988,
+          "toScore": -1
+        },
+        {
+          "boundary": -0.02,
+          "direction": "down",
+          "gap": 0.034000000000000016,
+          "gapSigma": 1.1457454544017218,
+          "gapTicks": 34.000000000000014,
+          "toScore": 1
+        }
+      ],
+      "id": "nfci",
+      "label": "Chicago Fed NFCI · 3m",
+      "measure": "change3m",
+      "measureValue": 0.014000000000000012,
+      "nearestFlip": {
+        "boundary": 0.02,
+        "direction": "up",
+        "gap": 0.005999999999999988,
+        "gapSigma": 0.2021903743061857,
+        "gapTicks": 5.999999999999988,
+        "toScore": -1
+      },
+      "obsDate": "2025-12-05",
+      "quality": "ok",
+      "score": 0,
+      "scoreNote": "unveraendert",
+      "unit": "Idx",
+      "value": -0.514
+    },
+    "sofr_iorb": {
+      "derived": {
+        "iorb": 3.9,
+        "sofr": 3.93,
+        "spreadBp": 3
+      },
+      "display": {
+        "primary": "+3 bp",
+        "secondary": "3,93 vs. 3,90"
+      },
+      "factor": "liquidity",
+      "flips": [
+        {
+          "boundary": 2,
+          "direction": "down",
+          "gap": 1,
+          "gapSigma": 0.22303753520415232,
+          "gapTicks": 1,
+          "toScore": 1
+        },
+        {
+          "boundary": 10,
+          "direction": "up",
+          "gap": 7,
+          "gapSigma": 1.5612627464290663,
+          "gapTicks": 7,
+          "toScore": -1
+        }
+      ],
+      "id": "sofr_iorb",
+      "label": "SOFR – IORB · Level/Richtung",
+      "measure": "spreadBp",
+      "measureValue": 3,
+      "nearestFlip": {
+        "boundary": 2,
+        "direction": "down",
+        "gap": 1,
+        "gapSigma": 0.22303753520415232,
+        "gapTicks": 1,
+        "toScore": 1
+      },
+      "obsDate": "2025-12-05",
+      "quality": "ok",
+      "score": 0,
+      "scoreNote": "leicht positiv, unauffaellig",
+      "unit": "bp",
+      "value": 3
+    },
+    "t10y2y": {
+      "derived": {
+        "change3mBp": -1.0000000000000009,
+        "level": 0.58
+      },
+      "display": {
+        "primary": "+0,58 %",
+        "secondary": "leicht unveraendert (−1 bps)"
+      },
+      "factor": "business_cycle",
+      "flips": [
+        {
+          "boundary": -10,
+          "direction": "down",
+          "gap": 9,
+          "gapSigma": 0.7859906291251472,
+          "gapTicks": 9,
+          "toScore": -1
+        },
+        {
+          "boundary": 10,
+          "direction": "up",
+          "gap": 11,
+          "gapSigma": 0.9606552133751799,
+          "gapTicks": 11,
+          "toScore": 1
+        }
+      ],
+      "id": "t10y2y",
+      "label": "10y – 2y Spread · 3m",
+      "measure": "change3mBp",
+      "measureValue": -1.0000000000000009,
+      "nearestFlip": {
+        "boundary": -10,
+        "direction": "down",
+        "gap": 9,
+        "gapSigma": 0.7859906291251472,
+        "gapTicks": 9,
+        "toScore": -1
+      },
+      "obsDate": "2025-12-05",
+      "quality": "ok",
+      "score": 0,
+      "scoreNote": "leichte Bewegung, neutral",
+      "unit": "bps",
+      "value": 0.58
+    },
+    "vix": {
+      "display": {
+        "primary": "15,41",
+        "secondary": "Korridor 15–25"
+      },
+      "factor": "sentiment",
+      "flips": [
+        {
+          "boundary": 15,
+          "direction": "down",
+          "gap": 0.41000000000000014,
+          "gapSigma": 0.11902130579939767,
+          "gapTicks": 41.000000000000014,
+          "toScore": -1
+        },
+        {
+          "boundary": 25,
+          "direction": "up",
+          "gap": 9.59,
+          "gapSigma": 2.783937372234691,
+          "gapTicks": 959,
+          "toScore": 1
+        }
+      ],
+      "id": "vix",
+      "label": "VIX · Level",
+      "measure": "level",
+      "measureValue": 15.41,
+      "nearestFlip": {
+        "boundary": 15,
+        "direction": "down",
+        "gap": 0.41000000000000014,
+        "gapSigma": 0.11902130579939767,
+        "gapTicks": 41.000000000000014,
+        "toScore": -1
+      },
+      "obsDate": "2025-12-05",
+      "quality": "ok",
+      "score": 0,
+      "scoreNote": "im Korridor",
+      "unit": "Idx",
+      "value": 15.41
+    }
+  },
+  "isoWeek": 49,
+  "isoYear": 2025,
+  "meaningful": true,
+  "missing": [
+    "aaii"
+  ],
+  "notes": [
+    "Nachtraeglich gefuellte Woche (Backfill) — kein veroeffentlichter Stand",
+    "1 von 9 Indikatoren ohne Wert: aaii"
+  ],
+  "regime": {
+    "assumed": false,
+    "cashBand": [
+      20,
+      35
+    ],
+    "label": "Neutral"
+  },
+  "rulesVersion": "v1",
+  "schemaVersion": 1,
+  "stale": [],
+  "total": 0,
+  "undeterminableFactors": [],
+  "weekEnd": "2025-12-07",
+  "weekKey": "2025-W49",
+  "weekStart": "2025-12-01"
+}

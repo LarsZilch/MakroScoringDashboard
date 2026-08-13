@@ -1,0 +1,406 @@
+{
+  "builtAt": "2026-08-13T13:11:27.151Z",
+  "completeness": "sparse",
+  "dataAsOf": "2022-01-02",
+  "factors": {
+    "business_cycle": {
+      "determinable": true,
+      "id": "business_cycle",
+      "indicators": [
+        "ism_mfg_pmi",
+        "nfci",
+        "t10y2y"
+      ],
+      "label": "Business Cycle",
+      "missing": 1,
+      "negatives": 2,
+      "neutrals": 0,
+      "positives": 0,
+      "rationale": "2 von 3 negativ",
+      "score": -1
+    },
+    "liquidity": {
+      "determinable": true,
+      "id": "liquidity",
+      "indicators": [
+        "gli",
+        "move",
+        "sofr_iorb"
+      ],
+      "label": "Globale Liquiditaet",
+      "missing": 0,
+      "negatives": 0,
+      "neutrals": 2,
+      "positives": 1,
+      "rationale": "1 positiv, 0 negativ — keine Mehrheit",
+      "score": 0
+    },
+    "sentiment": {
+      "determinable": false,
+      "id": "sentiment",
+      "indicators": [
+        "vix",
+        "aaii",
+        "fear_greed"
+      ],
+      "label": "Sentiment",
+      "missing": 2,
+      "negatives": 0,
+      "neutrals": 1,
+      "positives": 0,
+      "rationale": "2 von 3 ohne Wert — nicht bestimmbar",
+      "score": 0
+    }
+  },
+  "indicators": {
+    "aaii": {
+      "factor": "sentiment",
+      "flips": [],
+      "id": "aaii",
+      "label": "AAII Bull-Bear · 4w-Ø",
+      "measure": "avg4w",
+      "measureValue": null,
+      "nearestFlip": null,
+      "quality": "missing",
+      "score": 0,
+      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "unit": "%",
+      "value": null
+    },
+    "fear_greed": {
+      "factor": "sentiment",
+      "flips": [],
+      "id": "fear_greed",
+      "label": "CNN Fear & Greed · Level",
+      "measure": "level",
+      "measureValue": null,
+      "nearestFlip": null,
+      "quality": "missing",
+      "score": 0,
+      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "unit": "",
+      "value": null
+    },
+    "gli": {
+      "derived": {
+        "levelMioUsd": 6903105,
+        "rate3mAnn": 4.082354079016737,
+        "rate3mAnnDelta": -0.7541447387092282,
+        "rate3mAnnPrev": 4.836498817725965
+      },
+      "display": {
+        "primary": "4,1 % 3m ann.",
+        "secondary": "fallend"
+      },
+      "factor": "liquidity",
+      "flips": [
+        {
+          "boundary": -6,
+          "direction": "down",
+          "gap": 5.245855261290772,
+          "gapSigma": 0.2742872365978346,
+          "gapTicks": 52.45855261290772,
+          "toScore": -1
+        },
+        {
+          "boundary": 6,
+          "direction": "up",
+          "gap": 6.754144738709228,
+          "gapSigma": 0.35315036418037227,
+          "gapTicks": 67.54144738709228,
+          "toScore": 1
+        }
+      ],
+      "id": "gli",
+      "label": "Fed Net Liquidity · Richtung",
+      "measure": "rate3mAnnDelta",
+      "measureValue": -0.7541447387092282,
+      "nearestFlip": {
+        "boundary": -6,
+        "direction": "down",
+        "gap": 5.245855261290772,
+        "gapSigma": 0.2742872365978346,
+        "gapTicks": 52.45855261290772,
+        "toScore": -1
+      },
+      "obsDate": "2021-12-29",
+      "quality": "proxy",
+      "score": 0,
+      "scoreNote": "Richtung unklar",
+      "unit": "pp",
+      "value": 4.082354079016737
+    },
+    "ism_mfg_pmi": {
+      "factor": "business_cycle",
+      "flips": [],
+      "id": "ism_mfg_pmi",
+      "label": "ISM Mfg PMI · 3m-Change",
+      "measure": "change3m",
+      "measureValue": null,
+      "nearestFlip": null,
+      "quality": "missing",
+      "score": 0,
+      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "unit": "Pkt",
+      "value": null
+    },
+    "move": {
+      "display": {
+        "primary": "≈ 85",
+        "secondary": "zwischen 80 und 100"
+      },
+      "factor": "liquidity",
+      "flips": [
+        {
+          "boundary": 80,
+          "direction": "down",
+          "gap": 5.1399993896484375,
+          "gapSigma": 0.8838085868110896,
+          "gapTicks": 5.1399993896484375,
+          "toScore": 1
+        },
+        {
+          "boundary": 100,
+          "direction": "up",
+          "gap": 14.860000610351562,
+          "gapSigma": 2.555135739100746,
+          "gapTicks": 14.860000610351562,
+          "toScore": -1
+        }
+      ],
+      "id": "move",
+      "label": "MOVE · Level",
+      "measure": "level",
+      "measureValue": 85.13999938964844,
+      "nearestFlip": {
+        "boundary": 80,
+        "direction": "down",
+        "gap": 5.1399993896484375,
+        "gapSigma": 0.8838085868110896,
+        "gapTicks": 5.1399993896484375,
+        "toScore": 1
+      },
+      "obsDate": "2022-01-01",
+      "quality": "ok",
+      "score": 0,
+      "scoreNote": "erhoeht, aber kein Stress",
+      "unit": "Idx",
+      "value": 85.13999938964844
+    },
+    "nfci": {
+      "derived": {
+        "change3m": 0.09899999999999998
+      },
+      "display": {
+        "primary": "−0,559",
+        "secondary": "straffer (+0,099)"
+      },
+      "factor": "business_cycle",
+      "flips": [
+        {
+          "boundary": 0.02,
+          "direction": "down",
+          "gap": 0.07899999999999997,
+          "gapSigma": 2.38777507208295,
+          "gapTicks": 78.99999999999997,
+          "toScore": 0
+        },
+        {
+          "boundary": -0.02,
+          "direction": "down",
+          "gap": 0.11899999999999998,
+          "gapSigma": 3.5967751085806463,
+          "gapTicks": 118.99999999999997,
+          "toScore": 1
+        }
+      ],
+      "id": "nfci",
+      "label": "Chicago Fed NFCI · 3m",
+      "measure": "change3m",
+      "measureValue": 0.09899999999999998,
+      "nearestFlip": {
+        "boundary": 0.02,
+        "direction": "down",
+        "gap": 0.07899999999999997,
+        "gapSigma": 2.38777507208295,
+        "gapTicks": 78.99999999999997,
+        "toScore": 0
+      },
+      "obsDate": "2021-12-31",
+      "quality": "ok",
+      "score": -1,
+      "scoreNote": "Finanzbedingungen straffen sich",
+      "unit": "Idx",
+      "value": -0.559
+    },
+    "sofr_iorb": {
+      "derived": {
+        "iorb": 0.15,
+        "sofr": 0.05,
+        "spreadBp": -10
+      },
+      "display": {
+        "primary": "−10 bp",
+        "secondary": "0,05 vs. 0,15"
+      },
+      "factor": "liquidity",
+      "flips": [
+        {
+          "boundary": 2,
+          "direction": "up",
+          "gap": 12,
+          "gapSigma": 2.488412501205204,
+          "gapTicks": 12,
+          "toScore": 0
+        },
+        {
+          "boundary": 10,
+          "direction": "up",
+          "gap": 20,
+          "gapSigma": 4.1473541686753395,
+          "gapTicks": 20,
+          "toScore": -1
+        }
+      ],
+      "id": "sofr_iorb",
+      "label": "SOFR – IORB · Level/Richtung",
+      "measure": "spreadBp",
+      "measureValue": -10,
+      "nearestFlip": {
+        "boundary": 2,
+        "direction": "up",
+        "gap": 12,
+        "gapSigma": 2.488412501205204,
+        "gapTicks": 12,
+        "toScore": 0
+      },
+      "obsDate": "2021-12-31",
+      "quality": "ok",
+      "score": 1,
+      "scoreNote": "reichliche Reserven, kein Funding-Druck",
+      "unit": "bp",
+      "value": -10
+    },
+    "t10y2y": {
+      "derived": {
+        "change3mBp": -44.99999999999999,
+        "level": 0.79
+      },
+      "display": {
+        "primary": "+0,79 %",
+        "secondary": "flacher (−45 bps)"
+      },
+      "factor": "business_cycle",
+      "flips": [
+        {
+          "boundary": -10,
+          "direction": "up",
+          "gap": 34.99999999999999,
+          "gapSigma": 3.1880887174945123,
+          "gapTicks": 34.99999999999999,
+          "toScore": 0
+        },
+        {
+          "boundary": 10,
+          "direction": "up",
+          "gap": 54.99999999999999,
+          "gapSigma": 5.009853698919948,
+          "gapTicks": 54.99999999999999,
+          "toScore": 1
+        }
+      ],
+      "id": "t10y2y",
+      "label": "10y – 2y Spread · 3m",
+      "measure": "change3mBp",
+      "measureValue": -44.99999999999999,
+      "nearestFlip": {
+        "boundary": -10,
+        "direction": "up",
+        "gap": 34.99999999999999,
+        "gapSigma": 3.1880887174945123,
+        "gapTicks": 34.99999999999999,
+        "toScore": 0
+      },
+      "obsDate": "2021-12-31",
+      "quality": "ok",
+      "score": -1,
+      "scoreNote": "Verflachung",
+      "unit": "bps",
+      "value": 0.79
+    },
+    "vix": {
+      "display": {
+        "primary": "17,22",
+        "secondary": "Korridor 15–25"
+      },
+      "factor": "sentiment",
+      "flips": [
+        {
+          "boundary": 15,
+          "direction": "down",
+          "gap": 2.219999999999999,
+          "gapSigma": 0.6294679980887489,
+          "gapTicks": 221.9999999999999,
+          "toScore": -1
+        },
+        {
+          "boundary": 25,
+          "direction": "up",
+          "gap": 7.780000000000001,
+          "gapSigma": 2.2059734347434548,
+          "gapTicks": 778.0000000000001,
+          "toScore": 1
+        }
+      ],
+      "id": "vix",
+      "label": "VIX · Level",
+      "measure": "level",
+      "measureValue": 17.22,
+      "nearestFlip": {
+        "boundary": 15,
+        "direction": "down",
+        "gap": 2.219999999999999,
+        "gapSigma": 0.6294679980887489,
+        "gapTicks": 221.9999999999999,
+        "toScore": -1
+      },
+      "obsDate": "2021-12-31",
+      "quality": "ok",
+      "score": 0,
+      "scoreNote": "im Korridor",
+      "unit": "Idx",
+      "value": 17.22
+    }
+  },
+  "isoWeek": 52,
+  "isoYear": 2021,
+  "meaningful": false,
+  "missing": [
+    "ism_mfg_pmi",
+    "aaii",
+    "fear_greed"
+  ],
+  "notes": [
+    "Nachtraeglich gefuellte Woche (Backfill) — kein veroeffentlichter Stand",
+    "3 von 9 Indikatoren ohne Wert: ism_mfg_pmi, aaii, fear_greed",
+    "Nicht bestimmbare Faktoren: sentiment — sie gehen als 0 in die Summe ein. Der Gesamtscore -1 und das Regime \"Risk Off\" sind daher KEINE Marktaussage, sondern Ausdruck einer Datenluecke und duerfen nicht als Stand gelesen werden."
+  ],
+  "regime": {
+    "assumed": true,
+    "cashBand": [
+      35,
+      50
+    ],
+    "label": "Risk Off"
+  },
+  "rulesVersion": "v1",
+  "schemaVersion": 1,
+  "stale": [],
+  "total": -1,
+  "undeterminableFactors": [
+    "sentiment"
+  ],
+  "weekEnd": "2022-01-02",
+  "weekKey": "2021-W52",
+  "weekStart": "2021-12-27"
+}

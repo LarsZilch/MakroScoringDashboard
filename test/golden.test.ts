@@ -42,7 +42,10 @@ const KW32: Record<IndicatorId, IndicatorInput> = {
     display: { primary: '+0,45 %', secondary: 'leicht flacher (−3 bps)' },
   },
   gli: {
-    measureValue: -1.0, // "fallend"; die Vorlage beziffert die Richtung nicht
+    // Die Vorlage schreibt nur "fallend" und beziffert die Richtung nicht.
+    // Hier steht deshalb ein Wert, der unter der kalibrierten Schwelle von
+    // -6,0 pp eindeutig fallend ist; belegt ist allein das Vorzeichen.
+    measureValue: -8.0,
     value: 5.1,
     obsDate: '2026-08-05',
     display: { primary: '5,1 % 3m ann.', secondary: 'fallend' },
@@ -123,6 +126,8 @@ describe('Golden Test — KW 32/2026 aus der Vorlage', () => {
   it('meldet keine fehlenden Indikatoren', () => {
     expect(result.missing).toEqual([]);
     expect(result.degraded).toBe(false);
+    expect(result.meaningful).toBe(true);
+    expect(result.undeterminableFactors).toEqual([]);
   });
 
   it('kennzeichnet den GLI als Ersatzreihe', () => {

@@ -6,7 +6,7 @@
  * neutral bewertet wird und niemand es merkt.
  */
 
-import type { Band, IndicatorRule, RuleBook, Score } from './types.js';
+import type { Band, FactorId, IndicatorRule, RuleBook, Score } from './types.js';
 import { INDICATOR_IDS } from './types.js';
 
 function fail(path: string, msg: string): never {
@@ -59,14 +59,22 @@ export function parseRuleBook(raw: unknown): RuleBook {
   const title = asString(r.title, 'title');
 
   // Faktoren
+  const KNOWN_FACTORS: readonly FactorId[] = ['business_cycle', 'liquidity', 'sentiment'];
+  const asFactorId = (v: unknown, path: string): FactorId => {
+    const s = asString(v, path);
+    const hit = KNOWN_FACTORS.find((f) => f === s);
+    if (!hit) fail(path, `unbekannter Faktor "${s}", erlaubt sind ${KNOWN_FACTORS.join(', ')}`);
+    return hit;
+  };
+
   if (!Array.isArray(r.factors) || r.factors.length === 0) fail('factors', 'nicht-leeres Array erwartet');
   const factors = r.factors.map((f, i) => {
     const o = asRecord(f, `factors[${i}]`);
-    const id = asString(o.id, `factors[${i}].id`);
-    if (id !== 'business_cycle' && id !== 'liquidity' && id !== 'sentiment') {
-      fail(`factors[${i}].id`, `unbekannter Faktor ${id}`);
-    }
-    return { id, label: asString(o.label, `factors[${i}].label`), ordinal: asNumber(o.ordinal, `factors[${i}].ordinal`) };
+    return {
+      id: asFactorId(o.id, `factors[${i}].id`),
+      label: asString(o.label, `factors[${i}].label`),
+      ordinal: asNumber(o.ordinal, `factors[${i}].ordinal`),
+    };
   });
   const factorIds = new Set(factors.map((f) => f.id));
 
@@ -80,12 +88,12 @@ export function parseRuleBook(raw: unknown): RuleBook {
     const path = `indicators.${id}`;
     if (indRaw[id] === undefined) fail(path, 'fehlt');
     const o = asRecord(indRaw[id], path);
-    const factor = asString(o.factor, `${path}.factor`);
-    if (!factorIds.has(factor as never)) fail(`${path}.factor`, `unbekannter Faktor ${factor}`);
+    const factor = asFactorId(o.factor, `${path}.factor`);
+    if (!factorIds.has(factor)) fail(`${path}.factor`, `Faktor ${factor} ist oben nicht deklariert`);
 
     const rule: IndicatorRule = {
       ordinal: asNumber(o.ordinal, `${path}.ordinal`),
-      factor: factor as IndicatorRule['factor'],
+      factor,
       label: asString(o.label, `${path}.label`),
       measure: asString(o.measure, `${path}.measure`),
       unit: typeof o.unit === 'string' ? o.unit : '',

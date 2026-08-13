@@ -1,0 +1,409 @@
+{
+  "builtAt": "2026-08-13T13:11:25.738Z",
+  "completeness": "sparse",
+  "dataAsOf": "2019-06-30",
+  "factors": {
+    "business_cycle": {
+      "determinable": true,
+      "id": "business_cycle",
+      "indicators": [
+        "ism_mfg_pmi",
+        "nfci",
+        "t10y2y"
+      ],
+      "label": "Business Cycle",
+      "missing": 1,
+      "negatives": 1,
+      "neutrals": 1,
+      "positives": 0,
+      "rationale": "0 positiv, 1 negativ, 1 ohne Wert — keine Mehrheit",
+      "score": 0
+    },
+    "liquidity": {
+      "determinable": true,
+      "id": "liquidity",
+      "indicators": [
+        "gli",
+        "move",
+        "sofr_iorb"
+      ],
+      "label": "Globale Liquiditaet",
+      "missing": 0,
+      "negatives": 1,
+      "neutrals": 1,
+      "positives": 1,
+      "rationale": "1 positiv, 1 negativ — keine Mehrheit",
+      "score": 0
+    },
+    "sentiment": {
+      "determinable": false,
+      "id": "sentiment",
+      "indicators": [
+        "vix",
+        "aaii",
+        "fear_greed"
+      ],
+      "label": "Sentiment",
+      "missing": 2,
+      "negatives": 0,
+      "neutrals": 1,
+      "positives": 0,
+      "rationale": "2 von 3 ohne Wert — nicht bestimmbar",
+      "score": 0
+    }
+  },
+  "indicators": {
+    "aaii": {
+      "factor": "sentiment",
+      "flips": [],
+      "id": "aaii",
+      "label": "AAII Bull-Bear · 4w-Ø",
+      "measure": "avg4w",
+      "measureValue": null,
+      "nearestFlip": null,
+      "quality": "missing",
+      "score": 0,
+      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "unit": "%",
+      "value": null
+    },
+    "fear_greed": {
+      "factor": "sentiment",
+      "flips": [],
+      "id": "fear_greed",
+      "label": "CNN Fear & Greed · Level",
+      "measure": "level",
+      "measureValue": null,
+      "nearestFlip": null,
+      "quality": "missing",
+      "score": 0,
+      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "unit": "",
+      "value": null
+    },
+    "gli": {
+      "derived": {
+        "levelMioUsd": 3570731,
+        "rate3mAnn": -9.257132336422158,
+        "rate3mAnnDelta": -2.7942420488045965,
+        "rate3mAnnPrev": -6.462890287617562
+      },
+      "display": {
+        "primary": "-9,3 % 3m ann.",
+        "secondary": "fallend"
+      },
+      "factor": "liquidity",
+      "flips": [
+        {
+          "boundary": -6,
+          "direction": "down",
+          "gap": 3.2057579511954035,
+          "gapSigma": 0.3841277164346398,
+          "gapTicks": 32.05757951195403,
+          "toScore": -1
+        },
+        {
+          "boundary": 6,
+          "direction": "up",
+          "gap": 8.794242048804596,
+          "gapSigma": 1.0537639358333728,
+          "gapTicks": 87.94242048804595,
+          "toScore": 1
+        }
+      ],
+      "id": "gli",
+      "label": "Fed Net Liquidity · Richtung",
+      "measure": "rate3mAnnDelta",
+      "measureValue": -2.7942420488045965,
+      "nearestFlip": {
+        "boundary": -6,
+        "direction": "down",
+        "gap": 3.2057579511954035,
+        "gapSigma": 0.3841277164346398,
+        "gapTicks": 32.05757951195403,
+        "toScore": -1
+      },
+      "obsDate": "2019-06-26",
+      "quality": "proxy",
+      "score": 0,
+      "scoreNote": "Richtung unklar",
+      "unit": "pp",
+      "value": -9.257132336422158
+    },
+    "ism_mfg_pmi": {
+      "factor": "business_cycle",
+      "flips": [],
+      "id": "ism_mfg_pmi",
+      "label": "ISM Mfg PMI · 3m-Change",
+      "measure": "change3m",
+      "measureValue": null,
+      "nearestFlip": null,
+      "quality": "missing",
+      "score": 0,
+      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "unit": "Pkt",
+      "value": null
+    },
+    "move": {
+      "display": {
+        "primary": "≈ 70",
+        "secondary": "unter 80"
+      },
+      "factor": "liquidity",
+      "flips": [
+        {
+          "boundary": 80,
+          "direction": "up",
+          "gap": 9.569999694824219,
+          "gapSigma": 1.8968632038612332,
+          "gapTicks": 9.569999694824219,
+          "toScore": 0
+        },
+        {
+          "boundary": 100,
+          "direction": "up",
+          "gap": 29.56999969482422,
+          "gapSigma": 5.861049754226792,
+          "gapTicks": 29.56999969482422,
+          "toScore": 0
+        }
+      ],
+      "id": "move",
+      "label": "MOVE · Level",
+      "measure": "level",
+      "measureValue": 70.43000030517578,
+      "nearestFlip": {
+        "boundary": 80,
+        "direction": "up",
+        "gap": 9.569999694824219,
+        "gapSigma": 1.8968632038612332,
+        "gapTicks": 9.569999694824219,
+        "toScore": 0
+      },
+      "obsDate": "2019-06-01",
+      "quality": "stale",
+      "score": 1,
+      "scoreNote": "ruhiger Anleihemarkt",
+      "unit": "Idx",
+      "value": 70.43000030517578
+    },
+    "nfci": {
+      "derived": {
+        "change3m": 0.028000000000000025
+      },
+      "display": {
+        "primary": "−0,579",
+        "secondary": "straffer (+0,028)"
+      },
+      "factor": "business_cycle",
+      "flips": [
+        {
+          "boundary": 0.02,
+          "direction": "down",
+          "gap": 0.008000000000000024,
+          "gapSigma": 0.35472883296269125,
+          "gapTicks": 8.000000000000025,
+          "toScore": 0
+        },
+        {
+          "boundary": -0.02,
+          "direction": "down",
+          "gap": 0.04800000000000003,
+          "gapSigma": 2.1283729977761423,
+          "gapTicks": 48.00000000000003,
+          "toScore": 1
+        }
+      ],
+      "id": "nfci",
+      "label": "Chicago Fed NFCI · 3m",
+      "measure": "change3m",
+      "measureValue": 0.028000000000000025,
+      "nearestFlip": {
+        "boundary": 0.02,
+        "direction": "down",
+        "gap": 0.008000000000000024,
+        "gapSigma": 0.35472883296269125,
+        "gapTicks": 8.000000000000025,
+        "toScore": 0
+      },
+      "obsDate": "2019-06-28",
+      "quality": "ok",
+      "score": -1,
+      "scoreNote": "Finanzbedingungen straffen sich",
+      "unit": "Idx",
+      "value": -0.579
+    },
+    "sofr_iorb": {
+      "derived": {
+        "iorb": 2.35,
+        "sofr": 2.5,
+        "spreadBp": 15
+      },
+      "display": {
+        "primary": "+15 bp",
+        "secondary": "2,50 vs. 2,35"
+      },
+      "factor": "liquidity",
+      "flips": [
+        {
+          "boundary": 10,
+          "direction": "down",
+          "gap": 5,
+          "gapSigma": 0.710277808206436,
+          "gapTicks": 5,
+          "toScore": 0
+        },
+        {
+          "boundary": 2,
+          "direction": "down",
+          "gap": 13,
+          "gapSigma": 1.8467223013367335,
+          "gapTicks": 13,
+          "toScore": 1
+        }
+      ],
+      "id": "sofr_iorb",
+      "label": "SOFR – IORB · Level/Richtung",
+      "measure": "spreadBp",
+      "measureValue": 15,
+      "nearestFlip": {
+        "boundary": 10,
+        "direction": "down",
+        "gap": 5,
+        "gapSigma": 0.710277808206436,
+        "gapTicks": 5,
+        "toScore": 0
+      },
+      "obsDate": "2019-06-28",
+      "quality": "ok",
+      "score": -1,
+      "scoreNote": "Funding-Druck, Reserven knapp",
+      "unit": "bp",
+      "value": 15
+    },
+    "t10y2y": {
+      "derived": {
+        "change3mBp": 9,
+        "level": 0.25
+      },
+      "display": {
+        "primary": "+0,25 %",
+        "secondary": "leicht unveraendert (+9 bps)"
+      },
+      "factor": "business_cycle",
+      "flips": [
+        {
+          "boundary": 10,
+          "direction": "up",
+          "gap": 1,
+          "gapSigma": 0.08891815221346483,
+          "gapTicks": 1,
+          "toScore": 1
+        },
+        {
+          "boundary": -10,
+          "direction": "down",
+          "gap": 19,
+          "gapSigma": 1.6894448920558316,
+          "gapTicks": 19,
+          "toScore": -1
+        }
+      ],
+      "id": "t10y2y",
+      "label": "10y – 2y Spread · 3m",
+      "measure": "change3mBp",
+      "measureValue": 9,
+      "nearestFlip": {
+        "boundary": 10,
+        "direction": "up",
+        "gap": 1,
+        "gapSigma": 0.08891815221346483,
+        "gapTicks": 1,
+        "toScore": 1
+      },
+      "obsDate": "2019-06-28",
+      "quality": "ok",
+      "score": 0,
+      "scoreNote": "leichte Bewegung, neutral",
+      "unit": "bps",
+      "value": 0.25
+    },
+    "vix": {
+      "display": {
+        "primary": "15,08",
+        "secondary": "Korridor 15–25"
+      },
+      "factor": "sentiment",
+      "flips": [
+        {
+          "boundary": 15,
+          "direction": "down",
+          "gap": 0.08000000000000007,
+          "gapSigma": 0.02560906701370519,
+          "gapTicks": 8.000000000000007,
+          "toScore": -1
+        },
+        {
+          "boundary": 25,
+          "direction": "up",
+          "gap": 9.92,
+          "gapSigma": 3.1755243096994406,
+          "gapTicks": 992,
+          "toScore": 1
+        }
+      ],
+      "id": "vix",
+      "label": "VIX · Level",
+      "measure": "level",
+      "measureValue": 15.08,
+      "nearestFlip": {
+        "boundary": 15,
+        "direction": "down",
+        "gap": 0.08000000000000007,
+        "gapSigma": 0.02560906701370519,
+        "gapTicks": 8.000000000000007,
+        "toScore": -1
+      },
+      "obsDate": "2019-06-28",
+      "quality": "ok",
+      "score": 0,
+      "scoreNote": "im Korridor",
+      "unit": "Idx",
+      "value": 15.08
+    }
+  },
+  "isoWeek": 26,
+  "isoYear": 2019,
+  "meaningful": false,
+  "missing": [
+    "ism_mfg_pmi",
+    "aaii",
+    "fear_greed"
+  ],
+  "notes": [
+    "Nachtraeglich gefuellte Woche (Backfill) — kein veroeffentlichter Stand",
+    "move: Stand 2019-06-01 ist am Stichtag 2019-06-30 bereits 29 Tage alt (erwartet hoechstens 10) — Wert wird als veraltet gefuehrt",
+    "3 von 9 Indikatoren ohne Wert: ism_mfg_pmi, aaii, fear_greed",
+    "Nicht bestimmbare Faktoren: sentiment — sie gehen als 0 in die Summe ein. Der Gesamtscore 0 und das Regime \"Neutral\" sind daher KEINE Marktaussage, sondern Ausdruck einer Datenluecke und duerfen nicht als Stand gelesen werden."
+  ],
+  "regime": {
+    "assumed": false,
+    "cashBand": [
+      20,
+      35
+    ],
+    "label": "Neutral"
+  },
+  "rulesVersion": "v1",
+  "schemaVersion": 1,
+  "stale": [
+    "move"
+  ],
+  "total": 0,
+  "undeterminableFactors": [
+    "sentiment"
+  ],
+  "weekEnd": "2019-06-30",
+  "weekKey": "2019-W26",
+  "weekStart": "2019-06-24"
+}

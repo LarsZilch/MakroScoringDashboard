@@ -71,10 +71,22 @@
       "quality": "proxy",
       "proxyNote": "Howell GLI (CrossBorder Capital) ist kostenpflichtig und hat keine offene Schnittstelle. Ersatz: Fed Net Liquidity = WALCL - WTREGEN - RRPONTSYD. Gleiche Form (3m annualisierte Rate + Richtung), anderer Aggregatbegriff.",
       "assumed": true,
-      "assumptionNote": "Bewertet wird laut Label die RICHTUNG, nicht das Niveau: in der Vorlage +5,1 % 3m ann., aber fallend -> -1. Die Rauschgrenze von 0,5 pp ist gesetzt.",
+      "assumptionNote": "Bewertet wird laut Label die RICHTUNG, nicht das Niveau: in der Vorlage +5,1 % 3m ann., aber fallend -> -1. Die Schwelle ist NICHT geraten, sondern an der Reihe selbst kalibriert - siehe calibration. Achtung: dieser Indikator ist der mit Abstand unruhigste der neun.",
+      "calibration": {
+        "basis": "Fed Net Liquidity, woechentlich, 2015-01 bis 2026-08 (605 Beobachtungen)",
+        "measuredOn": "2026-08-13",
+        "observed": {
+          "standardDeviation": 51.3,
+          "absPercentile33": 6.0,
+          "absPercentile50": 9.5
+        },
+        "chosenThreshold": 6.0,
+        "resultingSplit": "rund ein Drittel neutral, je ein Drittel positiv und negativ",
+        "warning": "Die urspruenglich angesetzte Schwelle von 0,5 pp haette nur 4 % aller Wochen als neutral gewertet - der Indikator haette in 96 % der Faelle +1 oder -1 gezeigt und dabei praktisch zufaellig gekippt. Auch mit 6,0 pp wechselt der Score noch in rund einem Viertel aller Wochen. Der Ersatzreihe fehlt die Glaettung, die den Original-GLI traegt; sie ist als Richtungsgeber deutlich unruhiger als das Original."
+      },
       "bands": [
-        { "gte": 0.5, "score": 1, "note": "Liquiditaetsimpuls steigt" },
-        { "lte": -0.5, "score": -1, "note": "Liquiditaetsimpuls faellt" },
+        { "gte": 6.0, "score": 1, "note": "Liquiditaetsimpuls steigt" },
+        { "lte": -6.0, "score": -1, "note": "Liquiditaetsimpuls faellt" },
         { "score": 0, "note": "Richtung unklar" }
       ]
     },

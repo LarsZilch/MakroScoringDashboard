@@ -178,7 +178,20 @@ export interface ScoredFactor {
   score: Score;
   positives: number;
   negatives: number;
+  /** Indikatoren mit echtem Wert, der neutral ausfaellt. */
   neutrals: number;
+  /** Indikatoren ohne Wert. NICHT dasselbe wie neutral. */
+  missing: number;
+  /**
+   * Laesst sich der Faktor ueberhaupt bestimmen?
+   *
+   * Die Mehrheitsregel braucht 2 von 3. Fehlen zwei oder mehr Werte, kann
+   * keine Mehrheit mehr zustande kommen — der Faktor ist dann nicht neutral,
+   * sondern unbestimmt. Der Unterschied ist wesentlich: "alle drei neutral"
+   * ist eine Aussage ueber den Markt, "zwei Werte fehlen" eine ueber die
+   * Datenlage. Sie duerfen im Dashboard nicht gleich aussehen.
+   */
+  determinable: boolean;
   /** Klartext wie in der Vorlage, z. B. "2 von 3 positiv". */
   rationale: string;
   indicators: IndicatorId[];
@@ -199,4 +212,14 @@ export interface ScoringResult {
   /** true, sobald mindestens ein Indikator fehlt oder veraltet ist. */
   degraded: boolean;
   missing: IndicatorId[];
+  /** Faktoren, deren Score mangels Daten nicht bestimmbar ist. */
+  undeterminableFactors: FactorId[];
+  /**
+   * Traegt der Gesamtscore ueberhaupt eine Aussage?
+   *
+   * Sobald ein Faktor unbestimmt ist, geht er als 0 in die Summe ein und
+   * zieht den Gesamtscore Richtung Mitte. Das Ergebnis sieht dann nach
+   * "Neutral" aus, ist aber nur ein Datenloch. Genau davor warnt dieses Feld.
+   */
+  meaningful: boolean;
 }
