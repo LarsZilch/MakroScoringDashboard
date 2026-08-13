@@ -134,3 +134,76 @@ export interface HistoryResponse {
   meaningfulFrom: string | null;
   total: number;
 }
+
+// ---------------------------------------------------------------------------
+// Regelwerk
+//
+// Der Hilfe-Tab rendert saemtliche Schwellen, Korridore und Cash-Baender aus
+// diesen Daten, statt sie im Text zu wiederholen. Sonst haette die App zwei
+// Wahrheiten und die Hilfe wuerde still falsch, sobald jemand rules/v1.json
+// anfasst.
+// ---------------------------------------------------------------------------
+
+/** Ein Bewertungsband. Die angegebenen Vergleiche muessen alle zutreffen. */
+export interface Band {
+  lt?: number;
+  lte?: number;
+  gt?: number;
+  gte?: number;
+  score: Score;
+  note?: string;
+}
+
+/** Beleg, dass eine Schwelle an den Daten gemessen und nicht geraten wurde. */
+export interface Calibration {
+  basis: string;
+  measuredOn: string;
+  observed: Record<string, number>;
+  chosenThreshold: number;
+  resultingSplit: string;
+  warning: string;
+}
+
+export interface IndicatorRule {
+  ordinal: number;
+  factor: string;
+  label: string;
+  proxyLabel?: string;
+  measure: string;
+  unit: string;
+  decimals: number;
+  bands: Band[];
+  quality?: Quality;
+  proxyNote?: string;
+  contrarian?: boolean;
+  invertedScale?: boolean;
+  corridor?: [number, number];
+  assumed?: boolean;
+  assumptionNote?: string;
+  calibration?: Calibration;
+}
+
+export interface RegimeBand {
+  min: number;
+  max: number;
+  label: string;
+  cashBand: [number, number];
+  assumed?: boolean;
+  note?: string;
+}
+
+export interface RuleBook {
+  version: string;
+  title: string;
+  derivedFrom?: string;
+  note?: string;
+  factors: { id: string; label: string; ordinal: number }[];
+  indicators: Record<string, IndicatorRule>;
+  factorAggregation: { rule: string; minCount: number; note?: string };
+  regimeBands: RegimeBand[];
+}
+
+export interface RulesResponse {
+  rules: RuleBook;
+  assumptions: { scope: string; note: string }[];
+}

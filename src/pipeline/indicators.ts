@@ -16,11 +16,25 @@ import {
   trailingAverage,
   type Series,
 } from '../core/derive.js';
-import type { IndicatorId, IndicatorInput } from '../core/types.js';
+import type { IndicatorId, IndicatorInput, IndicatorRule } from '../core/types.js';
 import { monthName, num, shortDate, signed, trendWord } from './format.js';
 
 /** Alle abgerufenen Rohreihen, nach Kennung. */
 export type SeriesBundle = Record<string, Series>;
+
+/**
+ * Korridortext aus dem Regelwerk statt aus dem Kopf.
+ *
+ * Diese Zeile stand frueher als Text in den Anzeigezeilen ("Korridor 15–25").
+ * Damit gab es sie zweimal: einmal in rules/*.json und einmal hier — und beim
+ * Verschieben einer Schwelle wanderte nur die eine Fassung mit. Genau die
+ * zweite Wahrheit, die der Hilfe-Tab vermeiden soll.
+ */
+function corridorText(rule: IndicatorRule | undefined, decimals = 0): string | null {
+  if (!rule?.corridor) return null;
+  const [lo, hi] = rule.corridor;
+  return `Korridor ${num(lo, decimals)} bis ${num(hi, decimals)}`;
+}
 
 export interface IndicatorSpec {
   id: IndicatorId;
@@ -36,7 +50,12 @@ export interface IndicatorSpec {
    * eine Zahl an, die niemand mehr aktualisiert.
    */
   maxAgeDays: number;
-  compute(bundle: SeriesBundle, asOf: string): IndicatorInput;
+  /**
+   * `rule` ist die Regel dieses Indikators aus dem Regelwerk. Sie wird
+   * hereingereicht, damit Korridore und Schwellen in den Anzeigezeilen aus
+   * derselben Quelle stammen wie die Bewertung.
+   */
+  compute(bundle: SeriesBundle, asOf: string, rule?: IndicatorRule): IndicatorInput;
 }
 
 const MISSING: IndicatorInput = { measureValue: null, quality: 'missing' };
@@ -236,7 +255,7 @@ export const INDICATOR_SPECS: Record<IndicatorId, IndicatorSpec> = {
     id: 'vix',
     requires: ['VIXCLS'],
     maxAgeDays: 10,
-    compute(bundle, asOf) {
+    compute(bundle, asOf, rule) {
       const series = bundle.VIXCLS;
       if (!series?.length) return MISSING;
       const cur = lastOnOrBefore(series, asOf);
@@ -245,7 +264,10 @@ export const INDICATOR_SPECS: Record<IndicatorId, IndicatorSpec> = {
         measureValue: cur.value,
         value: cur.value,
         obsDate: cur.date,
-        display: { primary: num(cur.value, 2), secondary: 'Korridor 15–25' },
+        display: {
+          primary: num(cur.value, 2),
+          secondary: corridorText(rule, 0) ?? 'Level',
+        },
       };
     },
   },
@@ -254,12 +276,13 @@ export const INDICATOR_SPECS: Record<IndicatorId, IndicatorSpec> = {
     id: 'aaii',
     requires: ['AAII_BULL_BEAR'],
     maxAgeDays: 21,
-    compute(bundle, asOf) {
+    compute(bundle, asOf, rule) {
       const series = bundle.AAII_BULL_BEAR;
       if (!series?.length) return MISSING;
       const avg = trailingAverage(series, asOf, 4);
       const cur = lastOnOrBefore(series, asOf);
       if (!avg || !cur) return MISSING;
+      const corridor = corridorText(rule, 0);
       return {
         measureValue: avg.avg,
         value: avg.avg,
@@ -270,10 +293,9 @@ export const INDICATOR_SPECS: Record<IndicatorId, IndicatorSpec> = {
           // Die Historie waechst erst mit den Laeufen; solange weniger als vier
           // Wochen vorliegen, ist der "4w-Schnitt" keiner. Das gehoert sichtbar
           // in die Anzeige, nicht in eine Fussnote.
-          secondary:
-            avg.count < 4
-              ? `nur ${avg.count} von 4 Wochen · Korridor −10 bis +20`
-              : 'Korridor −10 bis +20',
+          secondary: [avg.count < 4 ? `nur ${avg.count} von 4 Wochen` : null, corridor]
+            .filter(Boolean)
+            .join(' · '),
         },
       };
     },
@@ -283,11 +305,13 @@ export const INDICATOR_SPECS: Record<IndicatorId, IndicatorSpec> = {
     id: 'fear_greed',
     requires: ['CNN_FEAR_GREED'],
     maxAgeDays: 10,
-    compute(bundle, asOf) {
+    compute(bundle, asOf, rule) {
       const series = bundle.CNN_FEAR_GREED;
       if (!series?.length) return MISSING;
       const cur = lastOnOrBefore(series, asOf);
       if (!cur) return MISSING;
+      // Die Einstufung folgt der Skala von CNN selbst, nicht dem Regelwerk —
+      // sie ist Beschreibung des Rohwerts, nicht Teil der Bewertung.
       const rating =
         cur.value > 75 ? 'Extreme Greed'
         : cur.value > 55 ? 'Greed'
@@ -300,7 +324,7 @@ export const INDICATOR_SPECS: Record<IndicatorId, IndicatorSpec> = {
         obsDate: cur.date,
         display: {
           primary: `${num(cur.value, 0)} (${rating})`,
-          secondary: 'Korridor 20–70',
+          secondary: corridorText(rule, 0) ?? 'Level',
         },
       };
     },

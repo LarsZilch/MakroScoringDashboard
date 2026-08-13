@@ -91,13 +91,16 @@ export function buildInputs(
   bundle: SeriesBundle,
   asOf: string,
   volatility: BuildOptions['volatility'] = {},
+  rules?: RuleBook,
 ): { inputs: Record<IndicatorId, IndicatorInput>; notes: string[] } {
   const inputs = {} as Record<IndicatorId, IndicatorInput>;
   const notes: string[] = [];
 
   for (const id of INDICATOR_IDS) {
     const spec = INDICATOR_SPECS[id];
-    const input = spec.compute(bundle, asOf);
+    // Die Regel wird mitgegeben, damit Korridore in den Anzeigezeilen aus
+    // dem Regelwerk stammen und nicht als Text doppelt gepflegt werden.
+    const input = spec.compute(bundle, asOf, rules?.indicators[id]);
 
     if (input.measureValue !== null && input.obsDate) {
       const age = ageInDays(input.obsDate, asOf);
@@ -136,7 +139,7 @@ export function buildSnapshot(
   const today = isoDate(new Date());
   const asOf = opts.asOf ?? (weekEnd > today ? today : weekEnd);
 
-  const { inputs, notes } = buildInputs(bundle, asOf, opts.volatility);
+  const { inputs, notes } = buildInputs(bundle, asOf, opts.volatility, rules);
   const scoring = computeScoring(rules, inputs);
 
   const stale = INDICATOR_IDS.filter((id) => scoring.indicators[id].quality === 'stale');

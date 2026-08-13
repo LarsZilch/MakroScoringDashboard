@@ -107,8 +107,9 @@ src/core/                                 Scoring, ISO-Wochen, Ableitungen (ohne
 src/sources/                              ein Konnektor je Quelle
 src/pipeline/                             Snapshot-Bau, Store, Vergleiche
 src/server/                               API + Proxy zu den Quellen
-web/                                      Dashboard und Verlauf
-test/                                     65 Tests, davon der Golden Test
+web/                                      Dashboard, Verlauf und Hilfe
+web/src/content/                          Erklärtexte; playbooks.ts ist gesetzt, nicht abgeleitet
+test/                                     92 Tests, davon der Golden Test
 ```
 
 **`src/core/` ist frei von Datei- und Netzzugriff.** Dieselbe Scoring-Logik läuft im ETL, im Server
@@ -121,6 +122,31 @@ erzeugt: bei unveränderten Daten ändert sich genau eine Zeile, nämlich `built
 
 **Warum ein lokaler Server statt einer statischen Seite:** FRED, Yahoo, CNN und AAII senden keine
 CORS-Header. Eine reine Browser-App kann sie nicht abrufen.
+
+## Der Hilfe-Tab
+
+Erklärt jeden Indikator einzeln, was Veränderungen bedeuten, wie sich das Gesamtbild zusammensetzt
+und was sich ableiten lässt. Zwei Regeln bestimmen seinen Bau:
+
+**Keine zweite Wahrheit.** Sämtliche Schwellen, Korridore und Cash-Bänder werden aus
+`rules/v1.json` und dem aktuellen Snapshot gerendert — auch die Skalenleiste unter jedem Indikator
+und die Liste der elf gesetzten Annahmen. Verschiebt jemand eine Schwelle, bewegt sich die Hilfe
+mit. Von Hand geschrieben ist nur, was sich nicht aus den Daten ergibt: was ein Indikator misst und
+warum er im Modell steckt.
+
+Beim Bau fiel dabei eine bestehende Doppelung auf: die Sentiment-Korridore standen zusätzlich als
+Text in den Anzeigezeilen (`"Korridor 15–25"`). Sie kommen jetzt ebenfalls aus dem Regelwerk, und
+ein Test hält das fest.
+
+**Die Szenarien werden gerechnet, nicht behauptet.** Vier Durchspielungen laufen von der aktuellen
+Lage aus durch `aggregateFactor()` und `resolveRegime()` — denselben Code, der die Snapshots
+erzeugt. Das geht nur, weil `src/core/` frei von I/O ist.
+
+Ein Abschnitt fällt bewusst aus dem Rahmen: die Einordnung je Anlageklasse in
+`web/src/content/playbooks.ts`. Das Regelwerk leitet aus dem Regime ausschließlich das
+Soll-Cash-Band ab; alles zu Aktien, Stil, Duration und Credit ist gesetzt. Deshalb steht es in einer
+eigenen Datei, ist in der Oberfläche grau abgesetzt statt golden und trägt den Vermerk, dass es
+nicht aus dem Modell stammt.
 
 ## Der Golden Test
 
@@ -157,7 +183,7 @@ Jede Zelle trägt zusätzlich ihre Zahl — Farbe trägt die Bedeutung nie allei
 ## Nächste Schritte
 
 - Die als `"assumed": true` markierten Schwellen gegen das Original-Regelwerk prüfen
-- Methodik-Ansicht in der App, gerendert aus `rules/*.json`
+
 - Export des Dashboards als PNG/PDF
 - Was-wäre-wenn-Regler für die Schwellen (läuft im Browser, weil `src/core` I/O-frei ist)
 - Wochen-Automatik über die Windows-Aufgabenplanung

@@ -59,6 +59,20 @@ export interface Band {
   note?: string;
 }
 
+/**
+ * Beleg dafuer, dass eine Schwelle an den Daten gemessen und nicht geraten
+ * wurde. Steht derzeit nur beim GLI-Ersatz, wo die naiv angesetzte Schwelle
+ * den Indikator praktisch zufaellig haette kippen lassen.
+ */
+export interface Calibration {
+  basis: string;
+  measuredOn: string;
+  observed: Record<string, number>;
+  chosenThreshold: number;
+  resultingSplit: string;
+  warning: string;
+}
+
 export interface IndicatorRule {
   ordinal: number;
   factor: FactorId;
@@ -77,6 +91,7 @@ export interface IndicatorRule {
   corridor?: [number, number];
   assumed?: boolean;
   assumptionNote?: string;
+  calibration?: Calibration;
 }
 
 export interface RegimeBand {

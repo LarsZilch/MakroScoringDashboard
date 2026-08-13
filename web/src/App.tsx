@@ -1,16 +1,18 @@
 import { useCallback, useEffect, useState } from 'react';
-import { fetchHistory, fetchWeek, refresh } from './api';
-import type { HistoryResponse, WeekResponse } from './types';
+import { fetchHistory, fetchRules, fetchWeek, refresh } from './api';
+import type { HistoryResponse, RulesResponse, WeekResponse } from './types';
 import { Dashboard } from './components/Dashboard';
+import { Help } from './components/Help';
 import { History } from './components/History';
 import { scoreText, shortDate, weekLabel } from './format';
 
-type Tab = 'dashboard' | 'history';
+type Tab = 'dashboard' | 'history' | 'help';
 
 export function App() {
   const [tab, setTab] = useState<Tab>('dashboard');
   const [week, setWeek] = useState<WeekResponse | null>(null);
   const [history, setHistory] = useState<HistoryResponse | null>(null);
+  const [rules, setRules] = useState<RulesResponse | null>(null);
   const [selected, setSelected] = useState<string>('latest');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -24,6 +26,17 @@ export function App() {
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     }
+  }, []);
+
+  /*
+   * Das Regelwerk aendert sich nicht mit der gewaehlten Woche und wird
+   * deshalb nur einmal geladen. Ein Fehler hier darf das Dashboard nicht
+   * blockieren — dann fehlt lediglich die Hilfe.
+   */
+  useEffect(() => {
+    void fetchRules()
+      .then(setRules)
+      .catch(() => setRules(null));
   }, []);
 
   useEffect(() => {
@@ -97,6 +110,14 @@ export function App() {
         >
           Verlauf
         </button>
+        <button
+          className="tab"
+          role="tab"
+          aria-selected={tab === 'help'}
+          onClick={() => setTab('help')}
+        >
+          Hilfe
+        </button>
         <div style={{ flex: 1 }} />
         <div className="controls" style={{ paddingBottom: 8 }}>
           <select
@@ -121,10 +142,12 @@ export function App() {
         </div>
       </div>
 
-      {tab === 'dashboard' ? (
+      {tab === 'dashboard' && (
         <Dashboard snapshot={week.snapshot} wow={week.wow} sensitivity={week.sensitivity} />
-      ) : (
-        <History history={history} wow={week.wow} yoy={week.yoy} />
+      )}
+      {tab === 'history' && <History history={history} wow={week.wow} yoy={week.yoy} />}
+      {tab === 'help' && (
+        <Help rules={rules} snapshot={week.snapshot} sensitivity={week.sensitivity} />
       )}
 
       <div className="footer">

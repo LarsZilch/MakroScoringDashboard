@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-08-13T13:26:44.548Z",
+  "builtAt": "2026-08-13T16:31:15.127Z",
   "completeness": "full",
   "dataAsOf": "2026-08-13",
   "factors": {
@@ -61,7 +61,7 @@
       },
       "display": {
         "primary": "−3,2 %",
-        "secondary": "nur 1 von 4 Wochen · Korridor −10 bis +20"
+        "secondary": "nur 1 von 4 Wochen · Korridor −10 bis 20"
       },
       "factor": "sentiment",
       "flips": [
@@ -103,38 +103,38 @@
     },
     "fear_greed": {
       "display": {
-        "primary": "62 (Greed)",
-        "secondary": "Korridor 20–70"
+        "primary": "63 (Greed)",
+        "secondary": "Korridor 20 bis 70"
       },
       "factor": "sentiment",
       "flips": [
         {
           "boundary": 70,
           "direction": "up",
-          "gap": 8,
-          "gapSigma": 0.7332502529747386,
-          "gapTicks": 8,
+          "gap": 7.085714285714303,
+          "gapSigma": 0.6496374187995736,
+          "gapTicks": 7.085714285714303,
           "toScore": -1
         },
         {
           "boundary": 20,
           "direction": "down",
-          "gap": 42,
-          "gapSigma": 3.849563828117377,
-          "gapTicks": 42,
+          "gap": 42.9142857142857,
+          "gapSigma": 3.9344975928909545,
+          "gapTicks": 42.9142857142857,
           "toScore": 1
         }
       ],
       "id": "fear_greed",
       "label": "CNN Fear & Greed · Level",
       "measure": "level",
-      "measureValue": 62,
+      "measureValue": 62.9142857142857,
       "nearestFlip": {
         "boundary": 70,
         "direction": "up",
-        "gap": 8,
-        "gapSigma": 0.7332502529747386,
-        "gapTicks": 8,
+        "gap": 7.085714285714303,
+        "gapSigma": 0.6496374187995736,
+        "gapTicks": 7.085714285714303,
         "toScore": -1
       },
       "obsDate": "2026-08-13",
@@ -142,7 +142,7 @@
       "score": 0,
       "scoreNote": "im Korridor",
       "unit": "",
-      "value": 62
+      "value": 62.9142857142857
     },
     "gli": {
       "derived": {
@@ -427,7 +427,7 @@
     "vix": {
       "display": {
         "primary": "15,28",
-        "secondary": "Korridor 15–25"
+        "secondary": "Korridor 15 bis 25"
       },
       "factor": "sentiment",
       "flips": [

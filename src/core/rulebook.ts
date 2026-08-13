@@ -6,7 +6,7 @@
  * neutral bewertet wird und niemand es merkt.
  */
 
-import type { Band, FactorId, IndicatorRule, RuleBook, Score } from './types.js';
+import type { Band, Calibration, FactorId, IndicatorRule, RuleBook, Score } from './types.js';
 import { INDICATOR_IDS } from './types.js';
 
 function fail(path: string, msg: string): never {
@@ -51,6 +51,33 @@ function parseBands(v: unknown, path: string): Band[] {
     fail(path, 'das letzte Band muss der Auffangfall ohne Vergleichsoperator sein');
   }
   return bands;
+}
+
+/**
+ * Kalibrierungs-Beleg pruefen.
+ *
+ * Bewusst streng: dieser Block ist der Nachweis, dass eine Schwelle gemessen
+ * und nicht gegriffen wurde. Ein halb ausgefuellter Beleg waere schlimmer als
+ * gar keiner — er erweckte den Anschein einer Pruefung, die nicht stattfand.
+ */
+function parseCalibration(v: unknown, path: string): Calibration {
+  const o = asRecord(v, path);
+  const observedRaw = asRecord(o.observed, `${path}.observed`);
+  const observed: Record<string, number> = {};
+  for (const [key, value] of Object.entries(observedRaw)) {
+    observed[key] = asNumber(value, `${path}.observed.${key}`);
+  }
+  if (Object.keys(observed).length === 0) {
+    fail(`${path}.observed`, 'mindestens eine gemessene Groesse erwartet');
+  }
+  return {
+    basis: asString(o.basis, `${path}.basis`),
+    measuredOn: asString(o.measuredOn, `${path}.measuredOn`),
+    observed,
+    chosenThreshold: asNumber(o.chosenThreshold, `${path}.chosenThreshold`),
+    resultingSplit: asString(o.resultingSplit, `${path}.resultingSplit`),
+    warning: asString(o.warning, `${path}.warning`),
+  };
 }
 
 export function parseRuleBook(raw: unknown): RuleBook {
@@ -109,6 +136,9 @@ export function parseRuleBook(raw: unknown): RuleBook {
     if (typeof o.quality === 'string') rule.quality = o.quality as IndicatorRule['quality'];
     if (Array.isArray(o.corridor) && o.corridor.length === 2) {
       rule.corridor = [asNumber(o.corridor[0], `${path}.corridor[0]`), asNumber(o.corridor[1], `${path}.corridor[1]`)];
+    }
+    if (o.calibration !== undefined) {
+      rule.calibration = parseCalibration(o.calibration, `${path}.calibration`);
     }
     indicators[id] = rule;
   }

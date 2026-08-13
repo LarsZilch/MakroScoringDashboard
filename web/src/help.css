@@ -1,0 +1,596 @@
+/* Stile des Hilfe-Tabs. Baut auf den Variablen aus styles.css auf. */
+
+.help-nav {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+
+.help-nav-item {
+  appearance: none;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 14px;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  color: var(--ink-soft);
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.help-nav-item:hover {
+  border-color: var(--gold);
+  color: var(--ink);
+}
+
+.help-nav-item.active {
+  background: var(--dark);
+  border-color: var(--dark);
+  color: #fff;
+}
+
+.help-lead {
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: var(--ink);
+  margin: 0 0 16px;
+  max-width: 82ch;
+}
+
+.panel-body p {
+  max-width: 82ch;
+  line-height: 1.65;
+}
+
+/* ---------------------------------------------------------- Tabellen */
+
+.help-table {
+  margin: 18px 0 6px;
+  border: 1px solid var(--rule);
+}
+
+.help-table tr.is-current {
+  background: var(--paper-warm);
+}
+
+.regime-dot {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+  margin-right: 8px;
+  vertical-align: -1px;
+  border: 1px solid rgba(11, 11, 11, 0.1);
+}
+
+.help-now {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+}
+
+.help-origin {
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------- Indikatorkarten */
+
+.help-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.help-card {
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--gold-line);
+  background: var(--paper);
+}
+
+.help-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 15px 18px;
+  border-bottom: 1px solid #f2f0ec;
+  background: #fdfdfc;
+}
+
+.help-card-title {
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.help-card-short {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  max-width: 78ch;
+}
+
+.help-card-body {
+  padding: 16px 18px 18px;
+}
+
+.help-card-body p {
+  margin: 0 0 14px;
+  font-size: 14px;
+}
+
+.help-why {
+  background: var(--paper-warm);
+  border-left: 2px solid var(--gold);
+  padding: 11px 14px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+.help-why-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin-bottom: 4px;
+}
+
+.help-twist {
+  background: #fdf1ec;
+  border-left: 2px solid var(--red-soft);
+  padding: 11px 14px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+.help-reading {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+@media (max-width: 720px) {
+  .help-reading {
+    grid-template-columns: 1fr;
+  }
+}
+
+.help-arrow {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 2px;
+  margin-right: 8px;
+  vertical-align: 1px;
+}
+
+.help-arrow.up {
+  background: #e8eef5;
+  color: #2a5a8a;
+}
+
+.help-arrow.down {
+  background: #f3ece6;
+  color: #8a5510;
+}
+
+/* ---------------------------------------------------- Skalenleiste */
+
+.help-scale-wrap {
+  margin: 18px 0 14px;
+}
+
+.help-scale-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 28px;
+}
+
+.help-scale-hint {
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 11.5px;
+}
+
+.bandscale {
+  position: relative;
+}
+
+.bandscale-bar {
+  position: relative;
+  display: flex;
+  gap: 2px; /* 2px Flaechenabstand, wie in den Mark-Vorgaben */
+  height: 30px;
+}
+
+.bandscale-seg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  min-width: 22px;
+  overflow: hidden;
+}
+
+.bandscale-score {
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.bandscale-marker {
+  position: absolute;
+  top: -20px;
+  bottom: -4px;
+  width: 2px;
+  background: var(--ink);
+  transform: translateX(-1px);
+}
+
+.bandscale-marker-value {
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  background: var(--ink);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 2px;
+  font-variant-numeric: tabular-nums;
+}
+
+.bandscale-ticks {
+  position: relative;
+  height: 16px;
+  margin-top: 3px;
+}
+
+.bandscale-tick {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 11px;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.bandscale-legend {
+  font-size: 12px;
+  color: var(--ink-faint);
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+/* ------------------------------------------------- aktueller Stand */
+
+.help-current {
+  background: #fbfaf7;
+  border: 1px solid var(--rule);
+  padding: 11px 14px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+.help-current.missing {
+  background: #f6f6f4;
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+.help-factor-state {
+  font-size: 13px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------- Details */
+
+.help-details {
+  border-top: 1px solid #f2f0ec;
+  padding-top: 12px;
+}
+
+.help-details summary {
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  list-style: none;
+  user-select: none;
+}
+
+.help-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.help-details summary::before {
+  content: "\25B8";
+  display: inline-block;
+  margin-right: 7px;
+  color: var(--gold-deep);
+}
+
+.help-details[open] summary::before {
+  content: "\25BE";
+}
+
+.help-details summary:hover {
+  color: var(--ink);
+}
+
+.help-details-body {
+  padding: 14px 0 4px 18px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.help-details-body p {
+  margin: 0 0 12px;
+  font-size: 13.5px;
+}
+
+.help-details-body strong {
+  color: var(--ink);
+}
+
+.help-calibration {
+  background: #f7f9fb;
+  border-left: 2px solid #2a5a8a;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+
+.help-calibration ul {
+  margin: 8px 0;
+  padding-left: 18px;
+  font-variant-numeric: tabular-nums;
+}
+
+.help-calibration li {
+  margin-bottom: 3px;
+}
+
+.help-calibration-warn {
+  margin: 8px 0 0 !important;
+  color: var(--red) !important;
+}
+
+.help-assumption {
+  border-left: 2px solid var(--rule);
+  padding: 8px 0 8px 12px;
+  margin-bottom: 10px;
+}
+
+.help-assumption-scope {
+  font-weight: 700;
+  color: var(--ink);
+  font-size: 13px;
+  margin-bottom: 3px;
+}
+
+/* -------------------------------------------------------- Szenarien */
+
+.help-scenarios {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+@media (max-width: 980px) {
+  .help-scenarios {
+    grid-template-columns: 1fr;
+  }
+}
+
+.help-scenario {
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--rule);
+  padding: 16px 18px;
+  background: var(--paper);
+}
+
+.help-scenario.flips {
+  border-top-color: var(--red);
+  background: #fffdfc;
+}
+
+.help-scenario-title {
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+
+.help-scenario-trigger {
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin-bottom: 12px;
+}
+
+.help-scenario-moves {
+  font-size: 13px;
+  line-height: 1.9;
+  margin-bottom: 10px;
+}
+
+.help-scenario-factors {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  padding: 10px 0;
+  border-top: 1px solid #f2f0ec;
+  border-bottom: 1px solid #f2f0ec;
+  margin-bottom: 12px;
+}
+
+.help-scenario-factors .moved {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.help-scenario-result {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  font-size: 13.5px;
+  margin-bottom: 12px;
+}
+
+.help-scenario-regime {
+  border-left: 3px solid;
+  padding: 3px 10px;
+  background: #fbfaf7;
+}
+
+.help-scenario-narrative {
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/* ----------------------------------------------------------- Handel */
+
+.help-leadlag {
+  margin-top: 26px;
+  border-top: 1px solid var(--rule);
+  padding-top: 18px;
+}
+
+.help-leadlag-title {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 14px;
+}
+
+.help-leadlag-row {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 16px;
+  padding: 11px 0;
+  border-bottom: 1px solid #f4f2ee;
+}
+
+.help-leadlag-row:last-child {
+  border-bottom: none;
+}
+
+.help-leadlag-group {
+  font-weight: 700;
+  font-size: 13.5px;
+}
+
+.help-leadlag-items {
+  font-size: 13.5px;
+  margin-bottom: 3px;
+}
+
+.help-leadlag-note {
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+
+/*
+ * Der gesetzte Teil hebt sich sichtbar vom Regelwerk-Teil ab: grauer statt
+ * goldener Balken, gedaempfte Flaeche. Man soll auf einen Blick sehen, dass
+ * hier nicht mehr das Modell spricht.
+ */
+.panel-authored {
+  border-left: 3px solid var(--ink-faint);
+  background: #fbfbfa;
+}
+
+.help-playbook {
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  padding: 15px 18px;
+  margin-bottom: 14px;
+}
+
+.help-playbook.is-current {
+  border-color: var(--gold);
+  background: var(--paper-warm);
+}
+
+.help-playbook-head {
+  font-size: 15px;
+  margin-bottom: 7px;
+}
+
+.help-playbook-stance {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.help-playbook-grid {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 7px 16px;
+  margin: 0 0 12px;
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.help-playbook-grid dt {
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+
+.help-playbook-grid dd {
+  margin: 0;
+}
+
+.help-playbook-watch {
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  border-top: 1px solid #f2f0ec;
+  padding-top: 10px;
+}
+
+/* ----------------------------------------------------------- Grenzen */
+
+.help-limits {
+  margin: 0;
+  padding-left: 20px;
+  max-width: 82ch;
+}
+
+.help-limits li {
+  margin-bottom: 12px;
+  line-height: 1.6;
+  font-size: 14px;
+}
