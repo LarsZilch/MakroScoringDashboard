@@ -1,10 +1,14 @@
 /** Deutsche Zahlenformate fuer die Anzeigezeilen der Snapshots. */
 
 export function num(value: number, decimals = 1): string {
-  return value.toLocaleString('de-DE', {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  });
+  return value
+    .toLocaleString('de-DE', {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+    })
+    // toLocaleString liefert einen Bindestrich; im Satz gehoert das echte
+    // Minuszeichen hin - sonst mischen sich in einer Spalte zwei Zeichen.
+    .replace('-', '−');
 }
 
 /** Mit ausdruecklichem Vorzeichen, inklusive echtem Minuszeichen. */

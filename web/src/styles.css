@@ -1,0 +1,570 @@
+/*
+ * Gestaltung nach doc/MakroScoringInfoScreen.jpg: Gold auf Creme, schwarzer
+ * Ergebnisbalken, Serifen fuer die Ueberschrift, gesperrte Versalien fuer die
+ * Rubriken.
+ */
+
+:root {
+  --gold: #d9a520;
+  --gold-deep: #b8860b;
+  --gold-line: #d4a017;
+  --ink: #1a1a1a;
+  --ink-soft: #5a5a5a;
+  --ink-faint: #8a8a8a;
+  --paper: #ffffff;
+  --paper-warm: #fdf8ec;
+  --rule: #e6e2d8;
+  --dark: #12202b;
+  --red: #8b1a1a;
+  --red-soft: #a83232;
+  --neutral-bg: #f2f2f0;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+
+  --regime-on: #1a7f4b;
+  --regime-neutral: #8a7a3a;
+  --regime-off: #a8571a;
+  --regime-def: #8b1a1a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f7f5f0;
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 28px 32px 64px;
+}
+
+/* ---------------------------------------------------------------- Kopfzeile */
+
+.eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin-bottom: 10px;
+}
+
+h1 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 42px;
+  font-weight: 400;
+  line-height: 1.15;
+  margin: 0 0 8px;
+  letter-spacing: -0.01em;
+}
+
+.subline {
+  color: var(--ink-soft);
+  font-size: 15px;
+  margin: 0 0 26px;
+  max-width: 90ch;
+}
+
+.header-bar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+/* ------------------------------------------------------------------- Tabs */
+
+.tabs {
+  display: flex;
+  gap: 2px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 26px;
+}
+
+.tab {
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-faint);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  font-family: inherit;
+}
+
+.tab:hover {
+  color: var(--ink);
+}
+
+.tab[aria-selected='true'] {
+  color: var(--ink);
+  border-bottom-color: var(--gold);
+}
+
+/* ------------------------------------------------------------- Faktorkarten */
+
+.factors {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 26px;
+}
+
+@media (max-width: 1000px) {
+  .factors {
+    grid-template-columns: 1fr;
+  }
+}
+
+.factor {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--gold-line);
+  padding: 20px 22px 0;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow);
+}
+
+.factor.undeterminable {
+  border-left-color: var(--ink-faint);
+  background: #fbfbfa;
+}
+
+.factor-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 16px;
+}
+
+.indicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid #f0eee8;
+}
+
+.indicator:last-of-type {
+  border-bottom: none;
+}
+
+.ind-text {
+  min-width: 0;
+}
+
+.ind-label {
+  font-weight: 700;
+  font-size: 14.5px;
+  margin-bottom: 3px;
+}
+
+.ind-detail {
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+/* Score-Badges, Farbgebung wie in der Vorlage */
+
+.badge {
+  flex: none;
+  min-width: 74px;
+  padding: 11px 8px;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 700;
+  border-radius: 3px;
+  font-variant-numeric: tabular-nums;
+}
+
+.badge.pos {
+  background: var(--gold);
+  color: #fff;
+}
+
+.badge.neg {
+  background: var(--red);
+  color: #fff;
+}
+
+.badge.zero {
+  background: var(--neutral-bg);
+  color: var(--ink);
+  border: 1px solid #e0e0dc;
+}
+
+.badge.none {
+  background: repeating-linear-gradient(
+    45deg,
+    #f4f4f2,
+    #f4f4f2 5px,
+    #eaeae6 5px,
+    #eaeae6 10px
+  );
+  color: var(--ink-faint);
+  border: 1px dashed #d5d5d0;
+  font-size: 13px;
+}
+
+/* Ergebniszeile je Faktor */
+
+.factor-result {
+  margin: 12px -22px 0;
+  padding: 14px 22px;
+  background: var(--paper-warm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid #f0e8d4;
+}
+
+.factor.undeterminable .factor-result {
+  background: #f4f4f2;
+  border-top-color: #e8e8e4;
+}
+
+.factor-result-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 2px;
+}
+
+.factor-result-text {
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+.factor-score {
+  font-family: Georgia, serif;
+  font-size: 40px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.factor-score.undetermined {
+  font-size: 20px;
+  color: var(--ink-faint);
+  font-family: inherit;
+  font-style: italic;
+}
+
+/* ------------------------------------------------------- Gesamtscore-Balken */
+
+.total-bar {
+  background: var(--dark);
+  color: #fff;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 3px solid var(--gold);
+  margin-bottom: 22px;
+}
+
+@media (max-width: 800px) {
+  .total-bar {
+    grid-template-columns: 1fr;
+  }
+}
+
+.total-cell {
+  padding: 24px 30px 26px;
+  border-right: 1px solid rgba(255, 255, 255, 0.13);
+}
+
+.total-cell:last-child {
+  border-right: none;
+}
+
+.total-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 10px;
+}
+
+.total-value {
+  font-family: Georgia, serif;
+  font-size: 46px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.total-value.gold {
+  color: var(--gold);
+}
+
+.total-note {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 9px;
+}
+
+/* --------------------------------------------------------------- Hinweise */
+
+.callout {
+  background: var(--paper-warm);
+  border-left: 3px solid var(--gold);
+  padding: 16px 20px;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+
+.callout strong {
+  color: var(--red);
+}
+
+.callout.warn {
+  background: #fdf1ec;
+  border-left-color: var(--red-soft);
+}
+
+.callout.warn strong {
+  color: var(--red);
+}
+
+.callout ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
+.callout li {
+  margin-bottom: 4px;
+}
+
+/* --------------------------------------------------------------- Qualitaet */
+
+.quality-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 2px;
+  margin-left: 7px;
+  vertical-align: 1px;
+}
+
+.quality-proxy {
+  background: #e8eef5;
+  color: #2a5a8a;
+}
+
+.quality-stale {
+  background: #fdf0d8;
+  color: #8a6510;
+}
+
+.quality-missing {
+  background: #f0eeea;
+  color: var(--ink-faint);
+}
+
+.quality-manual {
+  background: #eaf3ea;
+  color: #2a6a3a;
+}
+
+/* ----------------------------------------------------------------- Tabelle */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  background: var(--paper);
+}
+
+th {
+  text-align: left;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  padding: 11px 12px;
+  border-bottom: 1px solid var(--rule);
+  white-space: nowrap;
+}
+
+td {
+  padding: 11px 12px;
+  border-bottom: 1px solid #f2f0ec;
+  vertical-align: middle;
+}
+
+tbody tr:hover {
+  background: #fbfaf7;
+}
+
+.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.delta-up {
+  color: #1a7f4b;
+}
+
+.delta-down {
+  color: var(--red);
+}
+
+.delta-flat {
+  color: var(--ink-faint);
+}
+
+.score-chip {
+  display: inline-block;
+  min-width: 26px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.score-chip.pos {
+  background: var(--gold);
+  color: #fff;
+}
+
+.score-chip.neg {
+  background: var(--red);
+  color: #fff;
+}
+
+.score-chip.zero {
+  background: var(--neutral-bg);
+  color: var(--ink-soft);
+}
+
+.score-chip.none {
+  background: #f4f4f2;
+  color: var(--ink-faint);
+  border: 1px dashed #dcdcd6;
+}
+
+/* ----------------------------------------------------------------- Panels */
+
+.panel {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  box-shadow: var(--shadow);
+  margin-bottom: 24px;
+}
+
+.panel-head {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.panel-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.panel-sub {
+  font-size: 13px;
+  color: var(--ink-faint);
+}
+
+.panel-body {
+  padding: 20px;
+}
+
+.panel-body.flush {
+  padding: 0;
+}
+
+/* --------------------------------------------------------------- Steuerung */
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+select,
+button.action {
+  font-family: inherit;
+  font-size: 13.5px;
+  padding: 7px 12px;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+button.action:hover:not(:disabled) {
+  border-color: var(--gold);
+  background: var(--paper-warm);
+}
+
+button.action:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.status {
+  font-size: 13px;
+  color: var(--ink-faint);
+}
+
+/* ------------------------------------------------------------------ Zustand */
+
+.center-note {
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--ink-soft);
+}
+
+.error {
+  background: #fdf1ec;
+  border-left: 3px solid var(--red);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.footer {
+  margin-top: 40px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+  font-size: 12.5px;
+  color: var(--ink-faint);
+  line-height: 1.7;
+}

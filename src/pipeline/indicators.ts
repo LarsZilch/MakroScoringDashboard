@@ -130,12 +130,13 @@ export const INDICATOR_SPECS: Record<IndicatorId, IndicatorSpec> = {
       if (!c) return MISSING;
       // FRED liefert Prozentpunkte; das Regelwerk bewertet Basispunkte.
       const changeBp = c.change * 100;
-      const word = trendWord(changeBp, 10, {
+      const word = trendWord(changeBp, 3, {
         up: 'steiler',
         down: 'flacher',
         flat: 'unveraendert',
       });
-      const qualifier = Math.abs(changeBp) < 10 ? 'leicht ' : '';
+      // "leicht" nur vor eine Richtung setzen — "leicht unveraendert" waere Unsinn.
+      const qualifier = word !== 'unveraendert' && Math.abs(changeBp) < 10 ? 'leicht ' : '';
       return {
         measureValue: changeBp,
         value: c.current,

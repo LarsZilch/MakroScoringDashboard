@@ -7,6 +7,7 @@
  */
 
 import { isoWeekKey, isoWeekOf, parseIsoWeekKey } from '../core/isoweek.js';
+import { signed } from '../pipeline/format.js';
 import { fetchAll } from '../pipeline/fetch-all.js';
 import { requiredSeriesIds } from '../pipeline/indicators.js';
 import { loadRules } from '../pipeline/load-rules.js';
@@ -69,10 +70,11 @@ const all = [...existing.filter((s) => s.weekKey !== snapshot.weekKey), snapshot
 
 const wow = compareWeekOverWeek(snapshot, all);
 if (wow.resolved) {
-  const dir = wow.totalDelta === null ? '' : wow.totalDelta > 0 ? '↑' : wow.totalDelta < 0 ? '↓' : '→';
+  const delta = wow.totalDelta ?? 0;
+  const dir = delta > 0 ? '↑' : delta < 0 ? '↓' : '→';
   console.log(
     `\nVorwoche (${isoWeekKey(wow.resolved)}${wow.substituted ? ', ersatzweise' : ''}): ` +
-      `Score ${dir} ${wow.totalDelta! >= 0 ? '+' : ''}${wow.totalDelta}` +
+      `Score ${dir} ${signed(delta, 0)}` +
       (wow.regimeChanged ? ` · Regimewechsel von ${wow.previousRegime}` : ''),
   );
   const changed = wow.indicators.filter((i) => i.scoreChanged);
@@ -85,7 +87,7 @@ const yoy = compareYearOverYear(snapshot, all);
 if (yoy.resolved) {
   console.log(
     `Vorjahr (${isoWeekKey(yoy.resolved)}${yoy.substituted ? ', ersatzweise' : ''}): ` +
-      `Score ${yoy.totalDelta! >= 0 ? '+' : ''}${yoy.totalDelta}` +
+      `Score ${signed(yoy.totalDelta ?? 0, 0)}` +
       (yoy.regimeChanged ? ` · damals ${yoy.previousRegime}` : ' · gleiches Regime'),
   );
 } else {

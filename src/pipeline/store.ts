@@ -179,6 +179,18 @@ function compare(current: Snapshot, previous: Snapshot | null, substituted: bool
     const curValue = cur?.measureValue ?? null;
     const prevValue = prev?.measureValue ?? null;
 
+    /*
+     * Ein fehlender Indikator traegt rechnerisch den Score 0. Als
+     * VERGLEICHSWERT darf diese 0 aber nicht auftreten: sonst behauptet die
+     * Delta-Tabelle einen Wechsel "0 -> +1", wo in Wahrheit "unbekannt -> +1"
+     * steht. Genau dieser Fall tritt beim ISM und bei AAII regelmaessig auf,
+     * weil ihre Historie nur wenige Monate zurueckreicht.
+     */
+    const prevKnown = prev !== null && prev.quality !== 'missing';
+    const curKnown = cur !== undefined && cur.quality !== 'missing';
+    const previousScore = prevKnown ? prev.score : null;
+    const comparable = prevKnown && curKnown;
+
     return {
       id,
       label: cur?.label ?? id,
@@ -187,9 +199,9 @@ function compare(current: Snapshot, previous: Snapshot | null, substituted: bool
       previousValue: prevValue,
       valueDelta: curValue !== null && prevValue !== null ? curValue - prevValue : null,
       currentScore: cur?.score ?? 0,
-      previousScore: prev?.score ?? null,
-      scoreDelta: prev ? (cur?.score ?? 0) - prev.score : null,
-      scoreChanged: prev ? (cur?.score ?? 0) !== prev.score : false,
+      previousScore,
+      scoreDelta: comparable ? cur.score - prev.score : null,
+      scoreChanged: comparable ? cur.score !== prev.score : false,
     };
   });
 

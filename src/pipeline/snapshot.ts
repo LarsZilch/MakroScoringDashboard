@@ -127,7 +127,14 @@ export function buildSnapshot(
 ): Snapshot {
   const weekStart = isoDate(isoWeekStart(week));
   const weekEnd = isoDate(isoWeekEnd(week));
-  const asOf = opts.asOf ?? weekEnd;
+
+  /*
+   * Stichtag ist das Wochenende — aber nie ein Datum in der Zukunft. Fuer die
+   * laufende Woche laege der Sonntag sonst noch vor uns, und das Dashboard
+   * wiese einen Datenstand aus, den es gar nicht geben kann.
+   */
+  const today = isoDate(new Date());
+  const asOf = opts.asOf ?? (weekEnd > today ? today : weekEnd);
 
   const { inputs, notes } = buildInputs(bundle, asOf, opts.volatility);
   const scoring = computeScoring(rules, inputs);

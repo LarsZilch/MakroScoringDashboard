@@ -1,7 +1,7 @@
 {
-  "builtAt": "2026-08-13T13:11:29.819Z",
+  "builtAt": "2026-08-13T13:26:44.548Z",
   "completeness": "full",
-  "dataAsOf": "2026-08-16",
+  "dataAsOf": "2026-08-13",
   "factors": {
     "business_cycle": {
       "determinable": true,
@@ -112,7 +112,7 @@
           "boundary": 70,
           "direction": "up",
           "gap": 8,
-          "gapSigma": 0.7265099674089499,
+          "gapSigma": 0.7332502529747386,
           "gapTicks": 8,
           "toScore": -1
         },
@@ -120,7 +120,7 @@
           "boundary": 20,
           "direction": "down",
           "gap": 42,
-          "gapSigma": 3.814177328896987,
+          "gapSigma": 3.849563828117377,
           "gapTicks": 42,
           "toScore": 1
         }
@@ -133,7 +133,7 @@
         "boundary": 70,
         "direction": "up",
         "gap": 8,
-        "gapSigma": 0.7265099674089499,
+        "gapSigma": 0.7332502529747386,
         "gapTicks": 8,
         "toScore": -1
       },
@@ -148,8 +148,8 @@
       "derived": {
         "levelMioUsd": 5839593,
         "rate3mAnn": 8.836431099598684,
-        "rate3mAnnDelta": 6.6323954776997365,
-        "rate3mAnnPrev": 2.2040356218989476
+        "rate3mAnnDelta": 7.966911348860161,
+        "rate3mAnnPrev": 0.8695197507385233
       },
       "display": {
         "primary": "8,8 % 3m ann.",
@@ -160,30 +160,30 @@
         {
           "boundary": 6,
           "direction": "down",
-          "gap": 0.6323954776997365,
-          "gapSigma": 0.03690034080289552,
-          "gapTicks": 6.323954776997365,
+          "gap": 1.9669113488601608,
+          "gapSigma": 0.11483986749470255,
+          "gapTicks": 19.669113488601607,
           "toScore": 0
         },
         {
           "boundary": -6,
           "direction": "down",
-          "gap": 12.632395477699736,
-          "gapSigma": 0.7371015681193741,
-          "gapTicks": 126.32395477699735,
+          "gap": 13.966911348860162,
+          "gapSigma": 0.8154705343191312,
+          "gapTicks": 139.6691134886016,
           "toScore": -1
         }
       ],
       "id": "gli",
       "label": "Fed Net Liquidity · Richtung",
       "measure": "rate3mAnnDelta",
-      "measureValue": 6.6323954776997365,
+      "measureValue": 7.966911348860161,
       "nearestFlip": {
         "boundary": 6,
         "direction": "down",
-        "gap": 0.6323954776997365,
-        "gapSigma": 0.03690034080289552,
-        "gapTicks": 6.323954776997365,
+        "gap": 1.9669113488601608,
+        "gapSigma": 0.11483986749470255,
+        "gapTicks": 19.669113488601607,
         "toScore": 0
       },
       "obsDate": "2026-08-05",
@@ -208,7 +208,7 @@
           "boundary": 1,
           "direction": "down",
           "gap": 1.8999999999999986,
-          "gapSigma": 1.587597459273506,
+          "gapSigma": 1.6072210541104086,
           "gapTicks": 18.999999999999986,
           "toScore": 0
         },
@@ -216,7 +216,7 @@
           "boundary": -1,
           "direction": "down",
           "gap": 3.8999999999999986,
-          "gapSigma": 3.2587526795614083,
+          "gapSigma": 3.299032690016103,
           "gapTicks": 38.999999999999986,
           "toScore": -1
         }
@@ -229,7 +229,7 @@
         "boundary": 1,
         "direction": "down",
         "gap": 1.8999999999999986,
-        "gapSigma": 1.587597459273506,
+        "gapSigma": 1.6072210541104086,
         "gapTicks": 18.999999999999986,
         "toScore": 0
       },
@@ -251,7 +251,7 @@
           "boundary": 80,
           "direction": "up",
           "gap": 7.911299999999997,
-          "gapSigma": 1.0750852595905511,
+          "gapSigma": 1.0756997509085013,
           "gapTicks": 7.911299999999997,
           "toScore": 0
         },
@@ -259,7 +259,7 @@
           "boundary": 100,
           "direction": "up",
           "gap": 27.911299999999997,
-          "gapSigma": 3.7929325402917042,
+          "gapSigma": 3.7951004838057543,
           "gapTicks": 27.911299999999997,
           "toScore": 0
         }
@@ -272,7 +272,7 @@
         "boundary": 80,
         "direction": "up",
         "gap": 7.911299999999997,
-        "gapSigma": 1.0750852595905511,
+        "gapSigma": 1.0756997509085013,
         "gapTicks": 7.911299999999997,
         "toScore": 0
       },
@@ -297,7 +297,7 @@
           "boundary": -0.02,
           "direction": "up",
           "gap": 0.02400000000000004,
-          "gapSigma": 0.8233753823124891,
+          "gapSigma": 0.8238601355842539,
           "gapTicks": 24.00000000000004,
           "toScore": 0
         },
@@ -305,7 +305,7 @@
           "boundary": 0.02,
           "direction": "up",
           "gap": 0.06400000000000004,
-          "gapSigma": 2.1956676861666353,
+          "gapSigma": 2.1969603615580082,
           "gapTicks": 64.00000000000004,
           "toScore": -1
         }
@@ -318,7 +318,7 @@
         "boundary": -0.02,
         "direction": "up",
         "gap": 0.02400000000000004,
-        "gapSigma": 0.8233753823124891,
+        "gapSigma": 0.8238601355842539,
         "gapTicks": 24.00000000000004,
         "toScore": 0
       },
@@ -345,7 +345,7 @@
           "boundary": 2,
           "direction": "up",
           "gap": 5,
-          "gapSigma": 1.100528128972799,
+          "gapSigma": 1.10179237475962,
           "gapTicks": 5,
           "toScore": 0
         },
@@ -353,7 +353,7 @@
           "boundary": 10,
           "direction": "up",
           "gap": 13,
-          "gapSigma": 2.8613731353292775,
+          "gapSigma": 2.8646601743750124,
           "gapTicks": 13,
           "toScore": -1
         }
@@ -366,7 +366,7 @@
         "boundary": 2,
         "direction": "up",
         "gap": 5,
-        "gapSigma": 1.100528128972799,
+        "gapSigma": 1.10179237475962,
         "gapTicks": 5,
         "toScore": 0
       },
@@ -384,7 +384,7 @@
       },
       "display": {
         "primary": "+0,48 %",
-        "secondary": "leicht unveraendert (+2 bps)"
+        "secondary": "unveraendert (+2 bps)"
       },
       "factor": "business_cycle",
       "flips": [
@@ -392,7 +392,7 @@
           "boundary": 10,
           "direction": "up",
           "gap": 8.000000000000004,
-          "gapSigma": 0.7078302826488695,
+          "gapSigma": 0.7081657285872864,
           "gapTicks": 8.000000000000004,
           "toScore": 1
         },
@@ -400,7 +400,7 @@
           "boundary": -10,
           "direction": "down",
           "gap": 11.999999999999996,
-          "gapSigma": 1.0617454239733035,
+          "gapSigma": 1.0622485928809289,
           "gapTicks": 11.999999999999996,
           "toScore": -1
         }
@@ -413,7 +413,7 @@
         "boundary": 10,
         "direction": "up",
         "gap": 8.000000000000004,
-        "gapSigma": 0.7078302826488695,
+        "gapSigma": 0.7081657285872864,
         "gapTicks": 8.000000000000004,
         "toScore": 1
       },
@@ -435,7 +435,7 @@
           "boundary": 15,
           "direction": "down",
           "gap": 0.27999999999999936,
-          "gapSigma": 0.08176691203239946,
+          "gapSigma": 0.08181443350507935,
           "gapTicks": 27.999999999999936,
           "toScore": -1
         },
@@ -443,7 +443,7 @@
           "boundary": 25,
           "direction": "up",
           "gap": 9.72,
-          "gapSigma": 2.838479946267588,
+          "gapSigma": 2.8401296202477613,
           "gapTicks": 972,
           "toScore": 1
         }
@@ -456,7 +456,7 @@
         "boundary": 15,
         "direction": "down",
         "gap": 0.27999999999999936,
-        "gapSigma": 0.08176691203239946,
+        "gapSigma": 0.08181443350507935,
         "gapTicks": 27.999999999999936,
         "toScore": -1
       },
@@ -472,9 +472,7 @@
   "isoYear": 2026,
   "meaningful": true,
   "missing": [],
-  "notes": [
-    "Nachtraeglich gefuellte Woche (Backfill) — kein veroeffentlichter Stand"
-  ],
+  "notes": [],
   "regime": {
     "assumed": false,
     "cashBand": [
