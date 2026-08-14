@@ -15,6 +15,9 @@ import type { AssetsResponse, PerformanceResponse, RegimeMode } from '../types';
 import { AssetOverlay, LINE_COLORS, MAX_LINES } from './AssetOverlay';
 import { RegimePerformance } from './RegimePerformance';
 import { ScoreChart } from './ScoreChart';
+import { WeekBrush } from './WeekBrush';
+import { useZoomPan } from './useZoomPan';
+import { reindexPoints } from './windowMath';
 import { weekLabel } from '../format';
 
 /** Voreinstellung: die vier klassischen Makro-Bausteine. */
@@ -54,6 +57,30 @@ export function AssetSection() {
       cur.includes(id) ? cur.filter((x) => x !== id) : cur.length >= MAX_LINES ? cur : [...cur, id],
     );
   };
+
+  /*
+   * Zoomen ueber beide gestapelten Diagramme hinweg. Der Ausschnitt wird auf
+   * die Daten angewandt, bevor sie in die Diagramme gehen — die zeichnen
+   * unveraendert das, was sie bekommen.
+   */
+  const zoom = useZoomPan(assets?.regimes.weeks.length ?? 0);
+
+  const visibleWeeks = useMemo(
+    () => (assets ? assets.regimes.weeks.slice(zoom.window.start, zoom.window.end) : []),
+    [assets, zoom.window.start, zoom.window.end],
+  );
+
+  /*
+   * Die Kurven werden auf den sichtbaren Fensterbeginn NEU indexiert. Ohne das
+   * behielte die 100er-Linie ihren Bezug auf eine Woche, die nach dem Zoomen
+   * gar nicht mehr im Bild ist — die Prozentangaben im Tooltip waeren dann auf
+   * einen unsichtbaren Nullpunkt bezogen.
+   */
+  const visibleCurves = useMemo(() => {
+    if (!assets) return [];
+    const keys = new Set(visibleWeeks.map((w) => w.weekKey));
+    return assets.curves.map((c) => ({ ...c, points: reindexPoints(c.points, keys) }));
+  }, [assets, visibleWeeks]);
 
   const grouped = useMemo(() => {
     const groups = new Map<string, { id: string; short: string; label: string }[]>();
@@ -168,21 +195,29 @@ export function AssetSection() {
             {/*
               Beide Diagramme teilen sich Breite, Raender und Zeitachse aus
               chartGeometry — nur so liegen die Regime-Baender senkrecht
-              uebereinander und der Vergleich ist ablesbar.
+              uebereinander und der Vergleich ist ablesbar. Aus demselben Grund
+              teilen sie sich EIN Zoom-Fenster: zwei getrennte waeren gegen den
+              Zweck der gestapelten Anordnung.
             */}
-            <div className="stacked-charts">
+            <div
+              className={`stacked-charts${zoom.dragging ? ' is-dragging' : ''}`}
+              ref={zoom.ref}
+            >
               <div className="stacked-label">Gesamtscore</div>
-              <ScoreChart points={assets.regimes.weeks} showRegimeBands />
+              <ScoreChart points={visibleWeeks} showRegimeBands />
 
               <div className="stacked-label">
-                Kursverlauf, indexiert auf 100 zu Beginn des Zeitraums
+                Kursverlauf, indexiert auf 100 zu Beginn des sichtbaren Zeitraums
               </div>
-              <AssetOverlay
-                curves={assets.curves}
-                weeks={assets.regimes.weeks}
-                selected={selected}
-              />
+              <AssetOverlay curves={visibleCurves} weeks={visibleWeeks} selected={selected} />
             </div>
+
+            <WeekBrush
+              points={assets.regimes.weeks}
+              window={zoom.window}
+              onChange={zoom.setWindow}
+              onReset={zoom.reset}
+            />
           </>
         )}
 

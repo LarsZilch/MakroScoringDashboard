@@ -1,0 +1,85 @@
+/* Zoom-Bedienung: Uebersichtsleiste und die zoombaren Diagrammflaechen. */
+
+/*
+ * touch-action: none ist noetig, damit Ziehen auf Zeigergeraeten nicht als
+ * Seiten-Scrollen abgefangen wird, bevor der pointermove-Handler es sieht.
+ */
+.zoomable,
+.stacked-charts {
+  touch-action: none;
+  cursor: grab;
+}
+
+.zoomable.is-dragging,
+.stacked-charts.is-dragging {
+  cursor: grabbing;
+  /* Waehrend des Ziehens keine Textauswahl — sonst markiert man Achsenlabels. */
+  user-select: none;
+}
+
+/* --------------------------------------------------------- Uebersichtsleiste */
+
+.brush {
+  margin-top: 10px;
+}
+
+.brush-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.brush-window {
+  cursor: grab;
+}
+
+.brush-window:active {
+  cursor: grabbing;
+}
+
+.brush-handle {
+  cursor: ew-resize;
+  rx: 1;
+}
+
+.brush-handle:hover {
+  fill: var(--gold-deep);
+}
+
+.brush-legend {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--ink-faint);
+  margin-top: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.brush-legend strong {
+  color: var(--ink-soft);
+  font-weight: 700;
+}
+
+.brush-hint {
+  color: var(--ink-faint);
+}
+
+.brush-reset {
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: var(--gold-deep);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.brush-reset:hover {
+  color: var(--ink);
+}

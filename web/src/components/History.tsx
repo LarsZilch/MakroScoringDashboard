@@ -9,6 +9,8 @@ import { DeltaTable } from './DeltaTable';
 import { FactorCharts } from './FactorChart';
 import { RegimeHeatmap } from './RegimeHeatmap';
 import { ScoreChart } from './ScoreChart';
+import { WeekBrush } from './WeekBrush';
+import { useZoomPan } from './useZoomPan';
 import { weekLabel } from '../format';
 
 type Range = 'meaningful' | '1y' | '3y' | 'all';
@@ -47,6 +49,18 @@ export function History({
 
   const sparseCount = history.points.filter((p) => p.completeness === 'sparse').length;
 
+  /*
+   * Ein Fenster fuer Score-Verlauf und Faktor-Diagramme gemeinsam: sie zeigen
+   * dieselben Wochen und sollen auch nach dem Zoomen dieselben zeigen. Die
+   * Heatmap bleibt bewusst aussen vor — sie IST die Gesamtsicht und wuerde
+   * ihren Zweck verlieren, wenn man sie beschneidet.
+   */
+  const zoom = useZoomPan(points.length);
+  const visible = useMemo(
+    () => points.slice(zoom.window.start, zoom.window.end),
+    [points, zoom.window.start, zoom.window.end],
+  );
+
   return (
     <>
       <div className="panel">
@@ -54,7 +68,15 @@ export function History({
           <div>
             <div className="panel-title">Gesamtscore im Verlauf</div>
             <div className="panel-sub">
-              {points.length} Wochen · {RANGE_LABEL[range]}
+              {zoom.isFull ? (
+                <>
+                  {points.length} Wochen · {RANGE_LABEL[range]}
+                </>
+              ) : (
+                <>
+                  {visible.length} von {points.length} Wochen sichtbar · {RANGE_LABEL[range]}
+                </>
+              )}
             </div>
           </div>
           <div className="controls">
@@ -78,16 +100,29 @@ export function History({
               )}
             </div>
           )}
-          <ScoreChart points={points} />
+          <div className={`zoomable${zoom.dragging ? ' is-dragging' : ''}`} ref={zoom.ref}>
+            <ScoreChart points={visible} />
+          </div>
+          <WeekBrush
+            points={points}
+            window={zoom.window}
+            onChange={zoom.setWindow}
+            onReset={zoom.reset}
+          />
         </div>
       </div>
 
       <div className="panel">
         <div className="panel-head">
-          <div className="panel-title">Die drei Faktoren einzeln</div>
+          <div>
+            <div className="panel-title">Die drei Faktoren einzeln</div>
+            {!zoom.isFull && (
+              <div className="panel-sub">folgt dem Ausschnitt des Gesamtscores</div>
+            )}
+          </div>
         </div>
         <div className="panel-body">
-          <FactorCharts points={points} />
+          <FactorCharts points={visible} />
         </div>
       </div>
 
@@ -95,10 +130,14 @@ export function History({
         <div className="panel-head">
           <div>
             <div className="panel-title">Regime je Kalenderwoche</div>
-            <div className="panel-sub">Zeile = Jahr, Spalte = Kalenderwoche</div>
+            <div className="panel-sub">
+              Zeile = Jahr, Spalte = Kalenderwoche
+              {!zoom.isFull && ' · zeigt weiterhin den gesamten Zeitraum'}
+            </div>
           </div>
         </div>
         <div className="panel-body">
+          {/* Bewusst ungezoomt: dieses Raster IST die Gesamtsicht. */}
           <RegimeHeatmap points={points} />
           {history.regimeChanges.length > 0 && (
             <div style={{ marginTop: 18, fontSize: 13.5 }}>

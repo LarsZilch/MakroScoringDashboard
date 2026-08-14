@@ -142,7 +142,7 @@ src/pipeline/                             Snapshot-Bau, Store, Vergleiche
 src/server/                               API + Proxy zu den Quellen
 web/                                      Dashboard, Verlauf und Hilfe
 web/src/content/                          Erklärtexte; playbooks.ts ist gesetzt, nicht abgeleitet
-test/                                     137 Tests, davon der Golden Test
+test/                                     158 Tests, davon der Golden Test
 ```
 
 **`src/core/` ist frei von Datei- und Netzzugriff.** Dieselbe Scoring-Logik läuft im ETL, im Server
@@ -190,6 +190,23 @@ nur so lässt sich senkrecht ablesen, was eine Anlageklasse während einer Regim
 
 Bewusst **keine zweite y-Achse**: Score −3…+3 und Kursindex auf einer Fläche ließen sich so
 skalieren, dass dieselbe Datenlage nach Gleichlauf oder nach Gegenlauf aussieht.
+
+### Zoomen und Blättern
+
+Über 800 Wochen ergeben rund einen Bildpunkt je Woche — lesbar wird das erst im Ausschnitt.
+Mausrad zoomt (ankertreu: die Woche unter dem Zeiger bleibt stehen), Ziehen verschiebt,
+Umschalt+Rad blättert. Unter den Diagrammen liegt eine Übersichtsleiste mit dem gesamten Bestand
+und dem sichtbaren Fenster als verschiebbarem Rahmen mit zwei Griffen.
+
+Der Ausschnitt ist ein `slice()` auf die Datenreihe **vor** der Übergabe an die Diagramme — die
+Zeichenlogik von `ScoreChart`, `FactorCharts` und `AssetOverlay` blieb dafür unverändert. Die
+Fenster-Mathematik steht als reines Modul in `web/src/components/windowMath.ts` und ist ohne DOM
+testbar (`test/window-math.test.ts`).
+
+Zwei Kopplungen sind Absicht: Score- und Kursdiagramm teilen sich **ein** Fenster (sonst wäre der
+senkrechte Vergleich wertlos), und die Regime-Heatmap zoomt **nicht** mit — sie ist die
+Gesamtsicht. Beim Zoomen wird der Kursindex auf den ersten sichtbaren Punkt neu gesetzt, damit
+sich die 100er-Linie nicht auf eine Woche außerhalb des Bildes bezieht.
 
 ### Gemessen wird die Folgewoche
 

@@ -578,6 +578,18 @@ function AssetPerformanceHelp() {
           andere zu- oder abgeschaltet werden.
         </p>
 
+        <div className="help-why">
+          <span className="help-why-label">Ausschnitt waehlen</span>
+          Ueber 800 Wochen auf einer Diagrammbreite ergeben rund einen Bildpunkt je Woche — lesbar
+          wird das erst im Ausschnitt. Das Mausrad ueber einem Diagramm zoomt (die Woche unter dem
+          Zeiger bleibt dabei stehen), Ziehen verschiebt, Umschalt+Rad blaettert seitwaerts. Die
+          Leiste unter den Diagrammen zeigt, wo im Gesamtbestand man steht, und laesst sich an
+          ihren Griffen aufziehen oder als Ganzes verschieben. Score- und Kursdiagramm teilen sich
+          dabei IMMER denselben Ausschnitt — sonst waere der senkrechte Vergleich wertlos. Beim
+          Zoomen wird der Kursindex auf den ersten sichtbaren Punkt neu gesetzt, damit sich die
+          100er-Linie nicht auf eine Woche ausserhalb des Bildes bezieht.
+        </div>
+
         <div className="callout warn">
           <strong>Zwei Modi, unterschiedliche Aussagekraft.</strong> Das echte Modell hat nur 53
           belastbare Wochen — Risk Off kommt darin zweimal vor, das reicht zum Hinschauen, nicht
