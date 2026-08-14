@@ -6,6 +6,21 @@ Kalenderwoche zu Kalenderwoche und von Jahr zu Jahr verfolgen lassen.
 
 Vorlage der Methodik und Gestaltung: `doc/MakroScoringInfoScreen.jpg` (KW 32/2026).
 
+## Screenshots
+
+**Dashboard** — Gesamtscore, die drei Faktoren mit ihren neun Indikatoren und der Grenzfall, der
+das Regime am ehesten kippt:
+
+![Dashboard](doc/screenshots/dashboard.png)
+
+**Verlauf** — Score-Historie mit Zoom/Pan und Übersichtsleiste, darunter die drei Faktoren einzeln:
+
+![Verlauf](doc/screenshots/verlauf.png)
+
+**Hilfe** — Methodik, Schwellen und Regime-Bänder direkt aus `rules/v1.json` gerendert:
+
+![Hilfe](doc/screenshots/hilfe.png)
+
 ## Loslegen
 
 ```bash
