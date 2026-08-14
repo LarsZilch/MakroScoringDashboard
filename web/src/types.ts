@@ -207,3 +207,91 @@ export interface RulesResponse {
   rules: RuleBook;
   assumptions: { scope: string; note: string }[];
 }
+
+// ---------------------------------------------------------------------------
+// Anlageklassen
+// ---------------------------------------------------------------------------
+
+/** `live` = echtes Modell, `reduced` = Vergleichsmodell 2018. */
+export type RegimeMode = 'live' | 'reduced';
+
+export interface AssetDef {
+  id: string;
+  symbol: string;
+  label: string;
+  short: string;
+  group: string;
+}
+
+export interface AssetCurve {
+  assetId: string;
+  label: string;
+  short: string;
+  group: string;
+  /** Auf 100 zum Fensterbeginn indexiert. */
+  points: { weekKey: string; value: number }[];
+}
+
+export interface RegimeWeekPoint {
+  weekKey: string;
+  isoYear: number;
+  isoWeek: number;
+  total: number;
+  regime: string;
+  factors: Record<string, number>;
+  completeness?: string;
+}
+
+export interface AssetsResponse {
+  mode: RegimeMode;
+  regimes: {
+    label: string;
+    caveat: string;
+    omitted: string[];
+    from: string | null;
+    to: string | null;
+    weeks: RegimeWeekPoint[];
+  };
+  curves: AssetCurve[];
+  catalogue: AssetDef[];
+}
+
+export interface PerformanceStatsView {
+  regime: string;
+  weeks: number;
+  confidence: 'insufficient' | 'weak' | 'solid';
+  annualized: number | null;
+  meanWeekly: number | null;
+  hitRate: number | null;
+  cumulative: number | null;
+  episodes: number;
+  largestEpisodeShare: number;
+  concentrated: boolean;
+}
+
+export interface AssetPerformanceView {
+  assetId: string;
+  label: string;
+  byRegime: PerformanceStatsView[];
+  overall: PerformanceStatsView;
+}
+
+export interface RegimeSampleView {
+  regime: string;
+  weeks: number;
+  episodes: number;
+  largestEpisodeShare: number;
+  concentrated: boolean;
+}
+
+export interface PerformanceResponse {
+  mode: RegimeMode;
+  label: string;
+  caveat: string;
+  from: string | null;
+  to: string | null;
+  totalWeeks: number;
+  regimeOrder: string[];
+  sample: RegimeSampleView[];
+  assets: AssetPerformanceView[];
+}

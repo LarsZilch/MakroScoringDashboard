@@ -9,6 +9,7 @@
  */
 
 import { fetchAaii } from '../sources/aaii.js';
+import { ASSETS, assetSeriesId, fetchAsset } from '../sources/assets.js';
 import { fetchFearGreed } from '../sources/cnn.js';
 import { fetchFred, fetchIorbChained } from '../sources/fred.js';
 import { fetchIsm } from '../sources/ism.js';
@@ -41,11 +42,27 @@ export interface FetchOptions {
   yahooRange?: string;
   /** Nur diese Reihen abrufen. */
   only?: string[];
+  /**
+   * Kursreihen der Anlageklassen mitholen. Sie sind fuer das Scoring nicht
+   * noetig, sondern nur fuer die Auswertung gegen die Regime — der
+   * Wochenlauf soll deshalb nicht daran haengen.
+   */
+  includeAssets?: boolean;
+  /** Zeitraum fuer die Kursreihen. */
+  assetRange?: string;
 }
 
 function buildJobs(opts: FetchOptions): Job[] {
   const fredOpts = opts.from ? { from: opts.from } : {};
+  const assetJobs: Job[] = opts.includeAssets
+    ? ASSETS.map((a) => ({
+        seriesId: assetSeriesId(a.id),
+        run: () => fetchAsset(a, { range: opts.assetRange ?? '10y' }),
+      }))
+    : [];
+
   return [
+    ...assetJobs,
     { seriesId: 'NFCI', run: () => fetchFred('NFCI', fredOpts) },
     { seriesId: 'T10Y2Y', run: () => fetchFred('T10Y2Y', fredOpts) },
     { seriesId: 'SOFR', run: () => fetchFred('SOFR', fredOpts) },
@@ -64,7 +81,10 @@ function buildJobs(opts: FetchOptions): Job[] {
 export async function fetchAll(
   opts: FetchOptions = {},
 ): Promise<{ bundle: Record<string, Series>; reports: FetchReport[] }> {
-  const jobs = buildJobs(opts).filter((j) => !opts.only || opts.only.includes(j.seriesId));
+  // Ein leeres only-Array heisst "kein Filter", nicht "nichts abrufen" —
+  // sonst laeuft ein Aufruf stillschweigend ins Leere.
+  const filter = opts.only?.length ? opts.only : null;
+  const jobs = buildJobs(opts).filter((j) => !filter || filter.includes(j.seriesId));
 
   const settled = await Promise.allSettled(jobs.map((j) => j.run()));
 
@@ -94,5 +114,8 @@ export async function fetchAll(
 
   // Der Bundle kommt aus dem Cache, nicht aus den Abrufen: so stehen auch die
   // Reihen zur Verfuegung, deren Quelle gerade ausgefallen ist.
-  return { bundle: loadBundle(requiredSeriesIds()), reports };
+  const ids = opts.includeAssets
+    ? [...requiredSeriesIds(), ...ASSETS.map((a) => assetSeriesId(a.id))]
+    : requiredSeriesIds();
+  return { bundle: loadBundle(ids), reports };
 }

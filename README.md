@@ -109,7 +109,7 @@ src/pipeline/                             Snapshot-Bau, Store, Vergleiche
 src/server/                               API + Proxy zu den Quellen
 web/                                      Dashboard, Verlauf und Hilfe
 web/src/content/                          Erklärtexte; playbooks.ts ist gesetzt, nicht abgeleitet
-test/                                     92 Tests, davon der Golden Test
+test/                                     124 Tests, davon der Golden Test
 ```
 
 **`src/core/` ist frei von Datei- und Netzzugriff.** Dieselbe Scoring-Logik läuft im ETL, im Server
@@ -147,6 +147,49 @@ Ein Abschnitt fällt bewusst aus dem Rahmen: die Einordnung je Anlageklasse in
 Soll-Cash-Band ab; alles zu Aktien, Stil, Duration und Credit ist gesetzt. Deshalb steht es in einer
 eigenen Datei, ist in der Oberfläche grau abgesetzt statt golden und trägt den Vermerk, dass es
 nicht aus dem Modell stammt.
+
+## Anlageklassen im Regime
+
+Unter dem Score-Verlauf liegt ein zweites Diagramm mit den Kursverläufen von elf Anlageklassen,
+einzeln zuschaltbar, auf 100 zum Fensterbeginn indexiert. Beide Felder teilen sich Breite, Ränder
+und Zeitachse aus `web/src/components/chartGeometry.tsx` und tragen dieselbe Regime-Schattierung —
+nur so lässt sich senkrecht ablesen, was eine Anlageklasse während einer Regime-Phase getan hat.
+
+Bewusst **keine zweite y-Achse**: Score −3…+3 und Kursindex auf einer Fläche ließen sich so
+skalieren, dass dieselbe Datenlage nach Gleichlauf oder nach Gegenlauf aussieht.
+
+### Gemessen wird die Folgewoche
+
+Das Regime der Woche *W* steht erst an deren Ende fest. Die Rendite derselben Woche zuzuordnen wäre
+ein Blick in die Zukunft und würde jede Kennzahl schönrechnen. Gemessen wird deshalb *W+1* — der
+Ertrag, den man tatsächlich hätte erzielen können. `test/asset-returns.test.ts` hält das fest.
+
+Gerechnet wird auf `adjclose`, also inklusive Ausschüttungen. Ohne das wären TLT, HYG und LQD
+systematisch schlechtgerechnet, weil dort der Kupon den Großteil der Rendite ausmacht.
+
+### Vergleichsmodell 2018
+
+Das echte Modell hat nur 53 belastbare Wochen — Risk Off kommt darin **zweimal** vor. Für eine
+Auswertung ist das nichts. Deshalb gibt es einen zweiten Modus, der nur mit den sechs historisch
+verfügbaren Indikatoren rechnet und bis Juli 2018 zurückreicht (**420 Wochen**, einschließlich
+Corona-Crash und 2022). Bindende Grenze ist der SOFR ab April 2018.
+
+Das ist **eine andere Methodik, nicht die Verlängerung des echten Modells**: der Sentiment-Faktor
+besteht dort allein aus dem VIX, der Business-Cycle-Faktor nur aus NFCI und Zinskurve. Die Mehrheit
+bezieht sich auf die vorhandenen Werte (`aggregateFactor(..., 'available')`), was bei drei
+vorhandenen Werten rechnerisch dasselbe ergibt wie die echte Regel — `test/aggregation-mode.test.ts`
+prüft das über alle 27 Kombinationen. Das Vergleichsmodell wird **nie gespeichert**, sondern bei
+Bedarf aus dem Rohdaten-Cache gerechnet.
+
+### Warum jede Zahl ihre Stichprobe mitführt
+
+Die Tabelle zeigt neben jeder Kennzahl die Zahl der Wochen **und der Episoden**. Der Grund steht im
+Ergebnis selbst: im Vergleichsmodell stammen 58 der 73 Risk-On-Wochen aus zwei Phasen 2020/21. Ohne
+2020 halbiert sich die Kennzahl (+56,9 % → +28,4 %). `n = 73` sieht robust aus, sind aber im Kern
+zwei Beobachtungen desselben Ereignisses — solche Zellen tragen deshalb einen Stern.
+
+Unter acht Wochen erscheint gar keine Zahl, sondern „zu wenige Daten". Im echten Modell bleibt die
+Risk-Off-Spalte damit leer.
 
 ## Der Golden Test
 
@@ -187,4 +230,4 @@ Jede Zelle trägt zusätzlich ihre Zahl — Farbe trägt die Bedeutung nie allei
 - Export des Dashboards als PNG/PDF
 - Was-wäre-wenn-Regler für die Schwellen (läuft im Browser, weil `src/core` I/O-frei ist)
 - Wochen-Automatik über die Windows-Aufgabenplanung
-- Backtest des Regimes gegen die SPX-Forward-Rendite
+

@@ -1,0 +1,193 @@
+/* Stile fuer den Abschnitt "Anlageklassen im Regime". */
+
+/* ------------------------------------------------------------ Umschalter */
+
+.asset-picker {
+  display: flex;
+  gap: 26px;
+  flex-wrap: wrap;
+  padding: 4px 0 12px;
+}
+
+.asset-group-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 7px;
+}
+
+.asset-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.asset-chip {
+  appearance: none;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 5px 11px;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  color: var(--ink-soft);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: none;
+}
+
+.asset-chip:hover:not(:disabled) {
+  border-color: var(--gold);
+  color: var(--ink);
+}
+
+/* Aktiv: Flaeche traegt die Linienfarbe, Text weiss. */
+.asset-chip.on {
+  color: #fff;
+}
+
+.asset-chip.blocked {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.asset-picker-note {
+  font-size: 12.5px;
+  color: var(--ink-faint);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+/* -------------------------------------------------- gestapelte Diagramme */
+
+.stacked-charts {
+  border: 1px solid var(--rule);
+  padding: 14px 16px 8px;
+  background: #fdfdfc;
+}
+
+.stacked-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 6px 0 2px;
+}
+
+.stacked-label + * {
+  margin-bottom: 10px;
+}
+
+.overlay-tooltip {
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  background: #fff;
+  border: 1px solid var(--rule);
+  padding: 8px 12px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  pointer-events: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.overlay-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  margin-right: 6px;
+  vertical-align: 0;
+}
+
+/* ------------------------------------------------------ Kennzahlen-Tabelle */
+
+.perf-table {
+  border: 1px solid var(--rule);
+  margin-bottom: 4px;
+}
+
+.perf-table th.num {
+  text-align: right;
+}
+
+.perf-sample {
+  font-size: 10px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  color: var(--ink-faint) !important;
+  padding-top: 0 !important;
+  line-height: 1.4;
+}
+
+.perf-cell {
+  line-height: 1.45;
+}
+
+.perf-value {
+  display: block;
+  font-weight: 700;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.perf-value.up {
+  color: #1a7f4b;
+}
+
+.perf-value.down {
+  color: var(--red);
+}
+
+.perf-meta {
+  display: block;
+  font-size: 11px;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+ * Schwach belegte Zahlen werden blasser dargestellt. Sie verschwinden nicht,
+ * sollen aber optisch weniger Gewicht haben als tragfaehige.
+ */
+.perf-cell.is-weak .perf-value {
+  opacity: 0.55;
+  font-weight: 600;
+}
+
+.perf-empty {
+  color: var(--ink-faint);
+}
+
+.perf-nodata {
+  display: block;
+  font-size: 11.5px;
+  font-style: italic;
+}
+
+.perf-n {
+  display: block;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Der Stern markiert ein von einer einzigen Phase getragenes Ergebnis. */
+.perf-flag {
+  color: var(--red);
+  font-weight: 700;
+  cursor: help;
+  margin-left: 2px;
+}
+
+.perf-footnote {
+  font-size: 12px;
+  color: var(--ink-faint);
+  line-height: 1.6;
+  padding: 14px 2px 0;
+  max-width: 100ch;
+}

@@ -20,6 +20,19 @@ import { latestRuleVersion, listRuleVersions, loadRules } from '../pipeline/load
 import { ROOT } from '../pipeline/paths.js';
 import { loadBundle } from '../pipeline/series-cache.js';
 import { buildSnapshot, volatilityFromHistory } from '../pipeline/snapshot.js';
+import { ASSETS } from '../sources/assets.js';
+import {
+  liveRegimeSeries,
+  reducedRegimeSeries,
+  type RegimeMode,
+} from '../pipeline/regime-history.js';
+import {
+  REGIME_ORDER,
+  buildCurves,
+  buildPerformance,
+  loadAssetBundle,
+  sampleInfo,
+} from '../pipeline/regime-assets.js';
 import {
   buildHistory,
   compareWeekOverWeek,
@@ -135,6 +148,59 @@ app.post('/api/refresh', wrap(async (req, res) => {
   writeSnapshot(snapshot);
 
   res.json({ snapshot, reports });
+}));
+
+/**
+ * Regime-Reihe, Kurskurven und Kennzahlen fuer die Auswertung gegen
+ * Anlageklassen.
+ *
+ * `mode=reduced` liefert das Vergleichsmodell 2018. Es wird hier gerechnet und
+ * NICHT gespeichert — der Snapshot-Bestand bleibt dem echten Modell
+ * vorbehalten.
+ */
+app.get('/api/assets', wrap((req, res) => {
+  const mode: RegimeMode = req.query.mode === 'reduced' ? 'reduced' : 'live';
+  const from = typeof req.query.from === 'string' ? req.query.from : undefined;
+
+  const assetBundle = loadAssetBundle();
+  const regimes =
+    mode === 'reduced'
+      ? reducedRegimeSeries(loadRules(latestRuleVersion()), loadBundle(requiredSeriesIds()))
+      : liveRegimeSeries();
+
+  res.json({
+    mode,
+    regimes: {
+      label: regimes.label,
+      caveat: regimes.caveat,
+      omitted: regimes.omitted,
+      from: regimes.from,
+      to: regimes.to,
+      weeks: from ? regimes.weeks.filter((w) => w.weekKey >= from) : regimes.weeks,
+    },
+    curves: buildCurves(regimes, assetBundle, from),
+    catalogue: ASSETS,
+  });
+}));
+
+app.get('/api/regime-performance', wrap((req, res) => {
+  const mode: RegimeMode = req.query.mode === 'reduced' ? 'reduced' : 'live';
+  const regimes =
+    mode === 'reduced'
+      ? reducedRegimeSeries(loadRules(latestRuleVersion()), loadBundle(requiredSeriesIds()))
+      : liveRegimeSeries();
+
+  res.json({
+    mode,
+    label: regimes.label,
+    caveat: regimes.caveat,
+    from: regimes.from,
+    to: regimes.to,
+    totalWeeks: regimes.weeks.length,
+    regimeOrder: REGIME_ORDER,
+    sample: sampleInfo(regimes),
+    assets: buildPerformance(regimes, loadAssetBundle()),
+  });
 }));
 
 /** Rohreihe einer Kennung, fuer die Einzelcharts. */

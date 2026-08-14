@@ -182,11 +182,31 @@ export function scoreIndicator(
  * Faktor aus seinen drei Indikatoren: Mehrheit entscheidet.
  * Aus der Vorlage belegt: "2 von 3 positiv" -> +1, "alle drei neutral" -> 0.
  */
+/**
+ * Wie streng wird die Mehrheit verlangt?
+ *
+ * - `strict`: mindestens `minCount` von drei Werten muessen vorliegen, sonst
+ *   gilt der Faktor als unbestimmt. Das ist die Regel des echten Modells.
+ *
+ * - `available`: Mehrheit der VORHANDENEN Werte, also `positives > vorhandene/2`.
+ *   Bei drei vorhandenen Werten ist das rechnerisch dasselbe wie `strict`
+ *   (beides verlangt zwei); bei zwei vorhandenen verlangt es Einstimmigkeit,
+ *   bei einem entscheidet dieser eine.
+ *
+ * `available` existiert allein fuer das Vergleichsmodell 2018, das mit sechs
+ * statt neun Indikatoren rechnet, weil ISM, AAII und Fear & Greed historisch
+ * nicht zu bekommen sind. Es ist damit eine ANDERE Methodik und nicht die
+ * Verlaengerung des echten Modells — deshalb ist `strict` der Standard und
+ * muss es bleiben.
+ */
+export type AggregationMode = 'strict' | 'available';
+
 export function aggregateFactor(
   factorId: FactorId,
   label: string,
   members: ScoredIndicator[],
   minCount: number,
+  mode: AggregationMode = 'strict',
 ): ScoredFactor {
   const missing = members.filter((m) => m.quality === 'missing').length;
   const present = members.filter((m) => m.quality !== 'missing');
@@ -194,9 +214,13 @@ export function aggregateFactor(
   const negatives = present.filter((m) => m.score === -1).length;
   const neutrals = present.length - positives - negatives;
 
+  // Schwelle fuer eine Mehrheit. Bei drei vorhandenen Werten ergibt die
+  // verallgemeinerte Regel dieselben zwei, die das echte Modell verlangt.
+  const needed = mode === 'strict' ? minCount : Math.floor(present.length / 2) + 1;
+
   let score: Score = 0;
-  if (positives >= minCount && positives > negatives) score = 1;
-  else if (negatives >= minCount && negatives > positives) score = -1;
+  if (present.length > 0 && positives >= needed && positives > negatives) score = 1;
+  else if (present.length > 0 && negatives >= needed && negatives > positives) score = -1;
 
   /*
    * Ohne genug vorhandene Werte kann die Mehrheitsregel gar nicht greifen.
@@ -205,7 +229,11 @@ export function aggregateFactor(
    * Unterscheidung muss bis in die Anzeige durchschlagen — sonst liest sich
    * eine Datenluecke wie ein Befund.
    */
-  const determinable = present.length >= minCount;
+  const determinable = mode === 'strict' ? present.length >= minCount : present.length > 0;
+
+  // Im reduzierten Modus bezieht sich die Mehrheit auf die vorhandenen
+  // Werte, nicht auf alle drei — der Klartext muss das widerspiegeln.
+  const basis = mode === 'strict' ? members.length : present.length;
 
   let rationale: string;
   if (!determinable) {
@@ -214,12 +242,12 @@ export function aggregateFactor(
         ? `kein Wert verfuegbar — nicht bestimmbar`
         : `${missing} von ${members.length} ohne Wert — nicht bestimmbar`;
   } else if (score === 1) {
-    rationale = `${positives} von ${members.length} positiv`;
+    rationale = `${positives} von ${basis} positiv`;
   } else if (score === -1) {
-    rationale = `${negatives} von ${members.length} negativ`;
-  } else if (neutrals === members.length) {
-    rationale = `alle ${members.length} neutral`;
-  } else if (missing > 0) {
+    rationale = `${negatives} von ${basis} negativ`;
+  } else if (neutrals === basis) {
+    rationale = `alle ${basis} neutral`;
+  } else if (missing > 0 && mode === 'strict') {
     rationale = `${positives} positiv, ${negatives} negativ, ${missing} ohne Wert — keine Mehrheit`;
   } else {
     rationale = `${positives} positiv, ${negatives} negativ — keine Mehrheit`;
@@ -255,6 +283,7 @@ export function resolveRegime(rules: RuleBook, total: number): Regime {
 export function computeScoring(
   rules: RuleBook,
   inputs: Record<IndicatorId, IndicatorInput>,
+  mode: AggregationMode = 'strict',
 ): ScoringResult {
   const indicators = {} as Record<IndicatorId, ScoredIndicator>;
   for (const id of INDICATOR_IDS) {
@@ -269,7 +298,7 @@ export function computeScoring(
     const members = INDICATOR_IDS.filter((id) => rules.indicators[id].factor === f.id)
       .map((id) => indicators[id])
       .sort((a, b) => rules.indicators[a.id].ordinal - rules.indicators[b.id].ordinal);
-    factors[f.id] = aggregateFactor(f.id, f.label, members, rules.factorAggregation.minCount);
+    factors[f.id] = aggregateFactor(f.id, f.label, members, rules.factorAggregation.minCount, mode);
   }
 
   const total = Object.values(factors).reduce((sum, f) => sum + f.score, 0);

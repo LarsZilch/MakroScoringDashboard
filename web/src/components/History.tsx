@@ -4,6 +4,7 @@
 
 import { useMemo, useState } from 'react';
 import type { Comparison, HistoryResponse } from '../types';
+import { AssetSection } from './AssetSection';
 import { DeltaTable } from './DeltaTable';
 import { FactorCharts } from './FactorChart';
 import { RegimeHeatmap } from './RegimeHeatmap';
@@ -122,6 +123,8 @@ export function History({
           <DeltaTable wow={wow} yoy={yoy} />
         </div>
       </div>
+
+      <AssetSection />
     </>
   );
 }

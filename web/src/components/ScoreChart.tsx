@@ -12,26 +12,39 @@
 import { useState } from 'react';
 import type { HistoryPoint } from '../types';
 import { INK, linearScale, stepPath } from './viz';
+import { CHART_W, MARGIN, RegimeBands, innerWidth, stepWidth, weekScale } from './chartGeometry';
 import { scoreText, weekLabel } from '../format';
 
-const W = 900;
+/*
+ * Breite und seitliche Raender kommen aus chartGeometry, damit dieses
+ * Diagramm und das Kurs-Overlay senkrecht deckungsgleich sind. Nur die Hoehe
+ * gehoert diesem Bauteil.
+ */
+const W = CHART_W;
 const H = 240;
-const M = { top: 16, right: 16, bottom: 30, left: 34 };
+const M = MARGIN;
 
-export function ScoreChart({ points }: { points: HistoryPoint[] }) {
+export function ScoreChart({
+  points,
+  showRegimeBands = false,
+}: {
+  points: (HistoryPoint | { weekKey: string; total: number; regime: string; completeness?: string })[];
+  /** Regime als Hintergrundbaender — im gestapelten Vergleich mit den Kursen. */
+  showRegimeBands?: boolean;
+}) {
   const [hover, setHover] = useState<number | null>(null);
 
   if (points.length < 2) {
     return <div className="center-note">Zu wenige Wochen im Bestand fuer einen Verlauf.</div>;
   }
 
-  const innerW = W - M.left - M.right;
+  const innerW = innerWidth();
   const innerH = H - M.top - M.bottom;
-  const x = linearScale([0, points.length - 1], [M.left, M.left + innerW]);
+  const x = weekScale(points.length);
   const y = linearScale([-3, 3], [M.top + innerH, M.top]);
 
   const coords = points.map((p, i) => ({ x: x(i), y: y(p.total) }));
-  const step = innerW / Math.max(1, points.length - 1);
+  const step = stepWidth(points.length);
 
   const active = hover !== null ? points[hover] : null;
 
@@ -54,19 +67,32 @@ export function ScoreChart({ points }: { points: HistoryPoint[] }) {
           </pattern>
         </defs>
 
-        {/* Wochen ohne belastbare Datenlage kenntlich machen */}
-        {points.map((p, i) =>
-          p.completeness === 'sparse' ? (
-            <rect
-              key={`sp-${p.weekKey}`}
-              x={x(i) - step / 2}
-              y={M.top}
-              width={step}
-              height={innerH}
-              fill="url(#sparse-hatch)"
-            />
-          ) : null,
+        {/* Regime als Hintergrund, wenn mit den Kursen gestapelt gezeigt */}
+        {showRegimeBands && (
+          <RegimeBands
+            weeks={points.map((p) => ({
+              weekKey: p.weekKey,
+              regime: 'regime' in p ? p.regime : '',
+              completeness: p.completeness,
+            }))}
+            height={H}
+          />
         )}
+
+        {/* Wochen ohne belastbare Datenlage kenntlich machen */}
+        {!showRegimeBands &&
+          points.map((p, i) =>
+            p.completeness === 'sparse' ? (
+              <rect
+                key={`sp-${p.weekKey}`}
+                x={x(i) - step / 2}
+                y={M.top}
+                width={step}
+                height={innerH}
+                fill="url(#sparse-hatch)"
+              />
+            ) : null,
+          )}
 
         {/* Gitter */}
         {[-3, -2, -1, 0, 1, 2, 3].map((v) => (
