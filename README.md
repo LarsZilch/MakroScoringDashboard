@@ -62,7 +62,7 @@ Datei, alte Snapshots bleiben reproduzierbar.
 | VIX | FRED `VIXCLS` | ab 1990 |
 | SOFR − IORB | FRED `SOFR`, `IORB` + `IOER` verkettet | ab 2018 |
 | Liquidität (Ersatz) | FRED `WALCL` − `WTREGEN` − `RRPONTSYD` | ab 2002 |
-| MOVE | Yahoo `^MOVE` | ab 2021 |
+| MOVE | Yahoo `^MOVE` | ab 2002 |
 | CNN Fear & Greed | CNN dataviz-Endpunkt | ~1 Jahr live, optional ab 2011 nachladbar |
 | ISM Mfg PMI | PRNewswire-Pressemitteilungen | ~12 Monate |
 | AAII Bull-Bear | aaii.com | nur aktuelle Woche |
@@ -81,9 +81,11 @@ Monatsvergleich mit einer Standardabweichung von rund 50 Prozentpunkten. Die Sch
 an der Reihe selbst kalibriert (±6,0 pp, ergibt etwa eine Drittelung) statt geraten. Die Messung
 steht in `rules/v1.json` unter `calibration`.
 
-**2. Die belastbare Historie beginnt erst 2025.** ISM, AAII und Fear & Greed sind öffentlich nur für
-die jüngste Zeit zu bekommen. Von 851 rückgerechneten Wochen ab 2010 sind nur **53 aussagekräftig**
-(ab KW 33/2025). Bei allen übrigen ist mindestens ein Faktor mangels Daten nicht bestimmbar.
+**2. ISM und AAII bleiben historisch lückenhaft.** Beide sind öffentlich nur für die jüngste Zeit zu
+bekommen (ISM ~12 Monate, AAII nur die aktuelle Woche). Fear & Greed lässt sich per optionalem
+Import (siehe unten) bis 2011 zurückholen — mit ihm sind von 851 rückgerechneten Wochen ab 2010
+**815 aussagekräftig** (ab KW 1/2011); ohne ihn nur 53 (ab KW 33/2025). Bei den verbleibenden
+36 Wochen ganz am Anfang der Reihe ist mindestens ein Faktor mangels Daten nicht bestimmbar.
 
 Diese Wochen werden nicht versteckt, aber auch nie wie ein regulärer Stand dargestellt: sie tragen
 `completeness: "sparse"`, erscheinen im Verlauf schraffiert und fehlen in der Wochenauswahl. Der
@@ -140,7 +142,7 @@ src/pipeline/                             Snapshot-Bau, Store, Vergleiche
 src/server/                               API + Proxy zu den Quellen
 web/                                      Dashboard, Verlauf und Hilfe
 web/src/content/                          Erklärtexte; playbooks.ts ist gesetzt, nicht abgeleitet
-test/                                     124 Tests, davon der Golden Test
+test/                                     137 Tests, davon der Golden Test
 ```
 
 **`src/core/` ist frei von Datei- und Netzzugriff.** Dieselbe Scoring-Logik läuft im ETL, im Server
@@ -200,10 +202,16 @@ systematisch schlechtgerechnet, weil dort der Kupon den Großteil der Rendite au
 
 ### Vergleichsmodell 2018
 
-Das echte Modell hat nur 53 belastbare Wochen — Risk Off kommt darin **zweimal** vor. Für eine
-Auswertung ist das nichts. Deshalb gibt es einen zweiten Modus, der nur mit den sechs historisch
-verfügbaren Indikatoren rechnet und bis Juli 2018 zurückreicht (**420 Wochen**, einschließlich
-Corona-Crash und 2022). Bindende Grenze ist der SOFR ab April 2018.
+Ursprünglich hatte das echte Modell nur 53 belastbare Wochen — Risk Off kam darin **zweimal** vor,
+für eine Auswertung war das nichts. Deshalb gibt es einen zweiten Modus, der nur mit den sechs
+historisch durchgehend verfügbaren Indikatoren rechnet und bis Juli 2018 zurückreicht (**420
+Wochen**, einschließlich Corona-Crash und 2022). Bindende Grenze ist der SOFR ab April 2018.
+
+Der optionale Fear-&-Greed-Import (siehe oben) hat diesen Engpass inzwischen behoben: das echte
+Modell deckt jetzt **815 Wochen** ab (KW 1/2011 bis heute) — mehr als das Vergleichsmodell. Es
+bleibt trotzdem nützlich, aber aus einem anderen Grund: als unabhängige Gegenprobe mit einer
+bewusst anderen, schmaleren Methodik, die nicht am optionalen Import hängt und auch ohne ihn
+sofort läuft.
 
 Das ist **eine andere Methodik, nicht die Verlängerung des echten Modells**: der Sentiment-Faktor
 besteht dort allein aus dem VIX, der Business-Cycle-Faktor nur aus NFCI und Zinskurve. Die Mehrheit
@@ -257,8 +265,10 @@ Jede Zelle trägt zusätzlich ihre Zahl — Farbe trägt die Bedeutung nie allei
 ## Nächste Schritte
 
 - Die als `"assumed": true` markierten Schwellen gegen das Original-Regelwerk prüfen
-
 - Export des Dashboards als PNG/PDF
 - Was-wäre-wenn-Regler für die Schwellen (läuft im Browser, weil `src/core` I/O-frei ist)
 - Wochen-Automatik über die Windows-Aufgabenplanung
+- Optional: AAII-Mitgliedschaft (298 USD/Jahr) für eine offizielle statt rekonstruierte
+  Sentiment-Historie seit 1987 — nach dem Fear-&-Greed-Import nicht mehr nötig für die Abdeckung,
+  aber eine Genauigkeitsverbesserung für Wochen vor 2021
 

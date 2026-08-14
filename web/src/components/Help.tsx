@@ -747,7 +747,15 @@ function Trading({ rules, snapshot }: { rules: RulesResponse; snapshot: Snapshot
 // 6 · Grenzen
 // ---------------------------------------------------------------------------
 
-function Limits({ rules, snapshot }: { rules: RulesResponse; snapshot: Snapshot }) {
+function Limits({
+  rules,
+  snapshot,
+  meaningfulFrom,
+}: {
+  rules: RulesResponse;
+  snapshot: Snapshot;
+  meaningfulFrom: string | null;
+}) {
   return (
     <div className="panel">
       <div className="panel-head">
@@ -766,10 +774,15 @@ function Limits({ rules, snapshot }: { rules: RulesResponse; snapshot: Snapshot 
             Form, anderer Aggregatbegriff. Er ist ueberall als Ersatzreihe gekennzeichnet.
           </li>
           <li>
-            <strong>Belastbare Historie erst ab {snapshot.rulesVersion === 'v1' ? 'KW 33/2025' : 'zuletzt'}.</strong>{' '}
-            ISM, AAII und Fear &amp; Greed sind oeffentlich nur fuer die juengste Zeit zu bekommen.
-            Aeltere Wochen tragen zwar einen Gesamtscore, aber bei ihnen ist mindestens ein Faktor
-            nicht bestimmbar. Die Verlaufsansicht setzt sie schraffiert ab.
+            <strong>
+              Belastbare Historie {meaningfulFrom ? <>erst ab {weekLabel(meaningfulFrom)}</> : 'ist noch sehr kurz'}.
+            </strong>{' '}
+            ISM und AAII sind oeffentlich nur fuer die juengste Zeit zu bekommen. Aeltere Wochen
+            tragen zwar einen Gesamtscore, aber bei ihnen ist mindestens ein Faktor nicht
+            bestimmbar. Die Verlaufsansicht setzt sie schraffiert ab. Fear &amp; Greed laesst sich
+            per <code>npm run import:feargreed</code> optional bis 2011 zurueck nachladen (siehe
+            dessen Karte im Abschnitt „Die neun Indikatoren") — das allein schliesst die Sentiment-
+            Luecke fuer den ueberwiegenden Teil der Historie, ISM und AAII bleiben davon unberuehrt.
           </li>
           <li>
             <strong>ISM und NFCI werden revidiert.</strong> Ein Score, der auf einem knappen
@@ -826,10 +839,13 @@ export function Help({
   rules,
   snapshot,
   sensitivity,
+  meaningfulFrom,
 }: {
   rules: RulesResponse | null;
   snapshot: Snapshot;
   sensitivity: Sensitivity[];
+  /** Fruehester belastbarer Wochenschluessel im Bestand, aus /api/history. */
+  meaningfulFrom: string | null;
 }) {
   const [section, setSection] = useState<Section>('mechanik');
 
@@ -858,7 +874,9 @@ export function Help({
       {section === 'szenarien' && <Scenarios snapshot={snapshot} rules={rules} />}
       {section === 'anlageklassen' && <AssetPerformanceHelp />}
       {section === 'handel' && <Trading rules={rules} snapshot={snapshot} />}
-      {section === 'grenzen' && <Limits rules={rules} snapshot={snapshot} />}
+      {section === 'grenzen' && (
+        <Limits rules={rules} snapshot={snapshot} meaningfulFrom={meaningfulFrom} />
+      )}
     </>
   );
 }

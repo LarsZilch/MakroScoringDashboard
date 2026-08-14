@@ -147,7 +147,12 @@ export function App() {
       )}
       {tab === 'history' && <History history={history} wow={week.wow} yoy={week.yoy} />}
       {tab === 'help' && (
-        <Help rules={rules} snapshot={week.snapshot} sensitivity={week.sensitivity} />
+        <Help
+          rules={rules}
+          snapshot={week.snapshot}
+          sensitivity={week.sensitivity}
+          meaningfulFrom={history.meaningfulFrom}
+        />
       )}
 
       <div className="footer">
