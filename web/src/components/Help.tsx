@@ -519,7 +519,96 @@ function Scenarios({ snapshot, rules }: { snapshot: Snapshot; rules: RulesRespon
 }
 
 // ---------------------------------------------------------------------------
-// 4 · Ableitung fuer den Handel
+// 4 · Anlageklassen im Regime
+// ---------------------------------------------------------------------------
+
+/**
+ * Rein erklaerender Abschnitt, ohne eigene Daten. Die tatsaechliche Auswertung
+ * mit den aktuellen Zahlen liegt im Tab "Verlauf" unter der Delta-Tabelle
+ * (web/src/components/AssetSection.tsx) — dort stehen auch die Live-Hinweise
+ * zu Stichprobe und Konzentration, die hier nicht wiederholt, sondern
+ * eingeordnet werden.
+ */
+function AssetPerformanceHelp() {
+  return (
+    <div className="panel">
+      <div className="panel-head">
+        <div>
+          <div className="panel-title">Anlageklassen im Regime</div>
+          <div className="panel-sub">
+            die Auswertung selbst liegt im Tab Verlauf, unter der Delta-Tabelle
+          </div>
+        </div>
+      </div>
+      <div className="panel-body">
+        <p className="help-lead">
+          Ein Regime, das keinen Unterschied macht, waere ein Regime, dem man nicht trauen sollte.
+          Dieser Teil der App legt deshalb Kursverlaeufe verschiedener Anlageklassen ueber die
+          Regime-Phasen — als Gegenprobe an den eigenen Zahlen, nicht als Beweis.
+        </p>
+
+        <p>
+          Unter dem Gesamtscore liegt ein zweites Diagramm mit den Kursverlaeufen, auf 100 zum
+          Beginn des sichtbaren Zeitraums indexiert und mit derselben Regime-Schattierung im
+          Hintergrund wie das Score-Diagramm — beide Felder teilen sich Breite und Zeitachse, damit
+          sich senkrecht ablesen laesst, was eine Anlageklasse waehrend einer Phase getan hat.
+          Bewusst <strong>keine zweite y-Achse</strong>: Score und Kursindex auf einer Flaeche
+          liessen sich so skalieren, dass dieselbe Datenlage nach Gleichlauf oder nach Gegenlauf
+          aussieht — der Zusammenhang entstuende dann aus der Achsenwahl, nicht aus den Daten.
+        </p>
+
+        <div className="help-why">
+          <span className="help-why-label">Gemessen wird die Folgewoche</span>
+          Das Regime einer Woche steht erst an deren Ende fest. Wer danach handelt, ist erst in der
+          Woche darauf investiert — jede Kennzahl misst deshalb den Ertrag der Woche NACH dem
+          Signal, nie derselben. Die naheliegende Zuordnung derselben Woche waere ein Blick in die
+          Zukunft und wuerde jede Zahl beschoenigen.
+        </div>
+
+        <p>
+          Gerechnet wird auf dem Gesamtertrag (inklusive Ausschuettungen), nicht auf dem reinen
+          Kurs. Bei Anleihe-Fonds macht der Kupon den groessten Teil der Rendite aus — mit reinen
+          Kursen waeren sie systematisch schlechtgerechnet und mit Aktien nicht fair vergleichbar.
+        </p>
+
+        <p>
+          <strong>Hoechstens vier Linien gleichzeitig.</strong> Mehr Farben lassen sich auch bei
+          normalem Farbsehen nicht mehr zuverlaessig unterscheiden — geprueft, nicht geschaetzt.
+          Jede Anlageklasse hat einen festen Platz in der Auswahl, der sich nicht verschiebt, wenn
+          andere zu- oder abgeschaltet werden.
+        </p>
+
+        <div className="callout warn">
+          <strong>Zwei Modi, unterschiedliche Aussagekraft.</strong> Das echte Modell hat nur 53
+          belastbare Wochen — Risk Off kommt darin zweimal vor, das reicht zum Hinschauen, nicht
+          fuer eine Statistik. Das Vergleichsmodell 2018 rechnet stattdessen mit sechs statt neun
+          Indikatoren und reicht rund 420 Wochen zurueck. Das ist eine ANDERE METHODIK, nicht die
+          Verlaengerung des echten Modells: sein Sentiment-Faktor besteht allein aus dem VIX, sein
+          Business-Cycle-Faktor nur aus NFCI und Zinskurve. Er wird nie gespeichert, sondern bei
+          Bedarf aus den Rohdaten neu gerechnet.
+        </div>
+
+        <p>
+          <strong>Eine Zahl kann an einer einzigen Phase haengen.</strong> Die Kennzahlen-Tabelle
+          zeigt neben jeder Rendite die Zahl der Wochen und der zusammenhaengenden Episoden. Im
+          Vergleichsmodell etwa stammt der Grossteil der Risk-On-Wochen aus zwei laengeren Phasen
+          rund um 2020 — "n = 73" sieht nach einer breiten Stichprobe aus, ist im Kern aber eine
+          Handvoll unabhaengiger Beobachtungen. Solche Zellen tragen einen Stern; unter acht Wochen
+          erscheint gar keine Zahl, sondern der Hinweis darauf.
+        </p>
+
+        <p className="help-lead" style={{ marginTop: 4 }}>
+          Was daraus folgt, bleibt Rueckschau. Dass eine Anlageklasse in einem Regime bisher gut
+          lief, ist keine Garantie, dass sie es weiter tut — die Auswertung prueft das Modell, sie
+          ersetzt kein Urteil.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 5 · Ableitung fuer den Handel
 // ---------------------------------------------------------------------------
 
 /**
@@ -655,7 +744,7 @@ function Trading({ rules, snapshot }: { rules: RulesResponse; snapshot: Snapshot
 }
 
 // ---------------------------------------------------------------------------
-// 5 · Grenzen
+// 6 · Grenzen
 // ---------------------------------------------------------------------------
 
 function Limits({ rules, snapshot }: { rules: RulesResponse; snapshot: Snapshot }) {
@@ -722,12 +811,13 @@ function Limits({ rules, snapshot }: { rules: RulesResponse; snapshot: Snapshot 
 
 // ---------------------------------------------------------------------------
 
-type Section = 'mechanik' | 'indikatoren' | 'szenarien' | 'handel' | 'grenzen';
+type Section = 'mechanik' | 'indikatoren' | 'szenarien' | 'anlageklassen' | 'handel' | 'grenzen';
 
 const SECTIONS: { id: Section; label: string }[] = [
   { id: 'mechanik', label: 'Mechanik' },
   { id: 'indikatoren', label: 'Die neun Indikatoren' },
   { id: 'szenarien', label: 'Szenarien' },
+  { id: 'anlageklassen', label: 'Anlageklassen im Regime' },
   { id: 'handel', label: 'Ableitung fuer den Handel' },
   { id: 'grenzen', label: 'Grenzen' },
 ];
@@ -766,6 +856,7 @@ export function Help({
         <Indicators rules={rules} snapshot={snapshot} sensitivity={sensitivity} />
       )}
       {section === 'szenarien' && <Scenarios snapshot={snapshot} rules={rules} />}
+      {section === 'anlageklassen' && <AssetPerformanceHelp />}
       {section === 'handel' && <Trading rules={rules} snapshot={snapshot} />}
       {section === 'grenzen' && <Limits rules={rules} snapshot={snapshot} />}
     </>
