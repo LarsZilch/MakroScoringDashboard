@@ -18,6 +18,7 @@ import {
 } from '../core/derive.js';
 import type { IndicatorId, IndicatorInput, IndicatorRule } from '../core/types.js';
 import { monthName, num, shortDate, signed, trendWord } from './format.js';
+import { ACCURATE_FROM, HISTORICAL_SERIES_ID } from '../sources/cnn-historical.js';
 
 /** Alle abgerufenen Rohreihen, nach Kennung. */
 export type SeriesBundle = Record<string, Series>;
@@ -303,30 +304,61 @@ export const INDICATOR_SPECS: Record<IndicatorId, IndicatorSpec> = {
 
   fear_greed: {
     id: 'fear_greed',
-    requires: ['CNN_FEAR_GREED'],
+    // CNN_FEAR_GREED_HISTORICAL ist optional: fehlt der Cache (kein Import
+    // gelaufen), liefert loadBundle() einfach keine Reihe dafuer, und die
+    // Berechnung faellt unten sauber auf "nur live" zurueck.
+    requires: ['CNN_FEAR_GREED', HISTORICAL_SERIES_ID],
     maxAgeDays: 10,
     compute(bundle, asOf, rule) {
-      const series = bundle.CNN_FEAR_GREED;
-      if (!series?.length) return MISSING;
-      const cur = lastOnOrBefore(series, asOf);
-      if (!cur) return MISSING;
       // Die Einstufung folgt der Skala von CNN selbst, nicht dem Regelwerk —
       // sie ist Beschreibung des Rohwerts, nicht Teil der Bewertung.
-      const rating =
-        cur.value > 75 ? 'Extreme Greed'
-        : cur.value > 55 ? 'Greed'
-        : cur.value > 45 ? 'Neutral'
-        : cur.value > 25 ? 'Fear'
+      const ratingOf = (value: number) =>
+        value > 75 ? 'Extreme Greed'
+        : value > 55 ? 'Greed'
+        : value > 45 ? 'Neutral'
+        : value > 25 ? 'Fear'
         : 'Extreme Fear';
-      return {
-        measureValue: cur.value,
-        value: cur.value,
-        obsDate: cur.date,
-        display: {
-          primary: `${num(cur.value, 0)} (${rating})`,
-          secondary: corridorText(rule, 0) ?? 'Level',
-        },
-      };
+      const corridor = corridorText(rule, 0) ?? 'Level';
+
+      // 1. Echter CNN-Live-Wert hat immer Vorrang.
+      const live = bundle.CNN_FEAR_GREED;
+      const liveObs = live?.length ? lastOnOrBefore(live, asOf) : null;
+      if (liveObs) {
+        return {
+          measureValue: liveObs.value,
+          value: liveObs.value,
+          obsDate: liveObs.date,
+          display: { primary: `${num(liveObs.value, 0)} (${ratingOf(liveObs.value)})`, secondary: corridor },
+        };
+      }
+
+      /*
+       * 2. Kein Live-Wert fuer diese Woche (typisch: Wochen vor dem
+       * rollierenden ~1-Jahres-Fenster des CNN-Endpunkts) — auf die
+       * importierte Community-Rekonstruktion zurueckfallen, falls vorhanden.
+       * quality:'proxy' hier ist Absicht: dieselbe Kennzeichnung und dasselbe
+       * "ERSATZREIHE"-Badge wie beim GLI, denn genau das ist es — ein Ersatz
+       * fuer den nicht verfuegbaren Originalwert von CNN selbst.
+       */
+      const hist = bundle[HISTORICAL_SERIES_ID];
+      const histObs = hist?.length ? lastOnOrBefore(hist, asOf) : null;
+      if (histObs) {
+        const accurate = histObs.date >= ACCURATE_FROM;
+        return {
+          measureValue: histObs.value,
+          value: histObs.value,
+          obsDate: histObs.date,
+          quality: 'proxy',
+          display: {
+            primary: `${num(histObs.value, 0)} (${ratingOf(histObs.value)})`,
+            secondary:
+              `${corridor} · Rekonstruktion, nicht CNN selbst` +
+              (accurate ? '' : ` · vor ${ACCURATE_FROM}, laut Quelle weniger genau`),
+          },
+        };
+      }
+
+      return MISSING;
     },
   },
 };

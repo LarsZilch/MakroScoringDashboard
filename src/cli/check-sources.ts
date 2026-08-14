@@ -9,7 +9,16 @@
 
 import { fetchAll } from '../pipeline/fetch-all.js';
 import { INDICATOR_SPECS, ageInDays, requiredSeriesIds } from '../pipeline/indicators.js';
+import { HISTORICAL_SERIES_ID } from '../sources/cnn-historical.js';
 import type { IndicatorId } from '../core/types.js';
+
+/**
+ * Reihen, die requiredSeriesIds() zwar kennt, die aber bewusst NICHT im
+ * regulaeren Abruf-Zyklus stehen (siehe fetch-all.ts buildJobs). Ihr Fehlen
+ * in der REIHE-Tabelle oben und in den "keine Daten fuer"-Meldungen unten ist
+ * kein Fehlschlag, sondern der erwartete Zustand vor einem einmaligen Import.
+ */
+const OPTIONAL_ONE_TIME_SERIES = new Set([HISTORICAL_SERIES_ID]);
 
 const today = new Date().toISOString().slice(0, 10);
 
@@ -49,7 +58,11 @@ for (const id of Object.keys(INDICATOR_SPECS) as IndicatorId[]) {
 
   if (input.measureValue === null) {
     missing++;
-    const fehlend = spec.requires.filter((s) => !bundle[s]?.length);
+    // Optionale, einmalig zu importierende Reihen zaehlen hier nicht als
+    // Fehlgrund mit — ihr Fehlen vor dem ersten Import ist normal.
+    const fehlend = spec.requires.filter(
+      (s) => !bundle[s]?.length && !OPTIONAL_ONE_TIME_SERIES.has(s),
+    );
     console.log(
       pad(id, 16),
       pad('—', 12),
@@ -77,6 +90,15 @@ console.log(
   `\n${reports.length - failed}/${reports.length} Reihen abrufbar · ` +
     `${9 - missing}/9 Indikatoren berechenbar · ${stale} veraltet`,
 );
-console.log(`Benoetigte Rohreihen: ${requiredSeriesIds().join(', ')}`);
+const routine = requiredSeriesIds().filter((s) => !OPTIONAL_ONE_TIME_SERIES.has(s));
+const optional = requiredSeriesIds().filter((s) => OPTIONAL_ONE_TIME_SERIES.has(s));
+console.log(`Regulaer abgerufene Rohreihen: ${routine.join(', ')}`);
+if (optional.length > 0) {
+  console.log(
+    `Optionale, einmalig importierte Reihen: ${optional.join(', ')} ` +
+      `(${optional.filter((s) => bundle[s]?.length).length}/${optional.length} bereits importiert — ` +
+      'siehe npm run import:feargreed)',
+  );
+}
 
 if (failed > 0 || missing > 0) process.exitCode = 1;

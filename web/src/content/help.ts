@@ -168,9 +168,9 @@ export const INDICATOR_HELP: Record<string, IndicatorHelp> = {
     twist:
       'Kontrarisch gelesen — wie VIX und AAII. Extreme Gier wird negativ gewertet, extreme Angst positiv.',
     watchOut:
-      'Der Index ueberschneidet sich inhaltlich mit dem VIX, der eine seiner sieben Komponenten ist. Zwei der drei Sentiment-Indikatoren teilen sich damit teilweise dieselbe Information.',
+      'Der Index ueberschneidet sich inhaltlich mit dem VIX, der eine seiner sieben Komponenten ist. Zwei der drei Sentiment-Indikatoren teilen sich damit teilweise dieselbe Information. Fuer Wochen, die aus der importierten historischen Rekonstruktion stammen (siehe unten), traegt der Wert zusaetzlich das Ersatzreihen-Kennzeichen.',
     source:
-      'CNN Business ueber einen inoffiziellen Endpunkt, taeglich. Die Historie reicht nur rund ein Jahr zurueck.',
+      'CNN Business ueber einen inoffiziellen Endpunkt, taeglich. Der Live-Endpunkt reicht nur rund ein Jahr zurueck. Optional laesst sich per "npm run import:feargreed" eine kostenlose, MIT-lizenzierte Community-Rekonstruktion nachladen (github.com/whit3rabbit/fear-greed-data, taeglich seit 2011-01-03) — CNN selbst verkauft keine Historie, und kein institutioneller Datenanbieter fuehrt diese Reihe. Der Autor der Rekonstruktion weist selbst darauf hin, dass Werte vor dem 01.02.2021 aus Archiven rekonstruiert und weniger genau sind als danach; die App zeigt diesen Vorbehalt in jeder betroffenen Woche an. Die echte CNN-Quelle hat immer Vorrang, sobald sie fuer eine Woche etwas liefert.',
   },
 };
 

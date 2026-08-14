@@ -54,10 +54,23 @@ export interface FetchOptions {
 
 function buildJobs(opts: FetchOptions): Job[] {
   const fredOpts = opts.from ? { from: opts.from } : {};
+  /*
+   * ACHTUNG bei diesem Default: Yahoo liefert bei sehr langen Zeitraeumen
+   * (range=max) trotz interval=1wk STILL eine geringere Granularitaet fuer
+   * aeltere Jahre — geprueft am 14.08.2026: 2011 kam mit range=max nur mit 4
+   * (!) Punkten statt 52 zurueck, dieselbe Anfrage mit range=20y lieferte 52
+   * echte Wochenbars durchgehend von 2006 bis heute. Ohne diese Beobachtung
+   * wuerden Regime-Wochen vor rund 2016 in der Anlageklassen-Auswertung
+   * (regime-assets.ts) still ohne Folgewochen-Rendite bleiben — nicht weil
+   * die Woche fehlt, sondern weil der Kurs-Cache sie nur alle drei Monate
+   * kennt. 20 Jahre reichen komfortabel bis vor den fruehesten Regime-Start
+   * (2011, durch den Fear-&-Greed-Import) und sind bislang die laengste
+   * gepruefte Spanne mit durchgehend echter Wochengranularitaet.
+   */
   const assetJobs: Job[] = opts.includeAssets
     ? ASSETS.map((a) => ({
         seriesId: assetSeriesId(a.id),
-        run: () => fetchAsset(a, { range: opts.assetRange ?? '10y' }),
+        run: () => fetchAsset(a, { range: opts.assetRange ?? '20y' }),
       }))
     : [];
 
@@ -71,6 +84,7 @@ function buildJobs(opts: FetchOptions): Job[] {
     { seriesId: 'WALCL', run: () => fetchFred('WALCL', fredOpts) },
     { seriesId: 'WTREGEN', run: () => fetchFred('WTREGEN', fredOpts) },
     { seriesId: 'RRPONTSYD', run: () => fetchFred('RRPONTSYD', fredOpts) },
+    // yahooRange gilt nur fuer MOVE; assetRange fuer die elf Anlageklassen s.u.
     { seriesId: 'MOVE', run: () => fetchMove({ range: opts.yahooRange ?? '5y' }) },
     { seriesId: 'CNN_FEAR_GREED', run: () => fetchFearGreed() },
     { seriesId: 'AAII_BULL_BEAR', run: () => fetchAaii() },

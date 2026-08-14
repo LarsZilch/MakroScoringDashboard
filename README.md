@@ -63,7 +63,7 @@ Datei, alte Snapshots bleiben reproduzierbar.
 | SOFR − IORB | FRED `SOFR`, `IORB` + `IOER` verkettet | ab 2018 |
 | Liquidität (Ersatz) | FRED `WALCL` − `WTREGEN` − `RRPONTSYD` | ab 2002 |
 | MOVE | Yahoo `^MOVE` | ab 2021 |
-| CNN Fear & Greed | CNN dataviz-Endpunkt | ~1 Jahr |
+| CNN Fear & Greed | CNN dataviz-Endpunkt | ~1 Jahr live, optional ab 2011 nachladbar |
 | ISM Mfg PMI | PRNewswire-Pressemitteilungen | ~12 Monate |
 | AAII Bull-Bear | aaii.com | nur aktuelle Woche |
 
@@ -96,6 +96,37 @@ Mehrheitsregel, Risk On bei +2 und Neutral bei +1), ist als solches vermerkt. Al
 `"assumed": true` samt Begründung — insbesondere die numerischen Schwellen für ISM, NFCI und
 Spread-Änderung, das Verhalten oberhalb der Sentiment-Korridore (kontrarisch gelesen) und die
 Regime-Bänder für negative Gesamtscores.
+
+### Optional: historische Fear-&-Greed-Daten nachladen
+
+Recherche vom 14.08.2026: CNN verkauft keine Historie seines Fear-&-Greed-Index, und kein
+institutioneller Datenanbieter (Bloomberg, Refinitiv, FactSet, Trading Economics, Quandl) führt die
+Reihe. AAII verkauft seine volle Historie seit 1987 über die Mitgliedschaft (298 USD/Jahr,
+[invest.aaii.com/membership](https://invest.aaii.com/membership)) — für Fear & Greed gibt es
+dagegen nur eine kostenlose, MIT-lizenzierte Community-Rekonstruktion:
+[github.com/whit3rabbit/fear-greed-data](https://github.com/whit3rabbit/fear-greed-data), täglich
+seit 2011-01-03.
+
+```bash
+npm run import:feargreed
+```
+
+lädt sie einmalig in den Cache; `npm run backfill -- --no-fetch` rechnet danach die betroffenen
+historischen Snapshots neu. Wichtig: **der Autor der Quelle weist selbst darauf hin, dass Werte vor
+dem 01.02.2021 aus Archiven rekonstruiert und weniger genau sind** als danach. Die App verschweigt
+das nicht — Wochen, die aus dem Import stammen, tragen `quality: "proxy"` (dasselbe
+`ERSATZREIHE`-Badge wie beim GLI) und bei Daten vor der Grenze einen zusätzlichen Hinweis in der
+Anzeigezeile. Die echte CNN-Live-Quelle hat für jede Woche, die sie abdeckt, immer Vorrang.
+
+Der Import läuft **nicht** im regulären `npm run update` mit — die CSV ist ein statischer
+vergangener Zeitraum von einem Drittanbieter-Repo, und der wöchentliche Betrieb soll nicht an dessen
+Verfügbarkeit hängen.
+
+Warum das allein schon fast die ganze Lücke schließt: ein Faktor gilt als bestimmbar, sobald 2 von 3
+Mitgliedern einen Wert haben. NFCI und Zinskurve sind immer da, GLI und MOVE fast immer — Business
+Cycle und Liquidität sind damit historisch fast durchgehend bestimmbar, auch ganz ohne ISM oder
+SOFR-Vorgeschichte. Einzig Sentiment war blockiert, weil AAII und Fear & Greed gleichzeitig fehlten
+und VIX allein nicht reicht. Ein einziger nachgerüsteter Datensatz genügt also bereits.
 
 ## Aufbau
 
