@@ -1,5 +1,7 @@
 /** Anzeigeformate, deutsch. Spiegelt src/pipeline/format.ts. */
 
+import { isoDate, isoWeekEnd, isoWeekStart, parseIsoWeekKey } from '../../src/core/isoweek.js';
+
 export function num(value: number, decimals = 1): string {
   return value
     .toLocaleString('de-DE', {
@@ -32,6 +34,20 @@ export function shortDate(iso: string): string {
 export function weekLabel(weekKey: string): string {
   const [year, week] = weekKey.split('-W');
   return `KW ${Number(week)}/${year}`;
+}
+
+/** Montag–Sonntag der Kalenderwoche als Datum, z. B. "02.02.–08.02.2026". */
+export function weekDateRange(weekKey: string): string {
+  const w = parseIsoWeekKey(weekKey);
+  const start = isoDate(isoWeekStart(w));
+  const end = isoDate(isoWeekEnd(w));
+  const startText = shortDate(start).slice(0, 6); // "TT.MM."
+  return `${startText}–${shortDate(end)}`;
+}
+
+/** Wochenlabel mit Datum, fuer Tooltips beim Vergleichen ueber Charts hinweg. */
+export function weekLabelWithDate(weekKey: string): string {
+  return `${weekLabel(weekKey)} · ${weekDateRange(weekKey)}`;
 }
 
 export const REGIME_ORDER = ['Risk On', 'Neutral', 'Risk Off', 'Defensiv'];

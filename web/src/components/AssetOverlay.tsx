@@ -27,7 +27,7 @@ import {
   stepWidth,
   ChartDefs,
 } from './chartGeometry';
-import { num } from '../format';
+import { num, weekLabelWithDate } from '../format';
 import type { AssetCurve, RegimeWeekPoint } from '../types';
 
 const HEIGHT = 260;
@@ -193,7 +193,7 @@ export function AssetOverlay({
 
       {active && (
         <div className="overlay-tooltip">
-          <strong>{active.weekKey.replace('-W', ' · KW ')}</strong> — {active.regime}
+          <strong>{weekLabelWithDate(active.weekKey)}</strong> — {active.regime}
           <br />
           {shown.map(({ curve, color }) => {
             const p = curve.points.find((q) => q.weekKey === active.weekKey);

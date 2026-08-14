@@ -13,7 +13,7 @@ import { useState } from 'react';
 import type { HistoryPoint } from '../types';
 import { INK, linearScale, stepPath } from './viz';
 import { CHART_W, MARGIN, RegimeBands, innerWidth, stepWidth, weekScale } from './chartGeometry';
-import { scoreText, weekLabel } from '../format';
+import { scoreText, weekLabelWithDate } from '../format';
 
 /*
  * Breite und seitliche Raender kommen aus chartGeometry, damit dieses
@@ -187,7 +187,7 @@ export function ScoreChart({
             pointerEvents: 'none',
           }}
         >
-          <strong>{weekLabel(active.weekKey)}</strong>
+          <strong>{weekLabelWithDate(active.weekKey)}</strong>
           <br />
           Score {scoreText(active.total)} · {active.regime}
           {active.completeness === 'sparse' && (

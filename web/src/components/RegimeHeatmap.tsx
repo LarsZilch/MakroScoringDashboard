@@ -13,7 +13,7 @@
 import { useState } from 'react';
 import type { HistoryPoint } from '../types';
 import { INK, REGIME_COLOR, REGIME_SCALE } from './viz';
-import { scoreText, weekLabel } from '../format';
+import { scoreText, weekLabelWithDate } from '../format';
 
 export function RegimeHeatmap({ points }: { points: HistoryPoint[] }) {
   const [hover, setHover] = useState<HistoryPoint | null>(null);
@@ -141,7 +141,7 @@ export function RegimeHeatmap({ points }: { points: HistoryPoint[] }) {
 
       {hover && (
         <div style={{ marginTop: 12, fontSize: 13.5 }}>
-          <strong>{weekLabel(hover.weekKey)}</strong> · Score {scoreText(hover.total)} ·{' '}
+          <strong>{weekLabelWithDate(hover.weekKey)}</strong> · Score {scoreText(hover.total)} ·{' '}
           {hover.completeness === 'sparse' ? (
             <em style={{ color: INK.muted }}>
               unvollstaendig — der Score ergibt sich aus einer Datenluecke
