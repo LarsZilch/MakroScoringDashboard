@@ -1,6 +1,6 @@
 {
-  "builtAt": "2026-08-13T13:11:27.649Z",
-  "completeness": "sparse",
+  "builtAt": "2026-08-14T10:02:00.348Z",
+  "completeness": "partial",
   "dataAsOf": "2022-11-20",
   "factors": {
     "business_cycle": {
@@ -36,7 +36,7 @@
       "score": 0
     },
     "sentiment": {
-      "determinable": false,
+      "determinable": true,
       "id": "sentiment",
       "indicators": [
         "vix",
@@ -44,11 +44,11 @@
         "fear_greed"
       ],
       "label": "Sentiment",
-      "missing": 2,
+      "missing": 1,
       "negatives": 0,
-      "neutrals": 1,
+      "neutrals": 2,
       "positives": 0,
-      "rationale": "2 von 3 ohne Wert — nicht bestimmbar",
+      "rationale": "0 positiv, 0 negativ, 1 ohne Wert — keine Mehrheit",
       "score": 0
     }
   },
@@ -68,18 +68,47 @@
       "value": null
     },
     "fear_greed": {
+      "display": {
+        "primary": "60 (Greed)",
+        "secondary": "Korridor 20 bis 70 · Rekonstruktion, nicht CNN selbst"
+      },
       "factor": "sentiment",
-      "flips": [],
+      "flips": [
+        {
+          "boundary": 70,
+          "direction": "up",
+          "gap": 9.657142857142851,
+          "gapSigma": 0.7692459645317118,
+          "gapTicks": 9.657142857142851,
+          "toScore": -1
+        },
+        {
+          "boundary": 20,
+          "direction": "down",
+          "gap": 40.34285714285715,
+          "gapSigma": 3.2135363962094017,
+          "gapTicks": 40.34285714285715,
+          "toScore": 1
+        }
+      ],
       "id": "fear_greed",
       "label": "CNN Fear & Greed · Level",
       "measure": "level",
-      "measureValue": null,
-      "nearestFlip": null,
-      "quality": "missing",
+      "measureValue": 60.34285714285715,
+      "nearestFlip": {
+        "boundary": 70,
+        "direction": "up",
+        "gap": 9.657142857142851,
+        "gapSigma": 0.7692459645317118,
+        "gapTicks": 9.657142857142851,
+        "toScore": -1
+      },
+      "obsDate": "2022-11-18",
+      "quality": "proxy",
       "score": 0,
-      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "scoreNote": "im Korridor",
       "unit": "",
-      "value": null
+      "value": 60.34285714285715
     },
     "gli": {
       "derived": {
@@ -89,7 +118,7 @@
         "rate3mAnnPrev": -12.097296810366897
       },
       "display": {
-        "primary": "-7,6 % 3m ann.",
+        "primary": "−7,6 % 3m ann.",
         "secondary": "steigend"
       },
       "factor": "liquidity",
@@ -155,7 +184,7 @@
           "boundary": 100,
           "direction": "down",
           "gap": 29.330001831054688,
-          "gapSigma": 4.452232172915118,
+          "gapSigma": 4.494553130224948,
           "gapTicks": 29.330001831054688,
           "toScore": 0
         },
@@ -163,7 +192,7 @@
           "boundary": 80,
           "direction": "down",
           "gap": 49.33000183105469,
-          "gapSigma": 7.488189823760596,
+          "gapSigma": 7.55936925680705,
           "gapTicks": 49.33000183105469,
           "toScore": 0
         }
@@ -176,7 +205,7 @@
         "boundary": 100,
         "direction": "down",
         "gap": 29.330001831054688,
-        "gapSigma": 4.452232172915118,
+        "gapSigma": 4.494553130224948,
         "gapTicks": 29.330001831054688,
         "toScore": 0
       },
@@ -331,7 +360,7 @@
     "vix": {
       "display": {
         "primary": "23,12",
-        "secondary": "Korridor 15–25"
+        "secondary": "Korridor 15 bis 25"
       },
       "factor": "sentiment",
       "flips": [
@@ -374,16 +403,14 @@
   },
   "isoWeek": 46,
   "isoYear": 2022,
-  "meaningful": false,
+  "meaningful": true,
   "missing": [
     "ism_mfg_pmi",
-    "aaii",
-    "fear_greed"
+    "aaii"
   ],
   "notes": [
     "Nachtraeglich gefuellte Woche (Backfill) — kein veroeffentlichter Stand",
-    "3 von 9 Indikatoren ohne Wert: ism_mfg_pmi, aaii, fear_greed",
-    "Nicht bestimmbare Faktoren: sentiment — sie gehen als 0 in die Summe ein. Der Gesamtscore -1 und das Regime \"Risk Off\" sind daher KEINE Marktaussage, sondern Ausdruck einer Datenluecke und duerfen nicht als Stand gelesen werden."
+    "2 von 9 Indikatoren ohne Wert: ism_mfg_pmi, aaii"
   ],
   "regime": {
     "assumed": true,
@@ -397,9 +424,7 @@
   "schemaVersion": 1,
   "stale": [],
   "total": -1,
-  "undeterminableFactors": [
-    "sentiment"
-  ],
+  "undeterminableFactors": [],
   "weekEnd": "2022-11-20",
   "weekKey": "2022-W46",
   "weekStart": "2022-11-14"

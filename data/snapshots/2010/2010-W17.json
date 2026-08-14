@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-08-13T13:11:20.696Z",
+  "builtAt": "2026-08-14T10:01:53.200Z",
   "completeness": "sparse",
   "dataAsOf": "2010-05-02",
   "factors": {
@@ -219,7 +219,7 @@
       },
       "display": {
         "primary": "+2,72 %",
-        "secondary": "leicht unveraendert (−9 bps)"
+        "secondary": "leicht flacher (−9 bps)"
       },
       "factor": "business_cycle",
       "flips": [
@@ -262,7 +262,7 @@
     "vix": {
       "display": {
         "primary": "22,05",
-        "secondary": "Korridor 15–25"
+        "secondary": "Korridor 15 bis 25"
       },
       "factor": "sentiment",
       "flips": [

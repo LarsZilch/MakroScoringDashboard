@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-08-13T13:11:29.283Z",
+  "builtAt": "2026-08-14T10:02:02.030Z",
   "completeness": "partial",
   "dataAsOf": "2025-09-21",
   "factors": {
@@ -70,7 +70,7 @@
     "fear_greed": {
       "display": {
         "primary": "66 (Greed)",
-        "secondary": "Korridor 20–70"
+        "secondary": "Korridor 20 bis 70"
       },
       "factor": "sentiment",
       "flips": [
@@ -78,7 +78,7 @@
           "boundary": 70,
           "direction": "up",
           "gap": 3.771428571428558,
-          "gapSigma": null,
+          "gapSigma": 0.3157100937842254,
           "gapTicks": 3.771428571428558,
           "toScore": -1
         },
@@ -86,7 +86,7 @@
           "boundary": 20,
           "direction": "down",
           "gap": 46.22857142857144,
-          "gapSigma": null,
+          "gapSigma": 3.869840391991505,
           "gapTicks": 46.22857142857144,
           "toScore": 1
         }
@@ -99,7 +99,7 @@
         "boundary": 70,
         "direction": "up",
         "gap": 3.771428571428558,
-        "gapSigma": null,
+        "gapSigma": 0.3157100937842254,
         "gapTicks": 3.771428571428558,
         "toScore": -1
       },
@@ -118,7 +118,7 @@
         "rate3mAnnPrev": 6.26920192734246
       },
       "display": {
-        "primary": "-18,2 % 3m ann.",
+        "primary": "−18,2 % 3m ann.",
         "secondary": "fallend"
       },
       "factor": "liquidity",
@@ -184,7 +184,7 @@
           "boundary": 80,
           "direction": "up",
           "gap": 7.489997863769531,
-          "gapSigma": 1.018179924489954,
+          "gapSigma": 1.0244781295814227,
           "gapTicks": 7.489997863769531,
           "toScore": 0
         },
@@ -192,7 +192,7 @@
           "boundary": 100,
           "direction": "up",
           "gap": 27.48999786376953,
-          "gapSigma": 3.7369521938789045,
+          "gapSigma": 3.7600680408603244,
           "gapTicks": 27.48999786376953,
           "toScore": 0
         }
@@ -205,7 +205,7 @@
         "boundary": 80,
         "direction": "up",
         "gap": 7.489997863769531,
-        "gapSigma": 1.018179924489954,
+        "gapSigma": 1.0244781295814227,
         "gapTicks": 7.489997863769531,
         "toScore": 0
       },
@@ -360,7 +360,7 @@
     "vix": {
       "display": {
         "primary": "15,45",
-        "secondary": "Korridor 15–25"
+        "secondary": "Korridor 15 bis 25"
       },
       "factor": "sentiment",
       "flips": [

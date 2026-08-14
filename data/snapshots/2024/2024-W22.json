@@ -1,6 +1,6 @@
 {
-  "builtAt": "2026-08-13T13:11:28.521Z",
-  "completeness": "sparse",
+  "builtAt": "2026-08-14T10:02:01.258Z",
+  "completeness": "partial",
   "dataAsOf": "2024-06-02",
   "factors": {
     "business_cycle": {
@@ -36,7 +36,7 @@
       "score": 0
     },
     "sentiment": {
-      "determinable": false,
+      "determinable": true,
       "id": "sentiment",
       "indicators": [
         "vix",
@@ -44,11 +44,11 @@
         "fear_greed"
       ],
       "label": "Sentiment",
-      "missing": 2,
+      "missing": 1,
       "negatives": 1,
-      "neutrals": 0,
+      "neutrals": 1,
       "positives": 0,
-      "rationale": "2 von 3 ohne Wert — nicht bestimmbar",
+      "rationale": "0 positiv, 1 negativ, 1 ohne Wert — keine Mehrheit",
       "score": 0
     }
   },
@@ -68,18 +68,47 @@
       "value": null
     },
     "fear_greed": {
+      "display": {
+        "primary": "48 (Neutral)",
+        "secondary": "Korridor 20 bis 70 · Rekonstruktion, nicht CNN selbst"
+      },
       "factor": "sentiment",
-      "flips": [],
+      "flips": [
+        {
+          "boundary": 70,
+          "direction": "up",
+          "gap": 21.571428571428562,
+          "gapSigma": 1.7753337304576104,
+          "gapTicks": 21.571428571428562,
+          "toScore": -1
+        },
+        {
+          "boundary": 20,
+          "direction": "down",
+          "gap": 28.428571428571438,
+          "gapSigma": 2.33967822755672,
+          "gapTicks": 28.428571428571438,
+          "toScore": 1
+        }
+      ],
       "id": "fear_greed",
       "label": "CNN Fear & Greed · Level",
       "measure": "level",
-      "measureValue": null,
-      "nearestFlip": null,
-      "quality": "missing",
+      "measureValue": 48.42857142857144,
+      "nearestFlip": {
+        "boundary": 70,
+        "direction": "up",
+        "gap": 21.571428571428562,
+        "gapSigma": 1.7753337304576104,
+        "gapTicks": 21.571428571428562,
+        "toScore": -1
+      },
+      "obsDate": "2024-05-31",
+      "quality": "proxy",
       "score": 0,
-      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "scoreNote": "im Korridor",
       "unit": "",
-      "value": null
+      "value": 48.42857142857144
     },
     "gli": {
       "derived": {
@@ -89,7 +118,7 @@
         "rate3mAnnPrev": -10.332794748039264
       },
       "display": {
-        "primary": "-5,8 % 3m ann.",
+        "primary": "−5,8 % 3m ann.",
         "secondary": "steigend"
       },
       "factor": "liquidity",
@@ -155,7 +184,7 @@
           "boundary": 100,
           "direction": "up",
           "gap": 8.860000610351562,
-          "gapSigma": 1.2249937850444916,
+          "gapSigma": 1.2335690112685582,
           "gapTicks": 8.860000610351562,
           "toScore": -1
         },
@@ -163,7 +192,7 @@
           "boundary": 80,
           "direction": "down",
           "gap": 11.139999389648438,
-          "gapSigma": 1.5402290155347156,
+          "gapSigma": 1.5510109577831832,
           "gapTicks": 11.139999389648438,
           "toScore": 1
         }
@@ -176,7 +205,7 @@
         "boundary": 100,
         "direction": "up",
         "gap": 8.860000610351562,
-        "gapSigma": 1.2249937850444916,
+        "gapSigma": 1.2335690112685582,
         "gapTicks": 8.860000610351562,
         "toScore": -1
       },
@@ -288,7 +317,7 @@
       },
       "display": {
         "primary": "−0,38 %",
-        "secondary": "leicht unveraendert (+1 bps)"
+        "secondary": "unveraendert (+1 bps)"
       },
       "factor": "business_cycle",
       "flips": [
@@ -331,7 +360,7 @@
     "vix": {
       "display": {
         "primary": "12,92",
-        "secondary": "Korridor 15–25"
+        "secondary": "Korridor 15 bis 25"
       },
       "factor": "sentiment",
       "flips": [
@@ -374,16 +403,14 @@
   },
   "isoWeek": 22,
   "isoYear": 2024,
-  "meaningful": false,
+  "meaningful": true,
   "missing": [
     "ism_mfg_pmi",
-    "aaii",
-    "fear_greed"
+    "aaii"
   ],
   "notes": [
     "Nachtraeglich gefuellte Woche (Backfill) — kein veroeffentlichter Stand",
-    "3 von 9 Indikatoren ohne Wert: ism_mfg_pmi, aaii, fear_greed",
-    "Nicht bestimmbare Faktoren: sentiment — sie gehen als 0 in die Summe ein. Der Gesamtscore 0 und das Regime \"Neutral\" sind daher KEINE Marktaussage, sondern Ausdruck einer Datenluecke und duerfen nicht als Stand gelesen werden."
+    "2 von 9 Indikatoren ohne Wert: ism_mfg_pmi, aaii"
   ],
   "regime": {
     "assumed": false,
@@ -397,9 +424,7 @@
   "schemaVersion": 1,
   "stale": [],
   "total": 0,
-  "undeterminableFactors": [
-    "sentiment"
-  ],
+  "undeterminableFactors": [],
   "weekEnd": "2024-06-02",
   "weekKey": "2024-W22",
   "weekStart": "2024-05-27"

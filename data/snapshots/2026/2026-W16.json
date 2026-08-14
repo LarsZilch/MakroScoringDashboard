@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-08-13T13:11:29.625Z",
+  "builtAt": "2026-08-14T10:02:02.383Z",
   "completeness": "partial",
   "dataAsOf": "2026-04-19",
   "factors": {
@@ -70,7 +70,7 @@
     "fear_greed": {
       "display": {
         "primary": "69 (Greed)",
-        "secondary": "Korridor 20–70"
+        "secondary": "Korridor 20 bis 70"
       },
       "factor": "sentiment",
       "flips": [
@@ -78,7 +78,7 @@
           "boundary": 70,
           "direction": "up",
           "gap": 1.4285714285714164,
-          "gapSigma": 0.13551106441783572,
+          "gapSigma": 0.1199039200552257,
           "gapTicks": 1.4285714285714164,
           "toScore": -1
         },
@@ -86,7 +86,7 @@
           "boundary": 20,
           "direction": "down",
           "gap": 48.571428571428584,
-          "gapSigma": 4.607376190206455,
+          "gapSigma": 4.07673328187771,
           "gapTicks": 48.571428571428584,
           "toScore": 1
         }
@@ -99,7 +99,7 @@
         "boundary": 70,
         "direction": "up",
         "gap": 1.4285714285714164,
-        "gapSigma": 0.13551106441783572,
+        "gapSigma": 0.1199039200552257,
         "gapTicks": 1.4285714285714164,
         "toScore": -1
       },
@@ -217,7 +217,7 @@
           "boundary": 80,
           "direction": "up",
           "gap": 14.300003051757812,
-          "gapSigma": 1.9319453453931645,
+          "gapSigma": 1.9433183842542758,
           "gapTicks": 14.300003051757812,
           "toScore": 0
         },
@@ -225,7 +225,7 @@
           "boundary": 100,
           "direction": "up",
           "gap": 34.30000305175781,
-          "gapSigma": 4.6339662308442096,
+          "gapSigma": 4.6612456143682515,
           "gapTicks": 34.30000305175781,
           "toScore": 0
         }
@@ -238,7 +238,7 @@
         "boundary": 80,
         "direction": "up",
         "gap": 14.300003051757812,
-        "gapSigma": 1.9319453453931645,
+        "gapSigma": 1.9433183842542758,
         "gapTicks": 14.300003051757812,
         "toScore": 0
       },
@@ -350,7 +350,7 @@
       },
       "display": {
         "primary": "+0,55 %",
-        "secondary": "leicht unveraendert (−10 bps)"
+        "secondary": "leicht flacher (−10 bps)"
       },
       "factor": "business_cycle",
       "flips": [
@@ -393,7 +393,7 @@
     "vix": {
       "display": {
         "primary": "17,48",
-        "secondary": "Korridor 15–25"
+        "secondary": "Korridor 15 bis 25"
       },
       "factor": "sentiment",
       "flips": [

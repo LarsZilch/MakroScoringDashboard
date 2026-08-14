@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-08-13T13:11:29.659Z",
+  "builtAt": "2026-08-14T10:02:02.417Z",
   "completeness": "partial",
   "dataAsOf": "2026-05-10",
   "factors": {
@@ -70,7 +70,7 @@
     "fear_greed": {
       "display": {
         "primary": "67 (Greed)",
-        "secondary": "Korridor 20–70"
+        "secondary": "Korridor 20 bis 70"
       },
       "factor": "sentiment",
       "flips": [
@@ -78,7 +78,7 @@
           "boundary": 70,
           "direction": "up",
           "gap": 2.714285714285708,
-          "gapSigma": 0.23903861935046886,
+          "gapSigma": 0.22726773457946886,
           "gapTicks": 2.714285714285708,
           "toScore": -1
         },
@@ -86,7 +86,7 @@
           "boundary": 20,
           "direction": "down",
           "gap": 47.28571428571429,
-          "gapSigma": 4.164304368684493,
+          "gapSigma": 3.959243165568651,
           "gapTicks": 47.28571428571429,
           "toScore": 1
         }
@@ -99,7 +99,7 @@
         "boundary": 70,
         "direction": "up",
         "gap": 2.714285714285708,
-        "gapSigma": 0.23903861935046886,
+        "gapSigma": 0.22726773457946886,
         "gapTicks": 2.714285714285708,
         "toScore": -1
       },
@@ -217,7 +217,7 @@
           "boundary": 80,
           "direction": "up",
           "gap": 12.75,
-          "gapSigma": 1.7246030921533417,
+          "gapSigma": 1.7347432243449195,
           "gapTicks": 12.75,
           "toScore": 0
         },
@@ -225,7 +225,7 @@
           "boundary": 100,
           "direction": "up",
           "gap": 32.75,
-          "gapSigma": 4.42986284455074,
+          "gapSigma": 4.455909066454597,
           "gapTicks": 32.75,
           "toScore": 0
         }
@@ -238,7 +238,7 @@
         "boundary": 80,
         "direction": "up",
         "gap": 12.75,
-        "gapSigma": 1.7246030921533417,
+        "gapSigma": 1.7347432243449195,
         "gapTicks": 12.75,
         "toScore": 0
       },
@@ -393,7 +393,7 @@
     "vix": {
       "display": {
         "primary": "17,19",
-        "secondary": "Korridor 15–25"
+        "secondary": "Korridor 15 bis 25"
       },
       "factor": "sentiment",
       "flips": [

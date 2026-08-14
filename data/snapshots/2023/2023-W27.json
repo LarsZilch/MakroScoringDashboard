@@ -1,6 +1,6 @@
 {
-  "builtAt": "2026-08-13T13:11:28.005Z",
-  "completeness": "sparse",
+  "builtAt": "2026-08-14T10:02:00.717Z",
+  "completeness": "partial",
   "dataAsOf": "2023-07-09",
   "factors": {
     "business_cycle": {
@@ -36,7 +36,7 @@
       "score": -1
     },
     "sentiment": {
-      "determinable": false,
+      "determinable": true,
       "id": "sentiment",
       "indicators": [
         "vix",
@@ -44,12 +44,12 @@
         "fear_greed"
       ],
       "label": "Sentiment",
-      "missing": 2,
-      "negatives": 1,
+      "missing": 1,
+      "negatives": 2,
       "neutrals": 0,
       "positives": 0,
-      "rationale": "2 von 3 ohne Wert — nicht bestimmbar",
-      "score": 0
+      "rationale": "2 von 3 negativ",
+      "score": -1
     }
   },
   "indicators": {
@@ -68,18 +68,47 @@
       "value": null
     },
     "fear_greed": {
+      "display": {
+        "primary": "78 (Extreme Greed)",
+        "secondary": "Korridor 20 bis 70 · Rekonstruktion, nicht CNN selbst"
+      },
       "factor": "sentiment",
-      "flips": [],
+      "flips": [
+        {
+          "boundary": 70,
+          "direction": "down",
+          "gap": 7.685714285714283,
+          "gapSigma": 0.6203266518356607,
+          "gapTicks": 7.685714285714283,
+          "toScore": 0
+        },
+        {
+          "boundary": 20,
+          "direction": "down",
+          "gap": 57.68571428571428,
+          "gapSigma": 4.655908959316726,
+          "gapTicks": 57.68571428571428,
+          "toScore": 0
+        }
+      ],
       "id": "fear_greed",
       "label": "CNN Fear & Greed · Level",
       "measure": "level",
-      "measureValue": null,
-      "nearestFlip": null,
-      "quality": "missing",
-      "score": 0,
-      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "measureValue": 77.68571428571428,
+      "nearestFlip": {
+        "boundary": 70,
+        "direction": "down",
+        "gap": 7.685714285714283,
+        "gapSigma": 0.6203266518356607,
+        "gapTicks": 7.685714285714283,
+        "toScore": 0
+      },
+      "obsDate": "2023-07-07",
+      "quality": "proxy",
+      "score": -1,
+      "scoreNote": "Extreme Greed, kontrarisch negativ",
       "unit": "",
-      "value": null
+      "value": 77.68571428571428
     },
     "gli": {
       "derived": {
@@ -89,7 +118,7 @@
         "rate3mAnnPrev": 26.989940837122404
       },
       "display": {
-        "primary": "-12,5 % 3m ann.",
+        "primary": "−12,5 % 3m ann.",
         "secondary": "fallend"
       },
       "factor": "liquidity",
@@ -155,7 +184,7 @@
           "boundary": 100,
           "direction": "down",
           "gap": 30.410003662109375,
-          "gapSigma": 4.2216678817937705,
+          "gapSigma": 4.253526196729933,
           "gapTicks": 30.410003662109375,
           "toScore": 0
         },
@@ -163,7 +192,7 @@
           "boundary": 80,
           "direction": "down",
           "gap": 50.410003662109375,
-          "gapSigma": 6.998167305273904,
+          "gapSigma": 7.050978143129922,
           "gapTicks": 50.410003662109375,
           "toScore": 0
         }
@@ -176,7 +205,7 @@
         "boundary": 100,
         "direction": "down",
         "gap": 30.410003662109375,
-        "gapSigma": 4.2216678817937705,
+        "gapSigma": 4.253526196729933,
         "gapTicks": 30.410003662109375,
         "toScore": 0
       },
@@ -331,7 +360,7 @@
     "vix": {
       "display": {
         "primary": "14,83",
-        "secondary": "Korridor 15–25"
+        "secondary": "Korridor 15 bis 25"
       },
       "factor": "sentiment",
       "flips": [
@@ -374,16 +403,14 @@
   },
   "isoWeek": 27,
   "isoYear": 2023,
-  "meaningful": false,
+  "meaningful": true,
   "missing": [
     "ism_mfg_pmi",
-    "aaii",
-    "fear_greed"
+    "aaii"
   ],
   "notes": [
     "Nachtraeglich gefuellte Woche (Backfill) — kein veroeffentlichter Stand",
-    "3 von 9 Indikatoren ohne Wert: ism_mfg_pmi, aaii, fear_greed",
-    "Nicht bestimmbare Faktoren: sentiment — sie gehen als 0 in die Summe ein. Der Gesamtscore -1 und das Regime \"Risk Off\" sind daher KEINE Marktaussage, sondern Ausdruck einer Datenluecke und duerfen nicht als Stand gelesen werden."
+    "2 von 9 Indikatoren ohne Wert: ism_mfg_pmi, aaii"
   ],
   "regime": {
     "assumed": true,
@@ -396,10 +423,8 @@
   "rulesVersion": "v1",
   "schemaVersion": 1,
   "stale": [],
-  "total": -1,
-  "undeterminableFactors": [
-    "sentiment"
-  ],
+  "total": -2,
+  "undeterminableFactors": [],
   "weekEnd": "2023-07-09",
   "weekKey": "2023-W27",
   "weekStart": "2023-07-03"

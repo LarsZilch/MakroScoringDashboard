@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-08-13T13:11:29.579Z",
+  "builtAt": "2026-08-14T10:02:02.338Z",
   "completeness": "partial",
   "dataAsOf": "2026-03-22",
   "factors": {
@@ -70,7 +70,7 @@
     "fear_greed": {
       "display": {
         "primary": "8 (Extreme Fear)",
-        "secondary": "Korridor 20–70"
+        "secondary": "Korridor 20 bis 70"
       },
       "factor": "sentiment",
       "flips": [
@@ -78,7 +78,7 @@
           "boundary": 20,
           "direction": "up",
           "gap": 11.6,
-          "gapSigma": 1.1297480933568524,
+          "gapSigma": 0.9736016582608567,
           "gapTicks": 11.6,
           "toScore": 0
         },
@@ -86,7 +86,7 @@
           "boundary": 70,
           "direction": "up",
           "gap": 61.6,
-          "gapSigma": 5.999351944032941,
+          "gapSigma": 5.170160530074894,
           "gapTicks": 61.6,
           "toScore": 0
         }
@@ -99,7 +99,7 @@
         "boundary": 20,
         "direction": "up",
         "gap": 11.6,
-        "gapSigma": 1.1297480933568524,
+        "gapSigma": 0.9736016582608567,
         "gapTicks": 11.6,
         "toScore": 0
       },
@@ -217,7 +217,7 @@
           "boundary": 100,
           "direction": "down",
           "gap": 8.839996337890625,
-          "gapSigma": 1.2078156027713771,
+          "gapSigma": 1.2151246624961656,
           "gapTicks": 8.839996337890625,
           "toScore": 0
         },
@@ -225,7 +225,7 @@
           "boundary": 80,
           "direction": "down",
           "gap": 28.839996337890625,
-          "gapSigma": 3.940431220708573,
+          "gapSigma": 3.9642766215027803,
           "gapTicks": 28.839996337890625,
           "toScore": 0
         }
@@ -238,7 +238,7 @@
         "boundary": 100,
         "direction": "down",
         "gap": 8.839996337890625,
-        "gapSigma": 1.2078156027713771,
+        "gapSigma": 1.2151246624961656,
         "gapTicks": 8.839996337890625,
         "toScore": 0
       },
@@ -393,7 +393,7 @@
     "vix": {
       "display": {
         "primary": "26,78",
-        "secondary": "Korridor 15–25"
+        "secondary": "Korridor 15 bis 25"
       },
       "factor": "sentiment",
       "flips": [

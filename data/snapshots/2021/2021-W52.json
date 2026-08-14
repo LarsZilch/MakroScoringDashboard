@@ -1,6 +1,6 @@
 {
-  "builtAt": "2026-08-13T13:11:27.151Z",
-  "completeness": "sparse",
+  "builtAt": "2026-08-14T10:01:59.840Z",
+  "completeness": "partial",
   "dataAsOf": "2022-01-02",
   "factors": {
     "business_cycle": {
@@ -36,7 +36,7 @@
       "score": 0
     },
     "sentiment": {
-      "determinable": false,
+      "determinable": true,
       "id": "sentiment",
       "indicators": [
         "vix",
@@ -44,11 +44,11 @@
         "fear_greed"
       ],
       "label": "Sentiment",
-      "missing": 2,
+      "missing": 1,
       "negatives": 0,
-      "neutrals": 1,
+      "neutrals": 2,
       "positives": 0,
-      "rationale": "2 von 3 ohne Wert — nicht bestimmbar",
+      "rationale": "0 positiv, 0 negativ, 1 ohne Wert — keine Mehrheit",
       "score": 0
     }
   },
@@ -68,18 +68,47 @@
       "value": null
     },
     "fear_greed": {
+      "display": {
+        "primary": "63 (Greed)",
+        "secondary": "Korridor 20 bis 70 · Rekonstruktion, nicht CNN selbst"
+      },
       "factor": "sentiment",
-      "flips": [],
+      "flips": [
+        {
+          "boundary": 70,
+          "direction": "up",
+          "gap": 7.457142857142848,
+          "gapSigma": 0.5885246571970979,
+          "gapTicks": 7.457142857142848,
+          "toScore": -1
+        },
+        {
+          "boundary": 20,
+          "direction": "down",
+          "gap": 42.54285714285715,
+          "gapSigma": 3.357521894890728,
+          "gapTicks": 42.54285714285715,
+          "toScore": 1
+        }
+      ],
       "id": "fear_greed",
       "label": "CNN Fear & Greed · Level",
       "measure": "level",
-      "measureValue": null,
-      "nearestFlip": null,
-      "quality": "missing",
+      "measureValue": 62.54285714285715,
+      "nearestFlip": {
+        "boundary": 70,
+        "direction": "up",
+        "gap": 7.457142857142848,
+        "gapSigma": 0.5885246571970979,
+        "gapTicks": 7.457142857142848,
+        "toScore": -1
+      },
+      "obsDate": "2021-12-31",
+      "quality": "proxy",
       "score": 0,
-      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "scoreNote": "im Korridor",
       "unit": "",
-      "value": null
+      "value": 62.54285714285715
     },
     "gli": {
       "derived": {
@@ -155,7 +184,7 @@
           "boundary": 80,
           "direction": "down",
           "gap": 5.1399993896484375,
-          "gapSigma": 0.8838085868110896,
+          "gapSigma": 0.8954669729057974,
           "gapTicks": 5.1399993896484375,
           "toScore": 1
         },
@@ -163,7 +192,7 @@
           "boundary": 100,
           "direction": "up",
           "gap": 14.860000610351562,
-          "gapSigma": 2.555135739100746,
+          "gapSigma": 2.5888407284110504,
           "gapTicks": 14.860000610351562,
           "toScore": -1
         }
@@ -176,7 +205,7 @@
         "boundary": 80,
         "direction": "down",
         "gap": 5.1399993896484375,
-        "gapSigma": 0.8838085868110896,
+        "gapSigma": 0.8954669729057974,
         "gapTicks": 5.1399993896484375,
         "toScore": 1
       },
@@ -331,7 +360,7 @@
     "vix": {
       "display": {
         "primary": "17,22",
-        "secondary": "Korridor 15–25"
+        "secondary": "Korridor 15 bis 25"
       },
       "factor": "sentiment",
       "flips": [
@@ -374,16 +403,14 @@
   },
   "isoWeek": 52,
   "isoYear": 2021,
-  "meaningful": false,
+  "meaningful": true,
   "missing": [
     "ism_mfg_pmi",
-    "aaii",
-    "fear_greed"
+    "aaii"
   ],
   "notes": [
     "Nachtraeglich gefuellte Woche (Backfill) — kein veroeffentlichter Stand",
-    "3 von 9 Indikatoren ohne Wert: ism_mfg_pmi, aaii, fear_greed",
-    "Nicht bestimmbare Faktoren: sentiment — sie gehen als 0 in die Summe ein. Der Gesamtscore -1 und das Regime \"Risk Off\" sind daher KEINE Marktaussage, sondern Ausdruck einer Datenluecke und duerfen nicht als Stand gelesen werden."
+    "2 von 9 Indikatoren ohne Wert: ism_mfg_pmi, aaii"
   ],
   "regime": {
     "assumed": true,
@@ -397,9 +424,7 @@
   "schemaVersion": 1,
   "stale": [],
   "total": -1,
-  "undeterminableFactors": [
-    "sentiment"
-  ],
+  "undeterminableFactors": [],
   "weekEnd": "2022-01-02",
   "weekKey": "2021-W52",
   "weekStart": "2021-12-27"

@@ -1,7 +1,7 @@
 {
-  "builtAt": "2026-08-13T16:31:15.127Z",
+  "builtAt": "2026-08-14T10:02:02.576Z",
   "completeness": "full",
-  "dataAsOf": "2026-08-13",
+  "dataAsOf": "2026-08-14",
   "factors": {
     "business_cycle": {
       "determinable": true,
@@ -112,7 +112,7 @@
           "boundary": 70,
           "direction": "up",
           "gap": 7.085714285714303,
-          "gapSigma": 0.6496374187995736,
+          "gapSigma": 0.5947907706637239,
           "gapTicks": 7.085714285714303,
           "toScore": -1
         },
@@ -120,7 +120,7 @@
           "boundary": 20,
           "direction": "down",
           "gap": 42.9142857142857,
-          "gapSigma": 3.9344975928909545,
+          "gapSigma": 3.602321522326253,
           "gapTicks": 42.9142857142857,
           "toScore": 1
         }
@@ -133,7 +133,7 @@
         "boundary": 70,
         "direction": "up",
         "gap": 7.085714285714303,
-        "gapSigma": 0.6496374187995736,
+        "gapSigma": 0.5947907706637239,
         "gapTicks": 7.085714285714303,
         "toScore": -1
       },
@@ -161,7 +161,7 @@
           "boundary": 6,
           "direction": "down",
           "gap": 1.9669113488601608,
-          "gapSigma": 0.11483986749470255,
+          "gapSigma": 0.11476947837454958,
           "gapTicks": 19.669113488601607,
           "toScore": 0
         },
@@ -169,7 +169,7 @@
           "boundary": -6,
           "direction": "down",
           "gap": 13.966911348860162,
-          "gapSigma": 0.8154705343191312,
+          "gapSigma": 0.8149707056910283,
           "gapTicks": 139.6691134886016,
           "toScore": -1
         }
@@ -182,7 +182,7 @@
         "boundary": 6,
         "direction": "down",
         "gap": 1.9669113488601608,
-        "gapSigma": 0.11483986749470255,
+        "gapSigma": 0.11476947837454958,
         "gapTicks": 19.669113488601607,
         "toScore": 0
       },
@@ -208,7 +208,7 @@
           "boundary": 1,
           "direction": "down",
           "gap": 1.8999999999999986,
-          "gapSigma": 1.6072210541104086,
+          "gapSigma": 1.587597459273506,
           "gapTicks": 18.999999999999986,
           "toScore": 0
         },
@@ -216,7 +216,7 @@
           "boundary": -1,
           "direction": "down",
           "gap": 3.8999999999999986,
-          "gapSigma": 3.299032690016103,
+          "gapSigma": 3.2587526795614083,
           "gapTicks": 38.999999999999986,
           "toScore": -1
         }
@@ -229,7 +229,7 @@
         "boundary": 1,
         "direction": "down",
         "gap": 1.8999999999999986,
-        "gapSigma": 1.6072210541104086,
+        "gapSigma": 1.587597459273506,
         "gapTicks": 18.999999999999986,
         "toScore": 0
       },
@@ -251,7 +251,7 @@
           "boundary": 80,
           "direction": "up",
           "gap": 7.911299999999997,
-          "gapSigma": 1.0756997509085013,
+          "gapSigma": 1.0813597755515667,
           "gapTicks": 7.911299999999997,
           "toScore": 0
         },
@@ -259,7 +259,7 @@
           "boundary": 100,
           "direction": "up",
           "gap": 27.911299999999997,
-          "gapSigma": 3.7951004838057543,
+          "gapSigma": 3.8150692178722148,
           "gapTicks": 27.911299999999997,
           "toScore": 0
         }
@@ -272,7 +272,7 @@
         "boundary": 80,
         "direction": "up",
         "gap": 7.911299999999997,
-        "gapSigma": 1.0756997509085013,
+        "gapSigma": 1.0813597755515667,
         "gapTicks": 7.911299999999997,
         "toScore": 0
       },
@@ -297,7 +297,7 @@
           "boundary": -0.02,
           "direction": "up",
           "gap": 0.02400000000000004,
-          "gapSigma": 0.8238601355842539,
+          "gapSigma": 0.8233753823124891,
           "gapTicks": 24.00000000000004,
           "toScore": 0
         },
@@ -305,7 +305,7 @@
           "boundary": 0.02,
           "direction": "up",
           "gap": 0.06400000000000004,
-          "gapSigma": 2.1969603615580082,
+          "gapSigma": 2.1956676861666353,
           "gapTicks": 64.00000000000004,
           "toScore": -1
         }
@@ -318,7 +318,7 @@
         "boundary": -0.02,
         "direction": "up",
         "gap": 0.02400000000000004,
-        "gapSigma": 0.8238601355842539,
+        "gapSigma": 0.8233753823124891,
         "gapTicks": 24.00000000000004,
         "toScore": 0
       },
@@ -345,7 +345,7 @@
           "boundary": 2,
           "direction": "up",
           "gap": 5,
-          "gapSigma": 1.10179237475962,
+          "gapSigma": 1.100528128972799,
           "gapTicks": 5,
           "toScore": 0
         },
@@ -353,7 +353,7 @@
           "boundary": 10,
           "direction": "up",
           "gap": 13,
-          "gapSigma": 2.8646601743750124,
+          "gapSigma": 2.8613731353292775,
           "gapTicks": 13,
           "toScore": -1
         }
@@ -366,7 +366,7 @@
         "boundary": 2,
         "direction": "up",
         "gap": 5,
-        "gapSigma": 1.10179237475962,
+        "gapSigma": 1.100528128972799,
         "gapTicks": 5,
         "toScore": 0
       },
@@ -392,7 +392,7 @@
           "boundary": 10,
           "direction": "up",
           "gap": 8.000000000000004,
-          "gapSigma": 0.7081657285872864,
+          "gapSigma": 0.7078302826488695,
           "gapTicks": 8.000000000000004,
           "toScore": 1
         },
@@ -400,7 +400,7 @@
           "boundary": -10,
           "direction": "down",
           "gap": 11.999999999999996,
-          "gapSigma": 1.0622485928809289,
+          "gapSigma": 1.0617454239733035,
           "gapTicks": 11.999999999999996,
           "toScore": -1
         }
@@ -413,7 +413,7 @@
         "boundary": 10,
         "direction": "up",
         "gap": 8.000000000000004,
-        "gapSigma": 0.7081657285872864,
+        "gapSigma": 0.7078302826488695,
         "gapTicks": 8.000000000000004,
         "toScore": 1
       },
@@ -435,7 +435,7 @@
           "boundary": 15,
           "direction": "down",
           "gap": 0.27999999999999936,
-          "gapSigma": 0.08181443350507935,
+          "gapSigma": 0.08176691203239946,
           "gapTicks": 27.999999999999936,
           "toScore": -1
         },
@@ -443,7 +443,7 @@
           "boundary": 25,
           "direction": "up",
           "gap": 9.72,
-          "gapSigma": 2.8401296202477613,
+          "gapSigma": 2.838479946267588,
           "gapTicks": 972,
           "toScore": 1
         }
@@ -456,7 +456,7 @@
         "boundary": 15,
         "direction": "down",
         "gap": 0.27999999999999936,
-        "gapSigma": 0.08181443350507935,
+        "gapSigma": 0.08176691203239946,
         "gapTicks": 27.999999999999936,
         "toScore": -1
       },
@@ -472,7 +472,9 @@
   "isoYear": 2026,
   "meaningful": true,
   "missing": [],
-  "notes": [],
+  "notes": [
+    "Nachtraeglich gefuellte Woche (Backfill) — kein veroeffentlichter Stand"
+  ],
   "regime": {
     "assumed": false,
     "cashBand": [

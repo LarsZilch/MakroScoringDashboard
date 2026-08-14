@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-08-13T13:11:21.048Z",
+  "builtAt": "2026-08-14T10:01:53.558Z",
   "completeness": "sparse",
   "dataAsOf": "2010-12-26",
   "factors": {
@@ -297,7 +297,7 @@
     "vix": {
       "display": {
         "primary": "16,47",
-        "secondary": "Korridor 15–25"
+        "secondary": "Korridor 15 bis 25"
       },
       "factor": "sentiment",
       "flips": [
