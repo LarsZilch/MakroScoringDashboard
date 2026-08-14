@@ -128,11 +128,17 @@ export function AssetSection() {
                       className={`asset-chip${on ? ' on' : ''}${blocked ? ' blocked' : ''}`}
                       onClick={() => toggle(a.id)}
                       disabled={blocked}
-                      title={
-                        blocked
-                          ? `Hoechstens ${MAX_LINES} Linien gleichzeitig — die Farben bleiben sonst nicht unterscheidbar`
-                          : a.label
-                      }
+                      /*
+                       * Der Tooltip traegt IMMER den vollen Namen der
+                       * Anlageklasse — der Umschalter zeigt nur die Kurzform.
+                       * Stuende hier die Begruendung fuer die Sperre, wuerde
+                       * sie den Namen als Bezeichnung verdraengen und die
+                       * Schaltflaeche waere ohne Blick auf den Bildschirm
+                       * nicht mehr zuzuordnen. Die Begruendung steht einmal
+                       * im Hinweis unter der Auswahl.
+                       */
+                      title={a.label}
+                      aria-label={a.label}
                       style={on ? { borderColor: LINE_COLORS[idx], background: LINE_COLORS[idx] } : undefined}
                     >
                       {a.short}

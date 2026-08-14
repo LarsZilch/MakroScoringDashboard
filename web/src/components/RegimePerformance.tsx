@@ -80,6 +80,15 @@ export function RegimePerformance({
         Zukunft benutzen und jede Zahl schoenrechnen.
       </div>
 
+      {sample.some((s) => s.weeks > 0) && (
+        <div className="callout" style={{ marginBottom: 18 }}>
+          <strong>Zwei Wochenzahlen, mit Absicht.</strong> Die Kopfzeile zählt, wie oft ein Regime
+          signalisiert wurde. In den Zellen darunter kann die Zahl um eins niedriger sein: der
+          jüngsten Woche fehlt noch ihre Folgewoche, deren Rendite erst nach deren Ende feststeht —
+          sie wird dann korrekt ausgelassen statt geschätzt.
+        </div>
+      )}
+
       {anyConcentrated && (
         <div className="callout warn" style={{ marginBottom: 18 }}>
           <strong>Eine Zahl mit Stern haengt an einer einzigen Phase.</strong> Bei diesen Regimen
