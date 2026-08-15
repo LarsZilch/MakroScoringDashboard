@@ -25,6 +25,7 @@ import {
   TimeAxis,
   weekScale,
   stepWidth,
+  weekSpanX,
   ChartDefs,
 } from './chartGeometry';
 import { num, weekLabelWithDate } from '../format';
@@ -178,17 +179,20 @@ export function AssetOverlay({
           />
         )}
 
-        {weeks.map((w, i) => (
-          <rect
-            key={w.weekKey}
-            x={x(i) - step / 2}
-            y={MARGIN.top}
-            width={Math.max(step, 6)}
-            height={HEIGHT - MARGIN.top - MARGIN.bottom}
-            fill="transparent"
-            onMouseEnter={() => setHover(i)}
-          />
-        ))}
+        {weeks.map((w, i) => {
+          const span = weekSpanX(x, step, i, i, 6);
+          return (
+            <rect
+              key={w.weekKey}
+              x={span.x}
+              y={MARGIN.top}
+              width={span.width}
+              height={HEIGHT - MARGIN.top - MARGIN.bottom}
+              fill="transparent"
+              onMouseEnter={() => setHover(i)}
+            />
+          );
+        })}
       </svg>
 
       {active && (

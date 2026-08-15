@@ -9,7 +9,7 @@
  */
 
 import type { ReactNode } from 'react';
-import { INK, REGIME_COLOR, linearScale } from './viz';
+import { INK, REGIME_COLOR, linearScale, type Scale } from './viz';
 
 /** Zeichenflaeche. Die Hoehe darf je Diagramm abweichen, die Breite nicht. */
 export const CHART_W = 900;
@@ -25,6 +25,15 @@ export function weekScale(count: number) {
 /** Breite eines Wochenschritts, fuer Trefferflaechen und Schattierung. */
 export function stepWidth(count: number) {
   return innerWidth() / Math.max(1, count - 1);
+}
+
+/**
+ * Rechteck-Anfang und -Breite fuer eine Woche oder einen Wochen-Bereich,
+ * unter derselben Konvention wie die Stufenlinie: ein Wert gilt vom eigenen
+ * Tick bis zum naechsten, nicht symmetrisch um den Tick.
+ */
+export function weekSpanX(x: Scale, step: number, from: number, to: number = from, minWidth = 0) {
+  return { x: x(from), width: Math.max((to - from + 1) * step, minWidth) };
 }
 
 export interface RegimeWeek {
@@ -65,17 +74,20 @@ export function RegimeBands({
 
   return (
     <g>
-      {spans.map((s, i) => (
-        <rect
-          key={i}
-          x={x(s.from) - step / 2}
-          y={MARGIN.top}
-          width={(s.to - s.from) * step + step}
-          height={height - MARGIN.top - MARGIN.bottom}
-          fill={s.sparse ? 'url(#sparse-hatch)' : (REGIME_COLOR[s.regime] ?? 'transparent')}
-          opacity={s.sparse ? 1 : opacity}
-        />
-      ))}
+      {spans.map((s, i) => {
+        const span = weekSpanX(x, step, s.from, s.to);
+        return (
+          <rect
+            key={i}
+            x={span.x}
+            y={MARGIN.top}
+            width={span.width}
+            height={height - MARGIN.top - MARGIN.bottom}
+            fill={s.sparse ? 'url(#sparse-hatch)' : (REGIME_COLOR[s.regime] ?? 'transparent')}
+            opacity={s.sparse ? 1 : opacity}
+          />
+        );
+      })}
     </g>
   );
 }

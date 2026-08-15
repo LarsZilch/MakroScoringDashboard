@@ -67,7 +67,7 @@ export function WeekBrush({
     else spans.push({ from: i, to: i, regime: p.regime, sparse });
   }
 
-  const coords = points.map((p, i) => ({ x: x(i + 0.5), y: y(p.total) }));
+  const coords = points.map((p, i) => ({ x: x(i), y: y(p.total) }));
 
   /** Klientenkoordinate in einen Wochenindex umrechnen. */
   const indexAt = (clientX: number): number => {

@@ -12,7 +12,15 @@
 import { useState } from 'react';
 import type { HistoryPoint } from '../types';
 import { INK, linearScale, stepPath } from './viz';
-import { CHART_W, MARGIN, RegimeBands, innerWidth, stepWidth, weekScale } from './chartGeometry';
+import {
+  CHART_W,
+  MARGIN,
+  RegimeBands,
+  innerWidth,
+  stepWidth,
+  weekScale,
+  weekSpanX,
+} from './chartGeometry';
 import { scoreText, weekLabelWithDate } from '../format';
 
 /*
@@ -81,18 +89,20 @@ export function ScoreChart({
 
         {/* Wochen ohne belastbare Datenlage kenntlich machen */}
         {!showRegimeBands &&
-          points.map((p, i) =>
-            p.completeness === 'sparse' ? (
+          points.map((p, i) => {
+            if (p.completeness !== 'sparse') return null;
+            const span = weekSpanX(x, step, i);
+            return (
               <rect
                 key={`sp-${p.weekKey}`}
-                x={x(i) - step / 2}
+                x={span.x}
                 y={M.top}
-                width={step}
+                width={span.width}
                 height={innerH}
                 fill="url(#sparse-hatch)"
               />
-            ) : null,
-          )}
+            );
+          })}
 
         {/* Gitter */}
         {[-3, -2, -1, 0, 1, 2, 3].map((v) => (
@@ -160,17 +170,20 @@ export function ScoreChart({
         )}
 
         {/* Unsichtbare, grosszuegige Trefferflaechen */}
-        {points.map((p, i) => (
-          <rect
-            key={`h-${p.weekKey}`}
-            x={x(i) - step / 2}
-            y={M.top}
-            width={Math.max(step, 6)}
-            height={innerH}
-            fill="transparent"
-            onMouseEnter={() => setHover(i)}
-          />
-        ))}
+        {points.map((p, i) => {
+          const span = weekSpanX(x, step, i, i, 6);
+          return (
+            <rect
+              key={`h-${p.weekKey}`}
+              x={span.x}
+              y={M.top}
+              width={span.width}
+              height={innerH}
+              fill="transparent"
+              onMouseEnter={() => setHover(i)}
+            />
+          );
+        })}
       </svg>
 
       {active && (
