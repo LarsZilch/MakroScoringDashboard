@@ -5,6 +5,7 @@ Soll-Cash-Band. Jeder Wochenstand wird als Snapshot aufbewahrt, damit sich Verä
 Kalenderwoche zu Kalenderwoche und von Jahr zu Jahr verfolgen lassen.
 
 Vorlage der Methodik und Gestaltung: `doc/MakroScoringInfoScreen.jpg` (KW 32/2026).
+Idee stammt aus Videos von: https://www.youtube.com/@balthasarbecker
 
 ## Screenshots
 
