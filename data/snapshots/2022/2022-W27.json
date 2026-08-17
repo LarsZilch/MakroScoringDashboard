@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-08-14T10:02:00.138Z",
+  "builtAt": "2026-08-15T12:02:59.799Z",
   "completeness": "partial",
   "dataAsOf": "2022-07-10",
   "factors": {
@@ -44,28 +44,62 @@
         "fear_greed"
       ],
       "label": "Sentiment",
-      "missing": 1,
+      "missing": 0,
       "negatives": 0,
       "neutrals": 2,
-      "positives": 0,
-      "rationale": "0 positiv, 0 negativ, 1 ohne Wert — keine Mehrheit",
+      "positives": 1,
+      "rationale": "1 positiv, 0 negativ — keine Mehrheit",
       "score": 0
     }
   },
   "indicators": {
     "aaii": {
+      "derived": {
+        "avg4w": -34.325,
+        "latestSpread": -33.4,
+        "weeksAvailable": 4
+      },
+      "display": {
+        "primary": "−34,3 %",
+        "secondary": "Korridor −10 bis 20"
+      },
       "factor": "sentiment",
-      "flips": [],
+      "flips": [
+        {
+          "boundary": -10,
+          "direction": "up",
+          "gap": 24.325000000000003,
+          "gapSigma": 6.06760878123138,
+          "gapTicks": 243.25000000000003,
+          "toScore": 0
+        },
+        {
+          "boundary": 20,
+          "direction": "up",
+          "gap": 54.325,
+          "gapSigma": 13.550785078741816,
+          "gapTicks": 543.25,
+          "toScore": 0
+        }
+      ],
       "id": "aaii",
       "label": "AAII Bull-Bear · 4w-Ø",
       "measure": "avg4w",
-      "measureValue": null,
-      "nearestFlip": null,
-      "quality": "missing",
-      "score": 0,
-      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "measureValue": -34.325,
+      "nearestFlip": {
+        "boundary": -10,
+        "direction": "up",
+        "gap": 24.325000000000003,
+        "gapSigma": 6.06760878123138,
+        "gapTicks": 243.25000000000003,
+        "toScore": 0
+      },
+      "obsDate": "2022-07-06",
+      "quality": "ok",
+      "score": 1,
+      "scoreNote": "zu baerisch, kontrarisch positiv",
       "unit": "%",
-      "value": null
+      "value": -34.325
     },
     "fear_greed": {
       "display": {
@@ -405,12 +439,11 @@
   "isoYear": 2022,
   "meaningful": true,
   "missing": [
-    "ism_mfg_pmi",
-    "aaii"
+    "ism_mfg_pmi"
   ],
   "notes": [
     "Nachtraeglich gefuellte Woche (Backfill) — kein veroeffentlichter Stand",
-    "2 von 9 Indikatoren ohne Wert: ism_mfg_pmi, aaii"
+    "1 von 9 Indikatoren ohne Wert: ism_mfg_pmi"
   ],
   "regime": {
     "assumed": true,

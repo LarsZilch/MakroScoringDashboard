@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-08-14T10:01:59.203Z",
+  "builtAt": "2026-08-15T12:02:58.848Z",
   "completeness": "partial",
   "dataAsOf": "2020-12-13",
   "factors": {
@@ -44,28 +44,62 @@
         "fear_greed"
       ],
       "label": "Sentiment",
-      "missing": 1,
-      "negatives": 1,
+      "missing": 0,
+      "negatives": 2,
       "neutrals": 1,
       "positives": 0,
-      "rationale": "0 positiv, 1 negativ, 1 ohne Wert — keine Mehrheit",
-      "score": 0
+      "rationale": "2 von 3 negativ",
+      "score": -1
     }
   },
   "indicators": {
     "aaii": {
+      "derived": {
+        "avg4w": 21.349999999999998,
+        "latestSpread": 21.2,
+        "weeksAvailable": 4
+      },
+      "display": {
+        "primary": "+21,3 %",
+        "secondary": "Korridor −10 bis 20"
+      },
       "factor": "sentiment",
-      "flips": [],
+      "flips": [
+        {
+          "boundary": 20,
+          "direction": "down",
+          "gap": 1.3499999999999979,
+          "gapSigma": 0.3351584338201682,
+          "gapTicks": 13.499999999999979,
+          "toScore": 0
+        },
+        {
+          "boundary": -10,
+          "direction": "down",
+          "gap": 31.349999999999998,
+          "gapSigma": 7.783123629823917,
+          "gapTicks": 313.49999999999994,
+          "toScore": 0
+        }
+      ],
       "id": "aaii",
       "label": "AAII Bull-Bear · 4w-Ø",
       "measure": "avg4w",
-      "measureValue": null,
-      "nearestFlip": null,
-      "quality": "missing",
-      "score": 0,
-      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "measureValue": 21.349999999999998,
+      "nearestFlip": {
+        "boundary": 20,
+        "direction": "down",
+        "gap": 1.3499999999999979,
+        "gapSigma": 0.3351584338201682,
+        "gapTicks": 13.499999999999979,
+        "toScore": 0
+      },
+      "obsDate": "2020-12-09",
+      "quality": "ok",
+      "score": -1,
+      "scoreNote": "zu bullisch, kontrarisch negativ",
       "unit": "%",
-      "value": null
+      "value": 21.349999999999998
     },
     "fear_greed": {
       "display": {
@@ -405,28 +439,27 @@
   "isoYear": 2020,
   "meaningful": true,
   "missing": [
-    "ism_mfg_pmi",
-    "aaii"
+    "ism_mfg_pmi"
   ],
   "notes": [
     "Nachtraeglich gefuellte Woche (Backfill) — kein veroeffentlichter Stand",
     "move: Stand 2020-12-01 ist am Stichtag 2020-12-13 bereits 12 Tage alt (erwartet hoechstens 10) — Wert wird als veraltet gefuehrt",
-    "2 von 9 Indikatoren ohne Wert: ism_mfg_pmi, aaii"
+    "1 von 9 Indikatoren ohne Wert: ism_mfg_pmi"
   ],
   "regime": {
     "assumed": false,
     "cashBand": [
-      5,
-      15
+      20,
+      35
     ],
-    "label": "Risk On"
+    "label": "Neutral"
   },
   "rulesVersion": "v1",
   "schemaVersion": 1,
   "stale": [
     "move"
   ],
-  "total": 2,
+  "total": 1,
   "undeterminableFactors": [],
   "weekEnd": "2020-12-13",
   "weekKey": "2020-W50",

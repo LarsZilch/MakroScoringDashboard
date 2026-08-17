@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-08-14T10:01:56.901Z",
+  "builtAt": "2026-08-15T12:02:56.483Z",
   "completeness": "partial",
   "dataAsOf": "2016-12-04",
   "factors": {
@@ -44,9 +44,9 @@
         "fear_greed"
       ],
       "label": "Sentiment",
-      "missing": 1,
+      "missing": 0,
       "negatives": 2,
-      "neutrals": 0,
+      "neutrals": 1,
       "positives": 0,
       "rationale": "2 von 3 negativ",
       "score": -1
@@ -54,18 +54,52 @@
   },
   "indicators": {
     "aaii": {
+      "derived": {
+        "avg4w": 19.05,
+        "latestSpread": 18.7,
+        "weeksAvailable": 4
+      },
+      "display": {
+        "primary": "+19,1 %",
+        "secondary": "Korridor −10 bis 20"
+      },
       "factor": "sentiment",
-      "flips": [],
+      "flips": [
+        {
+          "boundary": 20,
+          "direction": "up",
+          "gap": 0.9499999999999993,
+          "gapSigma": 0.22954440674931736,
+          "gapTicks": 9.499999999999993,
+          "toScore": -1
+        },
+        {
+          "boundary": -10,
+          "direction": "down",
+          "gap": 29.05,
+          "gapSigma": 7.019226332702815,
+          "gapTicks": 290.5,
+          "toScore": 1
+        }
+      ],
       "id": "aaii",
       "label": "AAII Bull-Bear · 4w-Ø",
       "measure": "avg4w",
-      "measureValue": null,
-      "nearestFlip": null,
-      "quality": "missing",
+      "measureValue": 19.05,
+      "nearestFlip": {
+        "boundary": 20,
+        "direction": "up",
+        "gap": 0.9499999999999993,
+        "gapSigma": 0.22954440674931736,
+        "gapTicks": 9.499999999999993,
+        "toScore": -1
+      },
+      "obsDate": "2016-11-30",
+      "quality": "ok",
       "score": 0,
-      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "scoreNote": "im Korridor",
       "unit": "%",
-      "value": null
+      "value": 19.05
     },
     "fear_greed": {
       "display": {
@@ -372,12 +406,11 @@
   "meaningful": true,
   "missing": [
     "ism_mfg_pmi",
-    "sofr_iorb",
-    "aaii"
+    "sofr_iorb"
   ],
   "notes": [
     "Nachtraeglich gefuellte Woche (Backfill) — kein veroeffentlichter Stand",
-    "3 von 9 Indikatoren ohne Wert: ism_mfg_pmi, sofr_iorb, aaii"
+    "2 von 9 Indikatoren ohne Wert: ism_mfg_pmi, sofr_iorb"
   ],
   "regime": {
     "assumed": false,

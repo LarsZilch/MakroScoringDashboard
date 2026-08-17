@@ -1,6 +1,6 @@
 {
-  "builtAt": "2026-08-14T10:02:02.440Z",
-  "completeness": "partial",
+  "builtAt": "2026-08-15T12:03:02.122Z",
+  "completeness": "full",
   "dataAsOf": "2026-05-24",
   "factors": {
     "business_cycle": {
@@ -44,28 +44,62 @@
         "fear_greed"
       ],
       "label": "Sentiment",
-      "missing": 1,
+      "missing": 0,
       "negatives": 0,
-      "neutrals": 2,
+      "neutrals": 3,
       "positives": 0,
-      "rationale": "0 positiv, 0 negativ, 1 ohne Wert — keine Mehrheit",
+      "rationale": "alle 3 neutral",
       "score": 0
     }
   },
   "indicators": {
     "aaii": {
+      "derived": {
+        "avg4w": -1.375,
+        "latestSpread": -11.9,
+        "weeksAvailable": 4
+      },
+      "display": {
+        "primary": "−1,4 %",
+        "secondary": "Korridor −10 bis 20"
+      },
       "factor": "sentiment",
-      "flips": [],
+      "flips": [
+        {
+          "boundary": -10,
+          "direction": "down",
+          "gap": 8.625,
+          "gapSigma": 2.1502534359840446,
+          "gapTicks": 86.25,
+          "toScore": 1
+        },
+        {
+          "boundary": 20,
+          "direction": "up",
+          "gap": 21.375,
+          "gapSigma": 5.328888950047415,
+          "gapTicks": 213.75,
+          "toScore": -1
+        }
+      ],
       "id": "aaii",
       "label": "AAII Bull-Bear · 4w-Ø",
       "measure": "avg4w",
-      "measureValue": null,
-      "nearestFlip": null,
-      "quality": "missing",
+      "measureValue": -1.375,
+      "nearestFlip": {
+        "boundary": -10,
+        "direction": "down",
+        "gap": 8.625,
+        "gapSigma": 2.1502534359840446,
+        "gapTicks": 86.25,
+        "toScore": 1
+      },
+      "obsDate": "2026-05-20",
+      "quality": "ok",
       "score": 0,
-      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "scoreNote": "im Korridor",
       "unit": "%",
-      "value": null
+      "value": -1.375
     },
     "fear_greed": {
       "display": {
@@ -437,12 +471,9 @@
   "isoWeek": 21,
   "isoYear": 2026,
   "meaningful": true,
-  "missing": [
-    "aaii"
-  ],
+  "missing": [],
   "notes": [
-    "Nachtraeglich gefuellte Woche (Backfill) — kein veroeffentlichter Stand",
-    "1 von 9 Indikatoren ohne Wert: aaii"
+    "Nachtraeglich gefuellte Woche (Backfill) — kein veroeffentlichter Stand"
   ],
   "regime": {
     "assumed": false,

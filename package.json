@@ -15,6 +15,7 @@
     "backfill": "tsx src/cli/backfill.ts",
     "check:sources": "tsx src/cli/check-sources.ts",
     "import:feargreed": "tsx src/cli/import-feargreed-history.ts",
+    "import:aaii": "tsx src/cli/import-aaii-history.ts",
     "server": "tsx src/server/index.ts",
     "dev": "concurrently -n server,web -c cyan,magenta \"npm:server\" \"npm:web\"",
     "web": "vite --config web/vite.config.ts",

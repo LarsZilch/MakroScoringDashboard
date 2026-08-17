@@ -394,6 +394,13 @@
 
 /* -------------------------------------------------------- Szenarien */
 
+.help-scenario-base {
+  font-size: 13.5px;
+  margin: 0 0 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--rule);
+}
+
 .help-scenarios {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -431,16 +438,46 @@
   margin-bottom: 12px;
 }
 
+/*
+ * Bewegungszeilen auf ein festes Raster: Label | vorher | Pfeil | nachher.
+ * Der Pfeil bekommt eine eigene Spalte, damit "+1 → 0" und "+1 → −1"
+ * untereinander buendig stehen.
+ */
 .help-scenario-moves {
+  display: grid;
+  grid-template-columns: 1fr auto 14px auto;
+  align-items: center;
+  column-gap: 10px;
+  row-gap: 7px;
   font-size: 13px;
-  line-height: 1.9;
-  margin-bottom: 10px;
+  line-height: 1.45;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 12px;
+}
+
+/* Die Zeile selbst ist nur Klammer — die vier Zellen sollen ins Raster oben. */
+.help-scenario-move {
+  display: contents;
+}
+
+.help-scenario-move-label {
+  color: var(--ink-soft);
+}
+
+.help-scenario-arrow {
+  color: var(--ink-faint);
+  text-align: center;
+}
+
+/* Alles, was keine Bewegung ist, laeuft ueber die volle Breite. */
+.help-scenario-wide {
+  grid-column: 1 / -1;
 }
 
 .help-scenario-factors {
-  display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px 14px;
   font-size: 12.5px;
   color: var(--ink-soft);
   padding: 10px 0;
@@ -449,14 +486,25 @@
   margin-bottom: 12px;
 }
 
+.help-scenario-factors > span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.help-scenario-factor-label {
+  min-width: 0;
+}
+
 .help-scenario-factors .moved {
   color: var(--ink);
   font-weight: 700;
 }
 
 .help-scenario-result {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr auto;
   align-items: center;
   gap: 12px;
   font-size: 13.5px;
@@ -474,6 +522,42 @@
   color: var(--ink-soft);
   line-height: 1.6;
   font-style: italic;
+}
+
+/* Hinweis, dass ein Override auf einen Indikator ohne Wert trifft. */
+.help-scenario-assumed {
+  color: var(--red-soft);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+/*
+ * Auf schmalen Geraeten traegt die Karte keine drei Faktorspalten mehr — dann
+ * ist Untereinander lesbarer als drei abgeschnittene Namen.
+ */
+@media (max-width: 620px) {
+  .help-scenario-factors {
+    grid-template-columns: 1fr;
+  }
+
+  .help-scenario-result {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Was der Bestand hergibt — optische Nebenrolle, aber inhaltlich der Beleg. */
+.help-scenario-backtest {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f2f0ec;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
+.help-scenario-backtest ul {
+  margin: 6px 0;
+  padding-left: 18px;
 }
 
 /* ----------------------------------------------------------- Handel */

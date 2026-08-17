@@ -81,6 +81,11 @@ export async function httpGetText(url: string, opts: HttpOptions = {}): Promise<
   return (await httpGet(url, opts)).text();
 }
 
+/** Fuer Quellen, die eine Datei statt Text liefern (AAII gibt eine Arbeitsmappe). */
+export async function httpGetBuffer(url: string, opts: HttpOptions = {}): Promise<Buffer> {
+  return Buffer.from(await (await httpGet(url, opts)).arrayBuffer());
+}
+
 export async function httpGetJson<T = unknown>(url: string, opts: HttpOptions = {}): Promise<T> {
   const res = await httpGet(url, { ...opts, headers: { Accept: 'application/json', ...opts.headers } });
   const text = await res.text();

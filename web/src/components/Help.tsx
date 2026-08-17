@@ -11,21 +11,25 @@
  * Snapshots erzeugt — genau dafuer ist src/core/ frei von I/O.
  */
 
-import { useMemo, useState } from 'react';
-import { aggregateFactor, resolveRegime } from '../../../src/core/scoring.js';
-import type { ScoredIndicator as CoreScoredIndicator, RuleBook as CoreRuleBook } from '../../../src/core/types.js';
+import { useMemo } from 'react';
 import type {
+  HistoryPoint,
   RulesResponse,
-  ScoredIndicator,
-  Score,
+  ScenarioBacktest,
+  ScenarioBacktestReport,
   Sensitivity,
   Snapshot,
 } from '../types';
 import { num, scoreText, signed, weekLabel } from '../format';
 import { REGIME_COLOR } from './viz';
-import { BandScale } from './BandScale';
-import { FACTOR_HELP, INDICATOR_HELP, SCENARIOS, type Scenario } from '../content/help';
+import { IndicatorCard } from './IndicatorCard';
+import { ScoreChip } from './ScoreChip';
+import { useScenarios, type ScenarioView } from './useScenarios';
+import { FACTOR_HELP, INDICATOR_HELP } from '../content/help';
 import { LEAD_LAG, PLAYBOOKS, PLAYBOOK_DISCLAIMER } from '../content/playbooks';
+import { SECTIONS, type HelpSection } from '../content/sections';
+
+export type { HelpSection } from '../content/sections';
 
 /** Reihenfolge wie in der Vorlage, nicht alphabetisch. */
 const FACTOR_ORDER = ['business_cycle', 'liquidity', 'sentiment'] as const;
@@ -34,25 +38,6 @@ const INDICATOR_ORDER: Record<string, string[]> = {
   liquidity: ['gli', 'move', 'sofr_iorb'],
   sentiment: ['vix', 'aaii', 'fear_greed'],
 };
-
-function ScoreChip({ score }: { score: Score }) {
-  const cls = score > 0 ? 'pos' : score < 0 ? 'neg' : 'zero';
-  return <span className={`score-chip ${cls}`}>{scoreText(score)}</span>;
-}
-
-/**
- * Die Messgroessen der Kalibrierung tragen im Regelwerk technische Namen.
- * In einem Hilfetext haben rohe Feldnamen nichts verloren.
- */
-const CALIBRATION_LABEL: Record<string, string> = {
-  standardDeviation: 'Standardabweichung',
-  absPercentile33: '33. Perzentil des Betrags',
-  absPercentile50: 'Median des Betrags (50. Perzentil)',
-};
-
-function calibrationLabel(key: string): string {
-  return CALIBRATION_LABEL[key] ?? key;
-}
 
 // ---------------------------------------------------------------------------
 // 1 · Mechanik
@@ -142,153 +127,6 @@ function Mechanics({ rules }: { rules: RulesResponse }) {
 // 2 · Die neun Indikatoren
 // ---------------------------------------------------------------------------
 
-function IndicatorCard({
-  id,
-  rules,
-  indicator,
-  sensitivity,
-}: {
-  id: string;
-  rules: RulesResponse;
-  indicator?: ScoredIndicator;
-  sensitivity?: Sensitivity;
-}) {
-  const rule = rules.rules.indicators[id];
-  const help = INDICATOR_HELP[id];
-  if (!rule || !help) return null;
-
-  const missing = !indicator || indicator.quality === 'missing';
-  const label = rule.quality === 'proxy' && rule.proxyLabel ? rule.proxyLabel : rule.label;
-
-  return (
-    <div className="help-card">
-      <div className="help-card-head">
-        <div>
-          <div className="help-card-title">
-            {label}
-            {rule.quality === 'proxy' && <span className="quality-tag quality-proxy">Ersatzreihe</span>}
-            {rule.contrarian && <span className="quality-tag quality-manual">kontrarisch</span>}
-            {rule.invertedScale && <span className="quality-tag quality-manual">invertiert</span>}
-          </div>
-          <div className="help-card-short">{help.short}</div>
-        </div>
-        {!missing && <ScoreChip score={indicator!.score} />}
-      </div>
-
-      <div className="help-card-body">
-        <p>{help.measures}</p>
-
-        <div className="help-why">
-          <span className="help-why-label">Warum im Modell</span>
-          {help.why}
-        </div>
-
-        {help.twist && (
-          <div className="help-twist">
-            <strong>Achtung, Richtung:</strong> {help.twist}
-          </div>
-        )}
-
-        <div className="help-reading">
-          <div>
-            <span className="help-arrow up">steigt</span>
-            {help.reading.up}
-          </div>
-          <div>
-            <span className="help-arrow down">faellt</span>
-            {help.reading.down}
-          </div>
-        </div>
-
-        <div className="help-scale-wrap">
-          <div className="help-scale-label">
-            Bewertungsstufen{' '}
-            <span className="help-scale-hint">
-              — gerendert aus dem Regelwerk, Marke zeigt den aktuellen Stand
-            </span>
-          </div>
-          <BandScale
-            bands={rule.bands}
-            value={missing ? null : indicator!.measureValue}
-            unit={rule.unit}
-            decimals={rule.decimals}
-          />
-        </div>
-
-        {missing ? (
-          <div className="help-current missing">
-            Fuer diese Woche liegt kein Wert vor — der Indikator geht nicht in die Mehrheit ein.
-          </div>
-        ) : (
-          <div className="help-current">
-            <strong>Aktuell:</strong> {indicator!.display?.primary ?? num(indicator!.measureValue ?? 0, rule.decimals)}
-            {indicator!.display?.secondary ? ` · ${indicator!.display.secondary}` : ''}
-            {sensitivity && (
-              <>
-                {' '}— bis zur naechsten Stufe fehlen{' '}
-                <strong>
-                  {num(sensitivity.gap, rule.decimals)} {rule.unit}
-                </strong>{' '}
-                ({sensitivity.direction === 'up' ? 'nach oben' : 'nach unten'}), dann{' '}
-                <ScoreChip score={sensitivity.toScore} />
-                {sensitivity.changesRegime && (
-                  <em> — und das Regime wechselt zu {sensitivity.resultingRegime}.</em>
-                )}
-              </>
-            )}
-          </div>
-        )}
-
-        <details className="help-details">
-          <summary>Datenherkunft, Annahmen und Einschraenkungen</summary>
-          <div className="help-details-body">
-            <p>
-              <strong>Quelle.</strong> {help.source}
-            </p>
-
-            {help.watchOut && (
-              <p>
-                <strong>Beim Lesen beachten.</strong> {help.watchOut}
-              </p>
-            )}
-
-            {rule.proxyNote && (
-              <p>
-                <strong>Ersatzreihe.</strong> {rule.proxyNote}
-              </p>
-            )}
-
-            {rule.calibration && (
-              <div className="help-calibration">
-                <strong>Kalibrierung der Schwelle.</strong> Diese Schwelle wurde an der Reihe selbst
-                gemessen, nicht gegriffen.
-                <ul>
-                  <li>Grundlage: {rule.calibration.basis}</li>
-                  <li>Gemessen am: {rule.calibration.measuredOn}</li>
-                  {Object.entries(rule.calibration.observed).map(([k, v]) => (
-                    <li key={k}>
-                      {calibrationLabel(k)}: {num(v, 1)} {rule.unit}
-                    </li>
-                  ))}
-                  <li>Gewaehlte Schwelle: ±{num(rule.calibration.chosenThreshold, 1)}</li>
-                  <li>Ergebnis: {rule.calibration.resultingSplit}</li>
-                </ul>
-                <p className="help-calibration-warn">{rule.calibration.warning}</p>
-              </div>
-            )}
-
-            {rule.assumed && rule.assumptionNote && (
-              <p>
-                <strong>Gesetzte Annahme.</strong> {rule.assumptionNote}
-              </p>
-            )}
-          </div>
-        </details>
-      </div>
-    </div>
-  );
-}
-
 function Indicators({
   rules,
   snapshot,
@@ -354,92 +192,121 @@ function Indicators({
 // 3 · Szenarien — gerechnet, nicht hinterlegt
 // ---------------------------------------------------------------------------
 
-interface ScenarioResult {
-  scenario: Scenario;
-  factors: { id: string; label: string; before: Score; after: Score }[];
-  totalBefore: number;
-  totalAfter: number;
-  regimeBefore: string;
-  regimeAfter: string;
-  cashAfter: [number, number];
-  changed: boolean;
-  affected: { id: string; label: string; before: Score; after: Score }[];
+/** Regimeverteilung als Klartext, z. B. "37x Neutral, 16x Risk Off". */
+function regimeTally(byRegime: Record<string, number>): string {
+  return Object.entries(byRegime)
+    .sort((a, b) => b[1] - a[1])
+    .map(([label, n]) => `${n}× ${label}`)
+    .join(', ');
 }
 
 /**
- * Ein Szenario auf die aktuelle Lage anwenden.
+ * Was der Bestand ueber ein Szenario hergibt.
  *
- * Gerechnet wird mit aggregateFactor() und resolveRegime() aus dem echten
- * Scoring-Kern — derselbe Code, der die Snapshots erzeugt. Eine zweite
- * Implementierung im Frontend koennte auseinanderlaufen; das ist der Grund,
- * warum src/core/ ohne Datei- und Netzzugriff gebaut ist.
+ * Die Abgrenzung ist der wichtigste Teil dieses Blocks: gezaehlt wird, WANN
+ * diese Lage schon einmal galt — nicht, wie wahrscheinlich sie eintritt. Ohne
+ * diesen Satz steht eine Trefferzahl direkt neben einer kontrafaktischen
+ * Rechnung und liest sich wie eine Quote.
  */
-function runScenario(
-  scenario: Scenario,
-  snapshot: Snapshot,
-  rules: RulesResponse,
-): ScenarioResult | null {
-  const core = rules.rules as unknown as CoreRuleBook;
-  const minCount = rules.rules.factorAggregation.minCount;
+function ScenarioBacktestNote({
+  backtest,
+  basisWeeks,
+}: {
+  backtest: ScenarioBacktest;
+  basisWeeks: number;
+}) {
+  const { occurrences, episodes, largestEpisodeShare, lastWeek, byRegime, coverage } = backtest;
 
-  const factors: ScenarioResult['factors'] = [];
-  const affected: ScenarioResult['affected'] = [];
-  let totalAfter = 0;
-
-  for (const factorId of FACTOR_ORDER) {
-    const snapFactor = snapshot.factors[factorId];
-    if (!snapFactor) return null;
-
-    const members = (INDICATOR_ORDER[factorId] ?? []).map((id) => {
-      const ind = snapshot.indicators[id];
-      const override = scenario.overrides[id];
-      if (override !== undefined && ind) {
-        if (ind.score !== override) {
-          affected.push({ id, label: ind.label, before: ind.score, after: override });
-        }
-        return { ...ind, score: override } as unknown as CoreScoredIndicator;
-      }
-      return ind as unknown as CoreScoredIndicator;
-    });
-
-    const after = aggregateFactor(
-      factorId as never,
-      snapFactor.label,
-      members.filter(Boolean),
-      minCount,
+  if (occurrences === 0) {
+    /*
+     * Die nackte Null waere irrefuehrend — sie liest sich wie ein Befund ueber
+     * den Markt. Deshalb steht daneben, welche der Annahmen den Ausschlag gibt:
+     * ein gemeinsames Vorkommen kann nie haeufiger sein als die seltenste
+     * Einzelannahme. Ist der Indikator zusaetzlich lueckenhaft, wird auch das
+     * genannt — beides sind Aussagen ueber die Datenlage, nicht ueber den Markt.
+     */
+    const scarcest = coverage.find((c) => c.id === backtest.limitedBy);
+    return (
+      <div className="help-scenario-backtest">
+        Diese Lage kam im Bestand <strong>nie</strong> vor.
+        {scarcest && (
+          <>
+            {' '}
+            Die engste der Annahmen ist {scarcest.label}:{' '}
+            {scarcest.weeksMatching === 0 ? (
+              <>sie traf im ganzen Bestand kein einziges Mal zu.</>
+            ) : (
+              <>
+                sie traf allein in {scarcest.weeksMatching} von {basisWeeks} belastbaren Wochen zu —
+                nie gemeinsam mit den uebrigen.
+              </>
+            )}
+            {scarcest.weeksWithValue < basisWeeks && (
+              <>
+                {' '}
+                Der Indikator traegt ohnehin nur in {scarcest.weeksWithValue}{' '}
+                {scarcest.weeksWithValue === 1 ? 'Woche' : 'Wochen'} einen Wert
+                {scarcest.firstWeekWithValue && (
+                  <> (erst ab {weekLabel(scarcest.firstWeekWithValue)})</>
+                )}
+                .
+              </>
+            )}
+          </>
+        )}{' '}
+        Gezaehlt wird, wann diese Lage schon einmal galt — keine Aussage darueber, wie
+        wahrscheinlich sie eintritt.
+      </div>
     );
-    factors.push({
-      id: factorId,
-      label: snapFactor.label,
-      before: snapFactor.score,
-      after: after.score,
-    });
-    totalAfter += after.score;
   }
 
-  const regimeAfter = resolveRegime(core, totalAfter);
-
-  return {
-    scenario,
-    factors,
-    totalBefore: snapshot.total,
-    totalAfter,
-    regimeBefore: snapshot.regime.label,
-    regimeAfter: regimeAfter.label,
-    cashAfter: regimeAfter.cashBand,
-    changed: regimeAfter.label !== snapshot.regime.label,
-    affected,
-  };
+  return (
+    <div className="help-scenario-backtest">
+      So lag es in{' '}
+      <strong>
+        {occurrences} von {basisWeeks}
+      </strong>{' '}
+      belastbaren Wochen ({episodes} {episodes === 1 ? 'Episode' : 'Episoden'}, groesste{' '}
+      {Math.round(largestEpisodeShare * 100)} %)
+      {lastWeek && <>, zuletzt {weekLabel(lastWeek)}</>}. Regime damals: {regimeTally(byRegime)}.
+      <ul>
+        {backtest.horizons.map((h) => (
+          <li key={h.weeks}>
+            Nach {h.weeks} Wochen:{' '}
+            {h.evaluated === 0 ? (
+              <em>noch kein Ausblick im Bestand</em>
+            ) : (
+              <>
+                {regimeTally(h.byRegime)} — {h.changed} von {h.evaluated} mit gewechseltem Regime
+                {h.truncated > 0 && (
+                  <>
+                    {' '}
+                    (fuer {h.truncated} {h.truncated === 1 ? 'Vorkommen liegt' : 'Vorkommen liegen'}{' '}
+                    die Sicht noch nicht vor)
+                  </>
+                )}
+              </>
+            )}
+          </li>
+        ))}
+      </ul>
+      Gezaehlt wird, wann diese Lage schon einmal galt — keine Aussage darueber, wie wahrscheinlich
+      sie eintritt. Und der Bestand ist rueckgerechnet: er zeigt, wie das Modell die Lage gesehen
+      HAETTE, nicht wie es sie gesehen hat.
+    </div>
+  );
 }
 
-function Scenarios({ snapshot, rules }: { snapshot: Snapshot; rules: RulesResponse }) {
-  const results = useMemo(
-    () =>
-      SCENARIOS.map((s) => runScenario(s, snapshot, rules)).filter(
-        (r): r is ScenarioResult => r !== null,
-      ),
-    [snapshot, rules],
-  );
+function Scenarios({
+  snapshot,
+  rules,
+  scenarios,
+}: {
+  snapshot: Snapshot;
+  rules: RulesResponse;
+  scenarios: ScenarioBacktestReport | null;
+}) {
+  const results = useScenarios(snapshot, rules, scenarios);
 
   return (
     <div className="panel">
@@ -448,7 +315,8 @@ function Scenarios({ snapshot, rules }: { snapshot: Snapshot; rules: RulesRespon
           <div className="panel-title">Szenarien</div>
           <div className="panel-sub">
             gerechnet von der Lage in {weekLabel(snapshot.weekKey)} aus, mit demselben Scoring-Kern
-            wie die Snapshots
+            wie die Snapshots — die Wochenauswahl im Dashboard zieht sie mit; jede belastbare Woche
+            des Bestands laesst sich hier durchspielen
           </div>
         </div>
       </div>
@@ -460,32 +328,63 @@ function Scenarios({ snapshot, rules }: { snapshot: Snapshot; rules: RulesRespon
           </div>
         )}
 
+        {/*
+          Die Ausgangslage gehoert ausgeschrieben. Ohne sie muss man sich das
+          "vorher" aus vier Kacheln zusammenreimen.
+        */}
+        <p className="help-scenario-base">
+          <strong>Ausgangslage {weekLabel(snapshot.weekKey)}:</strong> Gesamtscore{' '}
+          {scoreText(snapshot.total)} · {snapshot.regime.label} · Cash{' '}
+          {snapshot.regime.cashBand[0]}–{snapshot.regime.cashBand[1]} %
+        </p>
+
         <div className="help-scenarios">
           {results.map((r) => (
-            <div key={r.scenario.id} className={`help-scenario${r.changed ? ' flips' : ''}`}>
-              <div className="help-scenario-title">{r.scenario.title}</div>
-              <div className="help-scenario-trigger">{r.scenario.trigger}</div>
+            <div key={r.scenarioId} className={`help-scenario${r.changed ? ' flips' : ''}`}>
+              <div className="help-scenario-title">{r.title}</div>
+              <div className="help-scenario-trigger">{r.trigger}</div>
 
+              {/*
+                Vier Spalten statt Fliesstext: Label, Vorher, Pfeil, Nachher.
+                Der Wrapper je Zeile traegt display:contents, damit alle Zeilen
+                einer Karte im selben Raster haengen — sonst wanderten die
+                Chips mit der Labellaenge, und das Auge findet beim Vergleich
+                zweier Zeilen keine gemeinsame Kante.
+              */}
               <div className="help-scenario-moves">
-                {r.affected.length === 0 ? (
-                  <em>
+                {r.alreadyTrue ? (
+                  <em className="help-scenario-wide">
                     Die angenommenen Werte entsprechen bereits dem aktuellen Stand — dieses Szenario
                     ist eingetreten.
                   </em>
                 ) : (
-                  r.affected.map((a) => (
-                    <div key={a.id}>
-                      {a.label}: <ScoreChip score={a.before} /> →{' '}
-                      <ScoreChip score={a.after} />
+                  r.moves.map((m) => (
+                    <div key={m.id} className="help-scenario-move">
+                      <span className="help-scenario-move-label">{m.label}</span>
+                      <ScoreChip score={m.before} />
+                      <span className="help-scenario-arrow">→</span>
+                      <ScoreChip score={m.after} />
                     </div>
                   ))
                 )}
+                {r.assumedWithoutValue.map((id) => (
+                  <div key={id} className="help-scenario-assumed help-scenario-wide">
+                    {snapshot.indicators[id]?.label ?? id} traegt in dieser Woche keinen Wert — das
+                    Szenario setzt ihn an, statt ihn zu bewegen.
+                  </div>
+                ))}
               </div>
 
+              {/*
+                Drei gleich breite Spalten. Da alle Karten dieselben drei
+                Faktornamen tragen, fluchten die Chips dadurch nicht nur
+                innerhalb einer Karte, sondern auch von Karte zu Karte.
+              */}
               <div className="help-scenario-factors">
                 {r.factors.map((f) => (
                   <span key={f.id} className={f.before !== f.after ? 'moved' : ''}>
-                    {f.label} <ScoreChip score={f.after} />
+                    <span className="help-scenario-factor-label">{f.label}</span>
+                    <ScoreChip score={f.after} />
                   </span>
                 ))}
               </div>
@@ -496,20 +395,25 @@ function Scenarios({ snapshot, rules }: { snapshot: Snapshot; rules: RulesRespon
                 </span>
                 <span
                   className="help-scenario-regime"
-                  style={{ borderColor: REGIME_COLOR[r.regimeAfter] ?? '#ccc' }}
+                  style={{ borderColor: REGIME_COLOR[r.regimeAfter.label] ?? '#ccc' }}
                 >
                   {r.changed ? (
                     <>
-                      {r.regimeBefore} → <strong>{r.regimeAfter}</strong> · Cash {r.cashAfter[0]}–
-                      {r.cashAfter[1]} %
+                      {r.regimeBefore.label} → <strong>{r.regimeAfter.label}</strong> · Cash{' '}
+                      {r.regimeAfter.cashBand[0]}–{r.regimeAfter.cashBand[1]} %
                     </>
                   ) : (
-                    <>Regime bleibt {r.regimeAfter}</>
+                    <>Regime bleibt {r.regimeAfter.label}</>
                   )}
                 </span>
               </div>
 
-              <div className="help-scenario-narrative">{r.scenario.narrative}</div>
+              <div className="help-scenario-narrative">{r.narrative}</div>
+
+              {/* Faellt /api/scenarios aus, entfaellt der Block wortlos. */}
+              {r.backtest && scenarios && (
+                <ScenarioBacktestNote backtest={r.backtest} basisWeeks={scenarios.basisWeeks} />
+              )}
             </div>
           ))}
         </div>
@@ -523,13 +427,24 @@ function Scenarios({ snapshot, rules }: { snapshot: Snapshot; rules: RulesRespon
 // ---------------------------------------------------------------------------
 
 /**
- * Rein erklaerender Abschnitt, ohne eigene Daten. Die tatsaechliche Auswertung
- * mit den aktuellen Zahlen liegt im Tab "Verlauf" unter der Delta-Tabelle
- * (web/src/components/AssetSection.tsx) — dort stehen auch die Live-Hinweise
- * zu Stichprobe und Konzentration, die hier nicht wiederholt, sondern
- * eingeordnet werden.
+ * Erklaerender Abschnitt. Die tatsaechliche Auswertung liegt im Tab "Verlauf"
+ * unter der Delta-Tabelle (web/src/components/AssetSection.tsx) — dort stehen
+ * auch die Live-Hinweise zu Stichprobe und Konzentration, die hier nicht
+ * wiederholt, sondern eingeordnet werden.
+ *
+ * Der Umfang des Bestands wird gezaehlt, nicht behauptet. Hier stand einmal
+ * eine feste Zahl; sie war schon veraltet, bevor jemand sie bemerkte.
  */
-function AssetPerformanceHelp() {
+function AssetPerformanceHelp({
+  points,
+  meaningfulFrom,
+}: {
+  points: HistoryPoint[];
+  meaningfulFrom: string | null;
+}) {
+  const meaningful = points.filter((p) => p.completeness !== 'sparse');
+  const riskOff = meaningful.filter((p) => p.regime === 'Risk Off').length;
+
   return (
     <div className="panel">
       <div className="panel-head">
@@ -591,13 +506,14 @@ function AssetPerformanceHelp() {
         </div>
 
         <div className="callout warn">
-          <strong>Zwei Modi, unterschiedliche Aussagekraft.</strong> Das echte Modell hat nur 53
-          belastbare Wochen — Risk Off kommt darin zweimal vor, das reicht zum Hinschauen, nicht
-          fuer eine Statistik. Das Vergleichsmodell 2018 rechnet stattdessen mit sechs statt neun
-          Indikatoren und reicht rund 420 Wochen zurueck. Das ist eine ANDERE METHODIK, nicht die
-          Verlaengerung des echten Modells: sein Sentiment-Faktor besteht allein aus dem VIX, sein
-          Business-Cycle-Faktor nur aus NFCI und Zinskurve. Er wird nie gespeichert, sondern bei
-          Bedarf aus den Rohdaten neu gerechnet.
+          <strong>Zwei Modi, unterschiedliche Aussagekraft.</strong> Das echte Modell traegt derzeit{' '}
+          <strong>{meaningful.length} belastbare Wochen</strong>
+          {meaningfulFrom && <> (ab {weekLabel(meaningfulFrom)})</>}, davon {riskOff} in Risk Off.
+          Das Vergleichsmodell 2018 rechnet mit sechs statt neun Indikatoren. Das ist eine ANDERE
+          METHODIK, nicht die Verlaengerung des echten Modells: sein Sentiment-Faktor besteht allein
+          aus dem VIX, sein Business-Cycle-Faktor nur aus NFCI und Zinskurve. Er wird nie
+          gespeichert, sondern bei Bedarf aus den Rohdaten neu gerechnet — und er ist kein Ersatz
+          fuer den Bestand des echten Modells, sondern eine Gegenprobe mit anderer Zusammensetzung.
         </div>
 
         <p>
@@ -789,12 +705,14 @@ function Limits({
             <strong>
               Belastbare Historie {meaningfulFrom ? <>erst ab {weekLabel(meaningfulFrom)}</> : 'ist noch sehr kurz'}.
             </strong>{' '}
-            ISM und AAII sind oeffentlich nur fuer die juengste Zeit zu bekommen. Aeltere Wochen
-            tragen zwar einen Gesamtscore, aber bei ihnen ist mindestens ein Faktor nicht
-            bestimmbar. Die Verlaufsansicht setzt sie schraffiert ab. Fear &amp; Greed laesst sich
-            per <code>npm run import:feargreed</code> optional bis 2011 zurueck nachladen (siehe
-            dessen Karte im Abschnitt „Die neun Indikatoren") — das allein schliesst die Sentiment-
-            Luecke fuer den ueberwiegenden Teil der Historie, ISM und AAII bleiben davon unberuehrt.
+            Der Begrenzer ist der <strong>ISM Manufacturing PMI</strong>: die Pressemitteilung gibt
+            oeffentlich nur rund ein Jahr her. Aeltere Wochen tragen zwar einen Gesamtscore, aber
+            bei ihnen ist mindestens ein Faktor nicht bestimmbar; die Verlaufsansicht setzt sie
+            schraffiert ab. Die beiden anderen einst lueckenhaften Reihen sind nachladbar:{' '}
+            <code>npm run import:aaii</code> holt die AAII-Umfrage ab Juli 1987 aus der offiziellen
+            Arbeitsmappe, <code>npm run import:feargreed</code> eine Rekonstruktion von Fear &amp;
+            Greed ab 2011 (beides naeher in den jeweiligen Karten im Abschnitt „Die neun
+            Indikatoren").
           </li>
           <li>
             <strong>ISM und NFCI werden revidiert.</strong> Ein Score, der auf einem knappen
@@ -836,31 +754,41 @@ function Limits({
 
 // ---------------------------------------------------------------------------
 
-type Section = 'mechanik' | 'indikatoren' | 'szenarien' | 'anlageklassen' | 'handel' | 'grenzen';
-
-const SECTIONS: { id: Section; label: string }[] = [
-  { id: 'mechanik', label: 'Mechanik' },
-  { id: 'indikatoren', label: 'Die neun Indikatoren' },
-  { id: 'szenarien', label: 'Szenarien' },
-  { id: 'anlageklassen', label: 'Anlageklassen im Regime' },
-  { id: 'handel', label: 'Ableitung fuer den Handel' },
-  { id: 'grenzen', label: 'Grenzen' },
-];
+/**
+ * Der Abschnitt wird von aussen gehalten (App.tsx), nicht hier.
+ *
+ * Grund: das Dashboard verweist gezielt auf die Szenarien und muss Tab UND
+ * Abschnitt in einem Zug setzen koennen. Mit lokalem State und einem
+ * initialSection-Prop bliebe ein zweiter Klick auf denselben Verweis
+ * wirkungslos, weil sich der Prop nicht aendert.
+ *
+ * HelpSection und SECTIONS selbst stehen in content/sections.ts — dort auch
+ * von web/src/route.ts gelesen, das kein Modul voller JSX importieren darf.
+ */
+type Section = HelpSection;
 
 export function Help({
   rules,
   snapshot,
   sensitivity,
   meaningfulFrom,
+  historyPoints,
+  scenarios,
+  section,
+  onSectionChange,
 }: {
   rules: RulesResponse | null;
   snapshot: Snapshot;
   sensitivity: Sensitivity[];
   /** Fruehester belastbarer Wochenschluessel im Bestand, aus /api/history. */
   meaningfulFrom: string | null;
+  /** Der Bestand selbst — der Abschnitt "Anlageklassen" zaehlt daraus, statt Zahlen zu behaupten. */
+  historyPoints: HistoryPoint[];
+  /** Historische Auswertung der Szenarien; null, wenn /api/scenarios ausfiel. */
+  scenarios: ScenarioBacktestReport | null;
+  section: Section;
+  onSectionChange: (section: Section) => void;
 }) {
-  const [section, setSection] = useState<Section>('mechanik');
-
   if (!rules) {
     return <div className="center-note">Regelwerk wird geladen …</div>;
   }
@@ -872,7 +800,7 @@ export function Help({
           <button
             key={s.id}
             className={`help-nav-item${section === s.id ? ' active' : ''}`}
-            onClick={() => setSection(s.id)}
+            onClick={() => onSectionChange(s.id)}
           >
             {s.label}
           </button>
@@ -883,8 +811,12 @@ export function Help({
       {section === 'indikatoren' && (
         <Indicators rules={rules} snapshot={snapshot} sensitivity={sensitivity} />
       )}
-      {section === 'szenarien' && <Scenarios snapshot={snapshot} rules={rules} />}
-      {section === 'anlageklassen' && <AssetPerformanceHelp />}
+      {section === 'szenarien' && (
+        <Scenarios snapshot={snapshot} rules={rules} scenarios={scenarios} />
+      )}
+      {section === 'anlageklassen' && (
+        <AssetPerformanceHelp points={historyPoints} meaningfulFrom={meaningfulFrom} />
+      )}
       {section === 'handel' && <Trading rules={rules} snapshot={snapshot} />}
       {section === 'grenzen' && (
         <Limits rules={rules} snapshot={snapshot} meaningfulFrom={meaningfulFrom} />

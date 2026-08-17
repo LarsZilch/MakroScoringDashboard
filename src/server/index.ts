@@ -21,6 +21,7 @@ import { ROOT } from '../pipeline/paths.js';
 import { loadBundle } from '../pipeline/series-cache.js';
 import { buildSnapshot, volatilityFromHistory } from '../pipeline/snapshot.js';
 import { ASSETS } from '../sources/assets.js';
+import { backtestScenarios } from '../pipeline/scenario-backtest.js';
 import {
   liveRegimeSeries,
   reducedRegimeSeries,
@@ -87,6 +88,18 @@ app.get('/api/history', wrap((_req, res) => {
     meaningfulFrom: snapshots.find((s) => s.meaningful)?.weekKey ?? null,
     total: snapshots.length,
   });
+}));
+
+/**
+ * Historische Auswertung der Szenarien.
+ *
+ * Bewusst ein eigener Endpunkt: die Auswertung ist wochenunabhaengig. An
+ * /api/week oder /api/history gehaengt wuerde sie bei jedem Wochenwechsel neu
+ * gerechnet und uebertragen, ohne sich zu aendern — das Frontend ruft beide
+ * gemeinsam.
+ */
+app.get('/api/scenarios', wrap((_req, res) => {
+  res.json(backtestScenarios(loadAllSnapshots()));
 }));
 
 /**

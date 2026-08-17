@@ -1,11 +1,16 @@
 /**
- * Verlaufsansicht: Score-Zeitreihe, Faktoren, Regime-Raster, Delta-Tabelle.
+ * Verlaufsansicht: Score-Zeitreihe, Faktoren, Regime-Raster, Anlageklassen.
+ *
+ * Bewusst vollstaendig wochenunabhaengig — anders als der Rest der App haengt
+ * hier nichts an der im Dashboard gewaehlten Woche. Die "Veraenderung je
+ * Indikator"-Tabelle stand hier frueher, ist aber eine Momentaufnahme der
+ * gewaehlten Woche und gehoert deshalb ins Dashboard, wo diese Woche auch
+ * umgestellt wird (siehe Dashboard.tsx).
  */
 
 import { useMemo, useState } from 'react';
-import type { Comparison, HistoryResponse } from '../types';
+import type { HistoryResponse } from '../types';
 import { AssetSection } from './AssetSection';
-import { DeltaTable } from './DeltaTable';
 import { FactorCharts } from './FactorChart';
 import { RegimeHeatmap } from './RegimeHeatmap';
 import { ScoreChart } from './ScoreChart';
@@ -22,15 +27,7 @@ const RANGE_LABEL: Record<Range, string> = {
   all: 'gesamter Bestand',
 };
 
-export function History({
-  history,
-  wow,
-  yoy,
-}: {
-  history: HistoryResponse;
-  wow: Comparison;
-  yoy: Comparison;
-}) {
+export function History({ history }: { history: HistoryResponse }) {
   const [range, setRange] = useState<Range>('meaningful');
 
   const points = useMemo(() => {
@@ -47,7 +44,14 @@ export function History({
     }
   }, [history.points, range]);
 
-  const sparseCount = history.points.filter((p) => p.completeness === 'sparse').length;
+  /*
+   * Gezaehlt wird in der AUSWAHL, nicht im Gesamtbestand. Der Kasten spricht
+   * von "den angezeigten Wochen" und darf deshalb nur erscheinen, wenn auch
+   * wirklich lueckenhafte Wochen im gewaehlten Zeitraum liegen. Bei "letzte
+   * 52 Wochen" ist das der Normalfall nicht: die Luecken sitzen am Anfang des
+   * Bestands, weit ausserhalb des Ausschnitts.
+   */
+  const sparseCount = points.filter((p) => p.completeness === 'sparse').length;
 
   /*
    * Ein Fenster fuer Score-Verlauf und Faktor-Diagramme gemeinsam: sie zeigen
@@ -63,6 +67,37 @@ export function History({
 
   return (
     <>
+      {/*
+        Steht bewusst ganz oben: das Raster ist die Uebersicht, aus der sich
+        alles Weitere erschliesst. Wer den Verlauf oeffnet, will zuerst sehen,
+        wann welches Regime galt — die Kurven darunter erklaeren dann, wie es
+        dazu kam.
+      */}
+      <div className="panel">
+        <div className="panel-head">
+          <div>
+            <div className="panel-title">Regime je Kalenderwoche</div>
+            <div className="panel-sub">
+              Zeile = Jahr, Spalte = Kalenderwoche
+              {!zoom.isFull && ' · zeigt weiterhin den gesamten Zeitraum'}
+            </div>
+          </div>
+        </div>
+        <div className="panel-body">
+          {/* Bewusst ungezoomt: dieses Raster IST die Gesamtsicht. */}
+          <RegimeHeatmap points={points} />
+          {history.regimeChanges.length > 0 && (
+            <div style={{ marginTop: 18, fontSize: 13.5 }}>
+              <strong>Regimewechsel:</strong>{' '}
+              {history.regimeChanges
+                .slice(-6)
+                .map((c) => `${weekLabel(c.weekKey)} ${c.from} → ${c.to}`)
+                .join(' · ')}
+            </div>
+          )}
+        </div>
+      </div>
+
       <div className="panel">
         <div className="panel-head">
           <div>
@@ -90,7 +125,7 @@ export function History({
           </div>
         </div>
         <div className="panel-body">
-          {sparseCount > 0 && range !== 'meaningful' && (
+          {sparseCount > 0 && (
             <div className="callout warn" style={{ marginBottom: 16 }}>
               <strong>{sparseCount} der angezeigten Wochen sind unvollstaendig.</strong> Bei ihnen
               ist mindestens ein Faktor mangels Daten nicht bestimmbar; der Score ergibt sich dann
@@ -123,43 +158,6 @@ export function History({
         </div>
         <div className="panel-body">
           <FactorCharts points={visible} />
-        </div>
-      </div>
-
-      <div className="panel">
-        <div className="panel-head">
-          <div>
-            <div className="panel-title">Regime je Kalenderwoche</div>
-            <div className="panel-sub">
-              Zeile = Jahr, Spalte = Kalenderwoche
-              {!zoom.isFull && ' · zeigt weiterhin den gesamten Zeitraum'}
-            </div>
-          </div>
-        </div>
-        <div className="panel-body">
-          {/* Bewusst ungezoomt: dieses Raster IST die Gesamtsicht. */}
-          <RegimeHeatmap points={points} />
-          {history.regimeChanges.length > 0 && (
-            <div style={{ marginTop: 18, fontSize: 13.5 }}>
-              <strong>Regimewechsel:</strong>{' '}
-              {history.regimeChanges
-                .slice(-6)
-                .map((c) => `${weekLabel(c.weekKey)} ${c.from} → ${c.to}`)
-                .join(' · ')}
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="panel">
-        <div className="panel-head">
-          <div>
-            <div className="panel-title">Veraenderung je Indikator</div>
-            <div className="panel-sub">Vorwoche und Vorjahres-Kalenderwoche nebeneinander</div>
-          </div>
-        </div>
-        <div className="panel-body flush">
-          <DeltaTable wow={wow} yoy={yoy} />
         </div>
       </div>
 

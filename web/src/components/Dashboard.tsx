@@ -9,8 +9,24 @@
  * haben Luecken. Ein fehlender Wert darf nie wie eine 0 aussehen.
  */
 
-import type { Comparison, ScoredFactor, ScoredIndicator, Sensitivity, Snapshot } from '../types';
+import { useState } from 'react';
+import type {
+  Comparison,
+  RulesResponse,
+  ScenarioBacktestReport,
+  ScoredFactor,
+  ScoredIndicator,
+  Sensitivity,
+  Snapshot,
+} from '../types';
 import { num, scoreText, shortDate, signed, weekLabel } from '../format';
+import { useScenarios } from './useScenarios';
+import { DeltaTable } from './DeltaTable';
+import { HelpModal } from './HelpModal';
+import { IndicatorCard } from './IndicatorCard';
+import { ScoreChip } from './ScoreChip';
+import { WeekPicker } from './WeekPicker';
+import { FACTOR_HELP } from '../content/help';
 
 const QUALITY_LABEL: Record<string, string> = {
   proxy: 'Ersatzreihe',
@@ -26,7 +42,34 @@ function QualityTag({ quality }: { quality: string }) {
   );
 }
 
-function IndicatorRow({ indicator }: { indicator: ScoredIndicator }) {
+/**
+ * Das Fragezeichen neben einem Faktor- oder Indikatornamen.
+ *
+ * Bewusst klein und blass: es soll auffindbar sein, ohne mit dem Wert zu
+ * konkurrieren, um den es hier eigentlich geht.
+ */
+function HelpDot({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      className="help-dot"
+      onClick={onClick}
+      aria-label={`Erklaerung zu ${label}`}
+      title={`Erklaerung zu ${label}`}
+    >
+      ?
+    </button>
+  );
+}
+
+function IndicatorRow({
+  indicator,
+  onShowHelp,
+}: {
+  indicator: ScoredIndicator;
+  /** Fehlt, solange das Regelwerk nicht geladen ist — dann gaebe es nichts zu zeigen. */
+  onShowHelp?: () => void;
+}) {
   const missing = indicator.quality === 'missing';
   const cls = missing ? 'none' : indicator.score > 0 ? 'pos' : indicator.score < 0 ? 'neg' : 'zero';
 
@@ -36,6 +79,7 @@ function IndicatorRow({ indicator }: { indicator: ScoredIndicator }) {
         <div className="ind-label">
           {indicator.label}
           <QualityTag quality={indicator.quality} />
+          {onShowHelp && <HelpDot label={indicator.label} onClick={onShowHelp} />}
         </div>
         <div className="ind-detail">
           {missing ? (
@@ -55,20 +99,31 @@ function IndicatorRow({ indicator }: { indicator: ScoredIndicator }) {
 
 function FactorCard({
   factor,
+  position,
   indicators,
+  onShowFactorHelp,
+  onShowIndicatorHelp,
 }: {
   factor: ScoredFactor;
+  /** 1, 2 oder 3 — die Nummer aus der Vorlage, nicht aus dem Alphabet. */
+  position: number;
   indicators: ScoredIndicator[];
+  onShowFactorHelp: () => void;
+  onShowIndicatorHelp?: (id: string) => void;
 }) {
   return (
     <div className={`factor${factor.determinable ? '' : ' undeterminable'}`}>
       <div className="factor-title">
-        Faktor {indicators[0]?.factor === 'business_cycle' ? '1' : indicators[0]?.factor === 'liquidity' ? '2' : '3'} ·{' '}
-        {factor.label}
+        Faktor {position} · {factor.label}
+        <HelpDot label={factor.label} onClick={onShowFactorHelp} />
       </div>
 
       {indicators.map((ind) => (
-        <IndicatorRow key={ind.id} indicator={ind} />
+        <IndicatorRow
+          key={ind.id}
+          indicator={ind}
+          onShowHelp={onShowIndicatorHelp && (() => onShowIndicatorHelp(ind.id))}
+        />
       ))}
 
       <div className="factor-result">
@@ -81,6 +136,39 @@ function FactorCard({
         ) : (
           <div className="factor-score undetermined">unbestimmt</div>
         )}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Die Faktor-Erklaerung im Hilfe-Fenster.
+ *
+ * Anders als beim Indikator gibt es hier keinen gemeinsamen Baustein mit dem
+ * Hilfe-Tab — dort verteilt sich die Erklaerung auf Panelkopf und Fliesstext,
+ * weil sie drei Indikatorkarten anfuehrt. Der TEXT ist trotzdem derselbe: er
+ * kommt aus FACTOR_HELP, nicht aus dieser Datei.
+ */
+function FactorHelpCard({ factor, position }: { factor: ScoredFactor; position: number }) {
+  const help = FACTOR_HELP[factor.id];
+
+  return (
+    <div className="help-card">
+      <div className="help-card-head">
+        <div>
+          <div className="help-card-title">
+            Faktor {position} · {factor.label}
+          </div>
+          {help && <div className="help-card-short">{help.short}</div>}
+        </div>
+        {factor.determinable && <ScoreChip score={factor.score} />}
+      </div>
+      <div className="help-card-body">
+        {help && <p>{help.detail}</p>}
+        <div className="help-why">
+          <span className="help-why-label">Ergebnis dieser Woche</span>
+          {factor.determinable ? factor.rationale : <em>unbestimmt · {factor.rationale}</em>}
+        </div>
       </div>
     </div>
   );
@@ -158,15 +246,131 @@ function SensitivityCallout({
   );
 }
 
+/**
+ * Die vier Szenarien in Kurzform — das Zwei-Indikatoren-Pendant zum
+ * Grenzfall-Kasten darueber.
+ *
+ * Bewusst nur Ergebnis, kein Ausloeser und keine Einordnung: die gehoeren in
+ * die Hilfe, wo Platz zum Erklaeren ist. Hier steht, was sich bewegt und was
+ * dabei herauskommt.
+ */
+function ScenarioStrip({
+  snapshot,
+  rules,
+  scenarios,
+  onShowHelp,
+}: {
+  snapshot: Snapshot;
+  rules: RulesResponse | null;
+  scenarios: ScenarioBacktestReport | null;
+  onShowHelp: () => void;
+}) {
+  const results = useScenarios(snapshot, rules, scenarios);
+  if (results.length === 0) return null;
+
+  return (
+    <div className="scenario-strip">
+      <div className="scenario-strip-head">
+        <span>
+          Vier Durchspielungen · gerechnet von <strong>{weekLabel(snapshot.weekKey)}</strong> aus —
+          die Wochenauswahl oben zieht sie mit
+        </span>
+        <button className="scenario-strip-link" onClick={onShowHelp}>
+          Ausloeser und Einordnung in der Hilfe →
+        </button>
+      </div>
+
+      {results.map((r) => (
+        <div key={r.scenarioId} className={`scenario-strip-row${r.changed ? ' flips' : ''}`}>
+          <div className="scenario-strip-title">{r.title}</div>
+
+          <div className="scenario-strip-moves">
+            {r.alreadyTrue ? (
+              <em>bereits eingetreten</em>
+            ) : (
+              r.moves.map((m) => (
+                <span key={m.id}>
+                  {m.label} {scoreText(m.before)} → {scoreText(m.after)}
+                </span>
+              ))
+            )}
+            {r.assumedWithoutValue.map((id) => (
+              <span key={id} className="scenario-strip-assumed">
+                {snapshot.indicators[id]?.label ?? id} ohne Wert — angesetzt
+              </span>
+            ))}
+          </div>
+
+          <div className="scenario-strip-score">
+            {scoreText(r.totalBefore)} → <strong>{scoreText(r.totalAfter)}</strong>
+          </div>
+
+          <div className="scenario-strip-regime">
+            {r.changed ? (
+              <strong>{r.regimeAfter.label}</strong>
+            ) : (
+              <>bleibt {r.regimeAfter.label}</>
+            )}
+          </div>
+
+          {/*
+            Nur "so lag es zuletzt", nie eine Quote: die Zahl steht direkt
+            neben einer kontrafaktischen Rechnung und wuerde sonst als
+            Eintrittswahrscheinlichkeit gelesen. Fehlt der Backtest, entfaellt
+            die Zelle wortlos — ein "—" saehe aus wie ein Wert.
+          */}
+          {r.backtest && (
+            <div className="scenario-strip-history">
+              {r.backtest.occurrences === 0 ? (
+                <>im Bestand nie vorgekommen</>
+              ) : (
+                <>
+                  {r.backtest.occurrences} Wochen
+                  {r.backtest.lastWeek && <> · zuletzt {weekLabel(r.backtest.lastWeek)}</>}
+                </>
+              )}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function Dashboard({
   snapshot,
   wow,
+  yoy,
   sensitivity,
+  rules,
+  scenarios,
+  onShowScenarioHelp,
+  weekOptions,
+  selectedWeek,
+  hiddenWeekCount,
+  onSelectWeek,
 }: {
   snapshot: Snapshot;
   wow: Comparison;
+  /** Fuer die Delta-Tabelle — sie zog vom Verlauf hierher, weil sie an der gewaehlten Woche haengt. */
+  yoy: Comparison;
   sensitivity: Sensitivity[];
+  rules: RulesResponse | null;
+  scenarios: ScenarioBacktestReport | null;
+  onShowScenarioHelp: () => void;
+  weekOptions: { weekKey: string; total: number; regime: string }[];
+  selectedWeek: string;
+  /** Anzahl der aus der Auswahl ausgeblendeten Backfill-Wochen — nur fuer den Tooltip. */
+  hiddenWeekCount: number;
+  onSelectWeek: (weekKey: string) => void;
 }) {
+  /*
+   * Wofuer das Hilfe-Fenster offen ist — nur die Kennung, nicht der Text.
+   * Gezeigt wird derselbe Baustein wie im Hilfe-Tab, damit es jede Erklaerung
+   * genau einmal gibt.
+   */
+  const [helpFor, setHelpFor] = useState<{ kind: 'factor' | 'indicator'; id: string } | null>(null);
+
   const factorOrder = ['business_cycle', 'liquidity', 'sentiment'];
   const indicatorsOf = (factorId: string) =>
     Object.values(snapshot.indicators)
@@ -192,16 +396,26 @@ export function Dashboard({
 
   return (
     <>
-      <div className="eyebrow">
-        Makro-Scoring · Regime-Check · KW {snapshot.isoWeek}
-        {snapshot.isoYear !== new Date().getFullYear() ? `/${snapshot.isoYear}` : ''}
+      <div className="header-bar">
+        <div>
+          <div className="eyebrow">
+            Makro-Scoring · Regime-Check · KW {snapshot.isoWeek}
+            {snapshot.isoYear !== new Date().getFullYear() ? `/${snapshot.isoYear}` : ''}
+          </div>
+          <h1>{headline}</h1>
+          <p className="subline">
+            Neun Whitelist-Indikatoren, drei Faktoren, ein Score. Datenstand{' '}
+            {shortDate(snapshot.dataAsOf)}
+            {snapshot.completeness !== 'full' && ' · unvollstaendig'}.
+          </p>
+        </div>
+        <WeekPicker
+          options={weekOptions}
+          selected={selectedWeek}
+          hiddenCount={hiddenWeekCount}
+          onSelect={onSelectWeek}
+        />
       </div>
-      <h1>{headline}</h1>
-      <p className="subline">
-        Neun Whitelist-Indikatoren, drei Faktoren, ein Score. Datenstand{' '}
-        {shortDate(snapshot.dataAsOf)}
-        {snapshot.completeness !== 'full' && ' · unvollstaendig'}.
-      </p>
 
       {!snapshot.meaningful && (
         <div className="callout warn">
@@ -214,11 +428,27 @@ export function Dashboard({
       )}
 
       <div className="factors">
-        {factorOrder.map((fid) => {
+        {factorOrder.map((fid, i) => {
           const factor = snapshot.factors[fid];
           if (!factor) return null;
           const inds = ordered(fid).length > 0 ? ordered(fid) : indicatorsOf(fid);
-          return <FactorCard key={fid} factor={factor} indicators={inds} />;
+          return (
+            <FactorCard
+              key={fid}
+              factor={factor}
+              position={i + 1}
+              indicators={inds}
+              onShowFactorHelp={() => setHelpFor({ kind: 'factor', id: fid })}
+              /*
+               * Ohne Regelwerk kann die Indikatorkarte weder Stufen noch
+               * Schwellen zeigen — dann bleibt das Fragezeichen weg, statt
+               * ein leeres Fenster zu oeffnen.
+               */
+              onShowIndicatorHelp={
+                rules ? (id) => setHelpFor({ kind: 'indicator', id }) : undefined
+              }
+            />
+          );
         })}
       </div>
 
@@ -253,8 +483,40 @@ export function Dashboard({
         </div>
       </div>
 
+      {/*
+        Haengt an der gewaehlten Woche wie alles bisher oben — deshalb hier
+        und nicht im wochenunabhaengigen Verlauf. Ungefiltert sichtbar, auch
+        bei unvollstaendiger Lage: sie ist eine Tatsache (was sich bewegt
+        hat), keine Durchspielung.
+      */}
+      <div className="panel">
+        <div className="panel-head">
+          <div>
+            <div className="panel-title">Veraenderung je Indikator</div>
+            <div className="panel-sub">Vorwoche und Vorjahres-Kalenderwoche nebeneinander</div>
+          </div>
+        </div>
+        <div className="panel-body flush">
+          <DeltaTable wow={wow} yoy={yoy} />
+        </div>
+      </div>
+
+      {/*
+        Beides nur bei belastbarer Lage. Eine Durchspielung aus einem Stand
+        ohne Aussage hat selbst keine — derselbe Massstab wie beim
+        Grenzfall-Kasten. Der Hilfe-Tab zeigt die Szenarien weiterhin, dort
+        aber mit dem ausdruecklichen Warnhinweis davor.
+      */}
       {snapshot.meaningful && (
-        <SensitivityCallout sensitivity={sensitivity} snapshot={snapshot} />
+        <>
+          <SensitivityCallout sensitivity={sensitivity} snapshot={snapshot} />
+          <ScenarioStrip
+            snapshot={snapshot}
+            rules={rules}
+            scenarios={scenarios}
+            onShowHelp={onShowScenarioHelp}
+          />
+        </>
       )}
 
       {snapshot.notes.length > 0 && (
@@ -266,6 +528,33 @@ export function Dashboard({
             ))}
           </ul>
         </div>
+      )}
+
+      {helpFor && (
+        <HelpModal
+          title={
+            (helpFor.kind === 'factor'
+              ? snapshot.factors[helpFor.id]?.label
+              : snapshot.indicators[helpFor.id]?.label) ?? helpFor.id
+          }
+          onClose={() => setHelpFor(null)}
+        >
+          {helpFor.kind === 'factor'
+            ? snapshot.factors[helpFor.id] && (
+                <FactorHelpCard
+                  factor={snapshot.factors[helpFor.id]!}
+                  position={factorOrder.indexOf(helpFor.id) + 1}
+                />
+              )
+            : rules && (
+                <IndicatorCard
+                  id={helpFor.id}
+                  rules={rules}
+                  indicator={snapshot.indicators[helpFor.id]}
+                  sensitivity={sensitivity.find((s) => s.indicator === helpFor.id)}
+                />
+              )}
+        </HelpModal>
       )}
     </>
   );

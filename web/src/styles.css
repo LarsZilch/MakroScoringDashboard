@@ -353,6 +353,112 @@ h1 {
   margin-bottom: 4px;
 }
 
+/* --------------------------------------------------------------- Szenarien */
+
+/*
+ * Die Kurzfassung der Szenarien im Dashboard. Bewusst ein Zeilenraster und
+ * keine Karten wie in der Hilfe: hier zaehlt der Vergleich der vier
+ * Ergebnisse untereinander, nicht die Ausfuehrlichkeit des einzelnen.
+ */
+
+.scenario-strip {
+  border: 1px solid var(--rule);
+  margin-bottom: 18px;
+  background: var(--paper);
+}
+
+.scenario-strip-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--rule);
+  background: #fbfaf7;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.scenario-strip-link {
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  color: var(--gold-deep);
+  white-space: nowrap;
+}
+
+.scenario-strip-link:hover {
+  text-decoration: underline;
+}
+
+.scenario-strip-row {
+  display: grid;
+  grid-template-columns: 1.4fr 1.6fr auto 1fr;
+  align-items: baseline;
+  gap: 8px 18px;
+  padding: 11px 18px;
+  border-bottom: 1px solid #f0eee8;
+  border-left: 3px solid transparent;
+  font-size: 13px;
+}
+
+.scenario-strip-row:last-child {
+  border-bottom: none;
+}
+
+/* Ein Szenario, das das Regime dreht, muss sich vom Rest abheben. */
+.scenario-strip-row.flips {
+  border-left-color: var(--red);
+  background: #fffdfc;
+}
+
+.scenario-strip-title {
+  font-weight: 700;
+}
+
+.scenario-strip-moves {
+  display: flex;
+  flex-direction: column;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.scenario-strip-assumed {
+  color: var(--red-soft);
+}
+
+.scenario-strip-score {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.scenario-strip-regime {
+  color: var(--ink-soft);
+}
+
+.scenario-strip-row.flips .scenario-strip-regime {
+  color: var(--ink);
+}
+
+.scenario-strip-history {
+  grid-column: 2 / -1;
+  font-size: 12px;
+  color: var(--ink-faint);
+}
+
+@media (max-width: 860px) {
+  .scenario-strip-row {
+    grid-template-columns: 1fr;
+  }
+
+  .scenario-strip-history {
+    grid-column: 1;
+  }
+}
+
 /* --------------------------------------------------------------- Qualitaet */
 
 .quality-tag {
@@ -385,6 +491,97 @@ h1 {
 .quality-manual {
   background: #eaf3ea;
   color: #2a6a3a;
+}
+
+/* ------------------------------------------------ Hilfe-Symbol und -Fenster */
+
+/*
+ * Das Fragezeichen sitzt in einer Zeile, in der der Wert die Hauptsache ist.
+ * Es muss auffindbar sein, ohne mit ihm um Aufmerksamkeit zu konkurrieren —
+ * deshalb blass, klein und erst beim Ueberfahren farbig.
+ */
+.help-dot {
+  appearance: none;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 14px;
+  /* Die Faktorueberschrift ist gesperrt gesetzt — das schoebe das Zeichen
+     sonst aus der Mitte seines Kreises. */
+  letter-spacing: 0;
+  width: 15px;
+  height: 15px;
+  padding: 0;
+  margin-left: 7px;
+  vertical-align: 1px;
+  border: 1px solid #d8d4c8;
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink-faint);
+  cursor: pointer;
+}
+
+.help-dot:hover,
+.help-dot:focus-visible {
+  border-color: var(--gold);
+  background: var(--paper-warm);
+  color: var(--gold-deep);
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(18, 32, 43, 0.42);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 20px;
+  overflow-y: auto;
+}
+
+.modal {
+  position: relative;
+  width: min(760px, 100%);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--gold-line);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.22);
+}
+
+/*
+ * Der Inhalt ist dieselbe Karte wie im Hilfe-Tab. Dort steht sie in einem
+ * Panel, hier IST sie das Fenster — ihr eigener Rahmen waere ein zweiter um
+ * denselben Kasten.
+ */
+.modal .help-card {
+  border: none;
+}
+
+/* Platz fuer das Kreuz, damit es nicht auf dem Score-Chip liegt. */
+.modal .help-card-head {
+  padding-right: 52px;
+}
+
+.modal-close {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  z-index: 1;
+  appearance: none;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: 24px;
+  line-height: 1;
+  padding: 2px 8px 6px;
+  color: var(--ink-faint);
+  cursor: pointer;
+}
+
+.modal-close:hover,
+.modal-close:focus-visible {
+  color: var(--ink);
 }
 
 /* ----------------------------------------------------------------- Tabelle */
@@ -518,7 +715,8 @@ tbody tr:hover {
 }
 
 select,
-button.action {
+button.action,
+button.step {
   font-family: inherit;
   font-size: 13.5px;
   padding: 7px 12px;
@@ -529,14 +727,28 @@ button.action {
   cursor: pointer;
 }
 
-button.action:hover:not(:disabled) {
+button.action:hover:not(:disabled),
+button.step:hover:not(:disabled) {
   border-color: var(--gold);
   background: var(--paper-warm);
 }
 
-button.action:disabled {
+button.action:disabled,
+button.step:disabled {
   opacity: 0.5;
   cursor: default;
+}
+
+/* Blaettern durch die Wochenauswahl — quadratisch statt textbreit. */
+button.step {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  line-height: 1;
 }
 
 .status {

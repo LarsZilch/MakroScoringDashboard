@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-08-14T10:01:54.159Z",
+  "builtAt": "2026-08-15T12:02:53.662Z",
   "completeness": "partial",
   "dataAsOf": "2012-01-22",
   "factors": {
@@ -44,28 +44,62 @@
         "fear_greed"
       ],
       "label": "Sentiment",
-      "missing": 1,
-      "negatives": 1,
+      "missing": 0,
+      "negatives": 2,
       "neutrals": 1,
       "positives": 0,
-      "rationale": "0 positiv, 1 negativ, 1 ohne Wert — keine Mehrheit",
-      "score": 0
+      "rationale": "2 von 3 negativ",
+      "score": -1
     }
   },
   "indicators": {
     "aaii": {
+      "derived": {
+        "avg4w": 24.275,
+        "latestSpread": 23.6,
+        "weeksAvailable": 4
+      },
+      "display": {
+        "primary": "+24,3 %",
+        "secondary": "Korridor −10 bis 20"
+      },
       "factor": "sentiment",
-      "flips": [],
+      "flips": [
+        {
+          "boundary": 20,
+          "direction": "down",
+          "gap": 4.274999999999999,
+          "gapSigma": 0.9242006546925284,
+          "gapTicks": 42.749999999999986,
+          "toScore": 0
+        },
+        {
+          "boundary": -10,
+          "direction": "down",
+          "gap": 34.275,
+          "gapSigma": 7.409819284113783,
+          "gapTicks": 342.74999999999994,
+          "toScore": 0
+        }
+      ],
       "id": "aaii",
       "label": "AAII Bull-Bear · 4w-Ø",
       "measure": "avg4w",
-      "measureValue": null,
-      "nearestFlip": null,
-      "quality": "missing",
-      "score": 0,
-      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "measureValue": 24.275,
+      "nearestFlip": {
+        "boundary": 20,
+        "direction": "down",
+        "gap": 4.274999999999999,
+        "gapSigma": 0.9242006546925284,
+        "gapTicks": 42.749999999999986,
+        "toScore": 0
+      },
+      "obsDate": "2012-01-18",
+      "quality": "ok",
+      "score": -1,
+      "scoreNote": "zu bullisch, kontrarisch negativ",
       "unit": "%",
-      "value": null
+      "value": 24.275
     },
     "fear_greed": {
       "display": {
@@ -372,28 +406,27 @@
   "meaningful": true,
   "missing": [
     "ism_mfg_pmi",
-    "sofr_iorb",
-    "aaii"
+    "sofr_iorb"
   ],
   "notes": [
     "Nachtraeglich gefuellte Woche (Backfill) — kein veroeffentlichter Stand",
     "move: Stand 2012-01-01 ist am Stichtag 2012-01-22 bereits 21 Tage alt (erwartet hoechstens 10) — Wert wird als veraltet gefuehrt",
-    "3 von 9 Indikatoren ohne Wert: ism_mfg_pmi, sofr_iorb, aaii"
+    "2 von 9 Indikatoren ohne Wert: ism_mfg_pmi, sofr_iorb"
   ],
   "regime": {
-    "assumed": false,
+    "assumed": true,
     "cashBand": [
-      20,
-      35
+      35,
+      50
     ],
-    "label": "Neutral"
+    "label": "Risk Off"
   },
   "rulesVersion": "v1",
   "schemaVersion": 1,
   "stale": [
     "move"
   ],
-  "total": 0,
+  "total": -1,
   "undeterminableFactors": [],
   "weekEnd": "2012-01-22",
   "weekKey": "2012-W03",

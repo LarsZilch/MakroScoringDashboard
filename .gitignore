@@ -5,3 +5,7 @@ dist/
 # Rohdaten-Cache: jederzeit neu abrufbar, gehoert nicht in die Historie.
 # Die Snapshots unter data/snapshots/ sind dagegen bewusst versioniert.
 data/series/
+
+# Persoenliche Verknuepfungen. Das Repo ist oeffentlich — solche Links
+# gehoeren nicht in eine Historie, aus der sie nicht mehr verschwinden.
+*.url

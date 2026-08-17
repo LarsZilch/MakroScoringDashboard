@@ -1,6 +1,6 @@
 {
-  "builtAt": "2026-08-14T10:01:53.569Z",
-  "completeness": "sparse",
+  "builtAt": "2026-08-15T12:02:53.096Z",
+  "completeness": "partial",
   "dataAsOf": "2011-01-02",
   "factors": {
     "business_cycle": {
@@ -36,7 +36,7 @@
       "score": 0
     },
     "sentiment": {
-      "determinable": false,
+      "determinable": true,
       "id": "sentiment",
       "indicators": [
         "vix",
@@ -44,28 +44,62 @@
         "fear_greed"
       ],
       "label": "Sentiment",
-      "missing": 2,
-      "negatives": 0,
+      "missing": 1,
+      "negatives": 1,
       "neutrals": 1,
       "positives": 0,
-      "rationale": "2 von 3 ohne Wert — nicht bestimmbar",
+      "rationale": "0 positiv, 1 negativ, 1 ohne Wert — keine Mehrheit",
       "score": 0
     }
   },
   "indicators": {
     "aaii": {
+      "derived": {
+        "avg4w": 33.025,
+        "latestSpread": 31.6,
+        "weeksAvailable": 4
+      },
+      "display": {
+        "primary": "+33,0 %",
+        "secondary": "Korridor −10 bis 20"
+      },
       "factor": "sentiment",
-      "flips": [],
+      "flips": [
+        {
+          "boundary": 20,
+          "direction": "down",
+          "gap": 13.024999999999999,
+          "gapSigma": 2.7427491666997375,
+          "gapTicks": 130.24999999999997,
+          "toScore": 0
+        },
+        {
+          "boundary": -10,
+          "direction": "down",
+          "gap": 43.025,
+          "gapSigma": 9.060021719559018,
+          "gapTicks": 430.24999999999994,
+          "toScore": 0
+        }
+      ],
       "id": "aaii",
       "label": "AAII Bull-Bear · 4w-Ø",
       "measure": "avg4w",
-      "measureValue": null,
-      "nearestFlip": null,
-      "quality": "missing",
-      "score": 0,
-      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "measureValue": 33.025,
+      "nearestFlip": {
+        "boundary": 20,
+        "direction": "down",
+        "gap": 13.024999999999999,
+        "gapSigma": 2.7427491666997375,
+        "gapTicks": 130.24999999999997,
+        "toScore": 0
+      },
+      "obsDate": "2010-12-29",
+      "quality": "ok",
+      "score": -1,
+      "scoreNote": "zu bullisch, kontrarisch negativ",
       "unit": "%",
-      "value": null
+      "value": 33.025
     },
     "fear_greed": {
       "factor": "sentiment",
@@ -340,17 +374,15 @@
   },
   "isoWeek": 52,
   "isoYear": 2010,
-  "meaningful": false,
+  "meaningful": true,
   "missing": [
     "ism_mfg_pmi",
     "sofr_iorb",
-    "aaii",
     "fear_greed"
   ],
   "notes": [
     "Nachtraeglich gefuellte Woche (Backfill) — kein veroeffentlichter Stand",
-    "4 von 9 Indikatoren ohne Wert: ism_mfg_pmi, sofr_iorb, aaii, fear_greed",
-    "Nicht bestimmbare Faktoren: sentiment — sie gehen als 0 in die Summe ein. Der Gesamtscore 1 und das Regime \"Neutral\" sind daher KEINE Marktaussage, sondern Ausdruck einer Datenluecke und duerfen nicht als Stand gelesen werden."
+    "3 von 9 Indikatoren ohne Wert: ism_mfg_pmi, sofr_iorb, fear_greed"
   ],
   "regime": {
     "assumed": false,
@@ -364,9 +396,7 @@
   "schemaVersion": 1,
   "stale": [],
   "total": 1,
-  "undeterminableFactors": [
-    "sentiment"
-  ],
+  "undeterminableFactors": [],
   "weekEnd": "2011-01-02",
   "weekKey": "2010-W52",
   "weekStart": "2010-12-27"

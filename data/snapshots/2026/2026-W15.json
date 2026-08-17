@@ -1,6 +1,6 @@
 {
-  "builtAt": "2026-08-14T10:02:02.372Z",
-  "completeness": "partial",
+  "builtAt": "2026-08-15T12:03:02.052Z",
+  "completeness": "full",
   "dataAsOf": "2026-04-12",
   "factors": {
     "business_cycle": {
@@ -44,28 +44,62 @@
         "fear_greed"
       ],
       "label": "Sentiment",
-      "missing": 1,
+      "missing": 0,
       "negatives": 0,
       "neutrals": 2,
-      "positives": 0,
-      "rationale": "0 positiv, 0 negativ, 1 ohne Wert — keine Mehrheit",
+      "positives": 1,
+      "rationale": "1 positiv, 0 negativ — keine Mehrheit",
       "score": 0
     }
   },
   "indicators": {
     "aaii": {
+      "derived": {
+        "avg4w": -16.099999999999998,
+        "latestSpread": -7.3,
+        "weeksAvailable": 4
+      },
+      "display": {
+        "primary": "−16,1 %",
+        "secondary": "Korridor −10 bis 20"
+      },
       "factor": "sentiment",
-      "flips": [],
+      "flips": [
+        {
+          "boundary": -10,
+          "direction": "up",
+          "gap": 6.099999999999998,
+          "gapSigma": 1.5211226955905435,
+          "gapTicks": 60.99999999999998,
+          "toScore": 0
+        },
+        {
+          "boundary": 20,
+          "direction": "up",
+          "gap": 36.099999999999994,
+          "gapSigma": 9.002053985380103,
+          "gapTicks": 360.99999999999994,
+          "toScore": 0
+        }
+      ],
       "id": "aaii",
       "label": "AAII Bull-Bear · 4w-Ø",
       "measure": "avg4w",
-      "measureValue": null,
-      "nearestFlip": null,
-      "quality": "missing",
-      "score": 0,
-      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "measureValue": -16.099999999999998,
+      "nearestFlip": {
+        "boundary": -10,
+        "direction": "up",
+        "gap": 6.099999999999998,
+        "gapSigma": 1.5211226955905435,
+        "gapTicks": 60.99999999999998,
+        "toScore": 0
+      },
+      "obsDate": "2026-04-08",
+      "quality": "ok",
+      "score": 1,
+      "scoreNote": "zu baerisch, kontrarisch positiv",
       "unit": "%",
-      "value": null
+      "value": -16.099999999999998
     },
     "fear_greed": {
       "display": {
@@ -437,12 +471,9 @@
   "isoWeek": 15,
   "isoYear": 2026,
   "meaningful": true,
-  "missing": [
-    "aaii"
-  ],
+  "missing": [],
   "notes": [
-    "Nachtraeglich gefuellte Woche (Backfill) — kein veroeffentlichter Stand",
-    "1 von 9 Indikatoren ohne Wert: aaii"
+    "Nachtraeglich gefuellte Woche (Backfill) — kein veroeffentlichter Stand"
   ],
   "regime": {
     "assumed": false,

@@ -118,8 +118,9 @@ if (sparse.length > 0) {
       `Faktor mangels Daten nicht bestimmbar.`,
   );
   console.log(
-    `Ursache: AAII, ISM und Fear & Greed sind oeffentlich nur fuer die juengste Zeit zu bekommen. ` +
-      `Belastbare Historie beginnt daher erst bei ${meaningful[0]?.weekKey ?? '—'}.`,
+    `Ursache: ISM ist oeffentlich nur fuer die juengste Zeit zu bekommen, Fear & Greed erst nach ` +
+      `"npm run import:feargreed" ab 2011. Belastbare Historie beginnt daher erst bei ` +
+      `${meaningful[0]?.weekKey ?? '—'}.`,
   );
   console.log('Die Verlaufsansicht muss diese Wochen sichtbar von den uebrigen absetzen.');
 }

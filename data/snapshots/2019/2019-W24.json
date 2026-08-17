@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-08-14T10:01:58.346Z",
+  "builtAt": "2026-08-15T12:02:57.969Z",
   "completeness": "partial",
   "dataAsOf": "2019-06-16",
   "factors": {
@@ -44,28 +44,62 @@
         "fear_greed"
       ],
       "label": "Sentiment",
-      "missing": 1,
+      "missing": 0,
       "negatives": 0,
       "neutrals": 2,
-      "positives": 0,
-      "rationale": "0 positiv, 0 negativ, 1 ohne Wert — keine Mehrheit",
+      "positives": 1,
+      "rationale": "1 positiv, 0 negativ — keine Mehrheit",
       "score": 0
     }
   },
   "indicators": {
     "aaii": {
+      "derived": {
+        "avg4w": -13.55,
+        "latestSpread": -7.4,
+        "weeksAvailable": 4
+      },
+      "display": {
+        "primary": "−13,6 %",
+        "secondary": "Korridor −10 bis 20"
+      },
       "factor": "sentiment",
-      "flips": [],
+      "flips": [
+        {
+          "boundary": -10,
+          "direction": "up",
+          "gap": 3.5500000000000007,
+          "gapSigma": 0.8835198950036055,
+          "gapTicks": 35.50000000000001,
+          "toScore": 0
+        },
+        {
+          "boundary": 20,
+          "direction": "up",
+          "gap": 33.55,
+          "gapSigma": 8.349885204893228,
+          "gapTicks": 335.49999999999994,
+          "toScore": 0
+        }
+      ],
       "id": "aaii",
       "label": "AAII Bull-Bear · 4w-Ø",
       "measure": "avg4w",
-      "measureValue": null,
-      "nearestFlip": null,
-      "quality": "missing",
-      "score": 0,
-      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "measureValue": -13.55,
+      "nearestFlip": {
+        "boundary": -10,
+        "direction": "up",
+        "gap": 3.5500000000000007,
+        "gapSigma": 0.8835198950036055,
+        "gapTicks": 35.50000000000001,
+        "toScore": 0
+      },
+      "obsDate": "2019-06-12",
+      "quality": "ok",
+      "score": 1,
+      "scoreNote": "zu baerisch, kontrarisch positiv",
       "unit": "%",
-      "value": null
+      "value": -13.55
     },
     "fear_greed": {
       "display": {
@@ -405,13 +439,12 @@
   "isoYear": 2019,
   "meaningful": true,
   "missing": [
-    "ism_mfg_pmi",
-    "aaii"
+    "ism_mfg_pmi"
   ],
   "notes": [
     "Nachtraeglich gefuellte Woche (Backfill) — kein veroeffentlichter Stand",
     "move: Stand 2019-06-01 ist am Stichtag 2019-06-16 bereits 15 Tage alt (erwartet hoechstens 10) — Wert wird als veraltet gefuehrt",
-    "2 von 9 Indikatoren ohne Wert: ism_mfg_pmi, aaii"
+    "1 von 9 Indikatoren ohne Wert: ism_mfg_pmi"
   ],
   "regime": {
     "assumed": false,

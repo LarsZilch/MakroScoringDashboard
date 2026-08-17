@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-08-14T10:01:55.284Z",
+  "builtAt": "2026-08-15T12:02:54.771Z",
   "completeness": "partial",
   "dataAsOf": "2014-01-12",
   "factors": {
@@ -44,28 +44,62 @@
         "fear_greed"
       ],
       "label": "Sentiment",
-      "missing": 1,
-      "negatives": 1,
+      "missing": 0,
+      "negatives": 2,
       "neutrals": 1,
       "positives": 0,
-      "rationale": "0 positiv, 1 negativ, 1 ohne Wert — keine Mehrheit",
-      "score": 0
+      "rationale": "2 von 3 negativ",
+      "score": -1
     }
   },
   "indicators": {
     "aaii": {
+      "derived": {
+        "avg4w": 22.825000000000003,
+        "latestSpread": 18.6,
+        "weeksAvailable": 4
+      },
+      "display": {
+        "primary": "+22,8 %",
+        "secondary": "Korridor −10 bis 20"
+      },
       "factor": "sentiment",
-      "flips": [],
+      "flips": [
+        {
+          "boundary": 20,
+          "direction": "down",
+          "gap": 2.825000000000003,
+          "gapSigma": 0.6233122538234365,
+          "gapTicks": 28.25000000000003,
+          "toScore": 0
+        },
+        {
+          "boundary": -10,
+          "direction": "down",
+          "gap": 32.825,
+          "gapSigma": 7.242557427169658,
+          "gapTicks": 328.25,
+          "toScore": 0
+        }
+      ],
       "id": "aaii",
       "label": "AAII Bull-Bear · 4w-Ø",
       "measure": "avg4w",
-      "measureValue": null,
-      "nearestFlip": null,
-      "quality": "missing",
-      "score": 0,
-      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "measureValue": 22.825000000000003,
+      "nearestFlip": {
+        "boundary": 20,
+        "direction": "down",
+        "gap": 2.825000000000003,
+        "gapSigma": 0.6233122538234365,
+        "gapTicks": 28.25000000000003,
+        "toScore": 0
+      },
+      "obsDate": "2014-01-08",
+      "quality": "ok",
+      "score": -1,
+      "scoreNote": "zu bullisch, kontrarisch negativ",
       "unit": "%",
-      "value": null
+      "value": 22.825000000000003
     },
     "fear_greed": {
       "display": {
@@ -372,13 +406,12 @@
   "meaningful": true,
   "missing": [
     "ism_mfg_pmi",
-    "sofr_iorb",
-    "aaii"
+    "sofr_iorb"
   ],
   "notes": [
     "Nachtraeglich gefuellte Woche (Backfill) — kein veroeffentlichter Stand",
     "move: Stand 2014-01-01 ist am Stichtag 2014-01-12 bereits 11 Tage alt (erwartet hoechstens 10) — Wert wird als veraltet gefuehrt",
-    "3 von 9 Indikatoren ohne Wert: ism_mfg_pmi, sofr_iorb, aaii"
+    "2 von 9 Indikatoren ohne Wert: ism_mfg_pmi, sofr_iorb"
   ],
   "regime": {
     "assumed": false,
@@ -393,7 +426,7 @@
   "stale": [
     "move"
   ],
-  "total": 1,
+  "total": 0,
   "undeterminableFactors": [],
   "weekEnd": "2014-01-12",
   "weekKey": "2014-W02",

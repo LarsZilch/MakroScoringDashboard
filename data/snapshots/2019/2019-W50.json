@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-08-14T10:01:58.627Z",
+  "builtAt": "2026-08-15T12:02:58.261Z",
   "completeness": "partial",
   "dataAsOf": "2019-12-15",
   "factors": {
@@ -44,9 +44,9 @@
         "fear_greed"
       ],
       "label": "Sentiment",
-      "missing": 1,
+      "missing": 0,
       "negatives": 2,
-      "neutrals": 0,
+      "neutrals": 1,
       "positives": 0,
       "rationale": "2 von 3 negativ",
       "score": -1
@@ -54,18 +54,52 @@
   },
   "indicators": {
     "aaii": {
+      "derived": {
+        "avg4w": 5.699999999999999,
+        "latestSpread": 11.6,
+        "weeksAvailable": 4
+      },
+      "display": {
+        "primary": "+5,7 %",
+        "secondary": "Korridor −10 bis 20"
+      },
       "factor": "sentiment",
-      "flips": [],
+      "flips": [
+        {
+          "boundary": 20,
+          "direction": "up",
+          "gap": 14.3,
+          "gapSigma": 3.5287272446423397,
+          "gapTicks": 143,
+          "toScore": -1
+        },
+        {
+          "boundary": -10,
+          "direction": "down",
+          "gap": 15.7,
+          "gapSigma": 3.8741970448171137,
+          "gapTicks": 156.99999999999997,
+          "toScore": 1
+        }
+      ],
       "id": "aaii",
       "label": "AAII Bull-Bear · 4w-Ø",
       "measure": "avg4w",
-      "measureValue": null,
-      "nearestFlip": null,
-      "quality": "missing",
+      "measureValue": 5.699999999999999,
+      "nearestFlip": {
+        "boundary": 20,
+        "direction": "up",
+        "gap": 14.3,
+        "gapSigma": 3.5287272446423397,
+        "gapTicks": 143,
+        "toScore": -1
+      },
+      "obsDate": "2019-12-11",
+      "quality": "ok",
       "score": 0,
-      "scoreNote": "kein Wert verfuegbar, neutral gewertet",
+      "scoreNote": "im Korridor",
       "unit": "%",
-      "value": null
+      "value": 5.699999999999999
     },
     "fear_greed": {
       "display": {
@@ -405,13 +439,12 @@
   "isoYear": 2019,
   "meaningful": true,
   "missing": [
-    "ism_mfg_pmi",
-    "aaii"
+    "ism_mfg_pmi"
   ],
   "notes": [
     "Nachtraeglich gefuellte Woche (Backfill) — kein veroeffentlichter Stand",
     "move: Stand 2019-12-01 ist am Stichtag 2019-12-15 bereits 14 Tage alt (erwartet hoechstens 10) — Wert wird als veraltet gefuehrt",
-    "2 von 9 Indikatoren ohne Wert: ism_mfg_pmi, aaii"
+    "1 von 9 Indikatoren ohne Wert: ism_mfg_pmi"
   ],
   "regime": {
     "assumed": false,

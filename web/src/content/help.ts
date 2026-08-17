@@ -11,6 +11,8 @@
  * Indikator misst, warum er im Modell steckt, wie eine Bewegung zu lesen ist.
  */
 
+import type { ScenarioId } from '../../../src/core/scenario.js';
+
 export interface IndicatorHelp {
   /** Ein Satz fuer die Uebersicht. */
   short: string;
@@ -151,9 +153,9 @@ export const INDICATOR_HELP: Record<string, IndicatorHelp> = {
     twist:
       'Kontrarisch gelesen. Ausgepraegter Optimismus wird negativ gewertet, ausgepraegter Pessimismus positiv. Die Umfrage misst, wer bereits investiert ist — und damit, wer noch kaufen koennte.',
     watchOut:
-      'Die vier Wochen Glaettung sind Absicht: die Einzelwoche ist verrauscht. Solange die App noch keine vier Wochen gesammelt hat, weist sie das in der Anzeige aus — der Wert ist dann nur ein Teilschnitt.',
+      'Die vier Wochen Glaettung sind Absicht: die Einzelwoche ist verrauscht. Liegen ausnahmsweise weniger als vier Wochen vor, weist die Anzeige das aus — der Wert ist dann nur ein Teilschnitt.',
     source:
-      'aaii.com, woechentlich mittwochs. Frei zugaenglich ist nur die jeweils aktuelle Woche; die Historie baut die App sich Lauf fuer Lauf selbst auf.',
+      'aaii.com, woechentlich mittwochs, datiert auf den Umfrageschluss. Die Wochenwerte kommen aus der frei zugaenglichen Ergebnistabelle (rund 22 Wochen je Abruf), die vollstaendige Historie ab Juli 1987 aus der offiziellen Arbeitsmappe unter aaii.com/files/surveys — einmalig per "npm run import:aaii" geladen. Beides stammt von AAII selbst; die Mitgliedschaft braucht es dafuer nicht. Die Arbeitsmappe wird nicht jede Woche fortgeschrieben, deshalb schliesst der Wochenabruf die Luecke bis heute.',
   },
 
   fear_greed: {
@@ -204,54 +206,47 @@ export const FACTOR_HELP: Record<string, FactorHelp> = {
 // ---------------------------------------------------------------------------
 // Szenarien
 //
-// Nur die Annahmen; die Auswirkung auf Faktoren, Gesamtscore und Regime wird
-// mit dem echten Scoring-Kern gerechnet, nicht hier hinterlegt.
+// Nur die Texte. Die Annahmen selbst — welcher Indikator auf welchen Score
+// gesetzt wird — sind Eingabe einer Rechnung und stehen deshalb im Kern
+// (src/core/scenario.ts), wo auch der Server sie fuer den Backtest liest.
+//
+// Record<ScenarioId, ...> erzwingt, dass zu jedem Szenario ein Text existiert:
+// ein vergessener Eintrag ist ein Typfehler, kein leerer Kasten im Browser.
 // ---------------------------------------------------------------------------
 
-export interface Scenario {
-  id: string;
+export interface ScenarioText {
   title: string;
   trigger: string;
-  /** Angenommene Scores je Indikator. Nicht genannte bleiben, wie sie sind. */
-  overrides: Record<string, -1 | 0 | 1>;
   narrative: string;
 }
 
-export const SCENARIOS: Scenario[] = [
-  {
-    id: 'liquidity_turns',
+export const SCENARIO_TEXTS: Record<ScenarioId, ScenarioText> = {
+  liquidity_turns: {
     title: 'Der Liquiditaetsimpuls dreht ab',
     trigger:
       'Die Fed baut ihre Bilanz ab oder das Treasury fuellt sein Konto auf, gleichzeitig kommt Unruhe in den Anleihemarkt.',
-    overrides: { gli: -1, move: 0 },
     narrative:
       'Das typische erste Anzeichen eines Regimewechsels. Liquiditaet dreht, bevor die Konjunktur es tut — deshalb faellt dieser Faktor oft als erster. Wenn der Funding-Spread danach ebenfalls anzieht, verliert der Liquiditaetsfaktor seine Mehrheit vollstaendig.',
   },
-  {
-    id: 'greed_extreme',
+  greed_extreme: {
     title: 'Das Sentiment kippt in Extreme Greed',
     trigger:
       'Nach einer laengeren Aufwaertsbewegung schlagen Fear & Greed und die AAII-Umfrage gleichzeitig ins Euphorische um.',
-    overrides: { fear_greed: -1, aaii: -1 },
     narrative:
       'Der Sentiment-Faktor ist der einzige, der aus einer Aufwaertsbewegung heraus negativ werden kann — genau das ist der Zweck der kontrarischen Lesart. Er fuehrt selten, aber er markiert, wann eine Bewegung an Nachschub verliert.',
   },
-  {
-    id: 'cycle_breaks',
+  cycle_breaks: {
     title: 'Die Konjunktur bricht ein',
     trigger:
       'Der ISM faellt ueber drei Monate deutlich, gleichzeitig straffen sich die Finanzierungsbedingungen.',
-    overrides: { ism_mfg_pmi: -1, nfci: -1 },
     narrative:
       'Der langsamste, aber deutlichste der vier Faelle. Da beide Indikatoren im selben Faktor liegen, reicht ihr gemeinsames Drehen fuer die Mehrheit — der Business-Cycle-Faktor kippt vollstaendig durch.',
   },
-  {
-    id: 'funding_stress',
+  funding_stress: {
     title: 'Funding-Stress im Bankensystem',
     trigger:
       'Der SOFR laeuft deutlich ueber den IORB, gleichzeitig springt die Volatilitaet am Anleihemarkt.',
-    overrides: { sofr_iorb: -1, move: -1 },
     narrative:
       'Der schnellste der vier Faelle und der mit der schaerfsten Signalwirkung. Knappe Reserven und ein unruhiger Anleihemarkt treten selten allein auf — historisch geht das den scharfen Korrekturen voraus, nicht nach.',
   },
-];
+};

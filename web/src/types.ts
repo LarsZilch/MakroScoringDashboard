@@ -209,6 +209,57 @@ export interface RulesResponse {
 }
 
 // ---------------------------------------------------------------------------
+// Szenarien
+//
+// Der Backtest zaehlt, wann die angenommene Lage historisch tatsaechlich galt.
+// Das ist eine andere Frage als die Durchspielung im Hilfe-Tab — siehe
+// src/pipeline/scenario-backtest.ts.
+// ---------------------------------------------------------------------------
+
+export interface HorizonOutcome {
+  weeks: number;
+  evaluated: number;
+  /** Zielwoche liegt jenseits des Bestandsendes — kein Blick in die Zukunft. */
+  truncated: number;
+  changed: number;
+  byRegime: Record<string, number>;
+}
+
+/** Warum die Trefferzahl klein ist: wie oft der Indikator ueberhaupt einen Wert trug. */
+export interface OverrideCoverage {
+  id: string;
+  label: string;
+  assumed: Score;
+  weeksWithValue: number;
+  weeksMatching: number;
+  firstWeekWithValue: string | null;
+}
+
+export interface ScenarioBacktest {
+  scenarioId: string;
+  occurrences: number;
+  episodes: number;
+  largestEpisodeShare: number;
+  concentrated: boolean;
+  confidence: 'insufficient' | 'weak' | 'solid';
+  byRegime: Record<string, number>;
+  firstWeek: string | null;
+  lastWeek: string | null;
+  horizons: HorizonOutcome[];
+  coverage: OverrideCoverage[];
+  limitedBy: string | null;
+  weeks: string[];
+}
+
+export interface ScenarioBacktestReport {
+  basisWeeks: number;
+  from: string | null;
+  to: string | null;
+  rulesVersions: string[];
+  scenarios: ScenarioBacktest[];
+}
+
+// ---------------------------------------------------------------------------
 // Anlageklassen
 // ---------------------------------------------------------------------------
 

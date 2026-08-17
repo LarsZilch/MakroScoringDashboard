@@ -4,6 +4,7 @@ import type {
   PerformanceResponse,
   RegimeMode,
   RulesResponse,
+  ScenarioBacktestReport,
   WeekResponse,
 } from './types';
 
@@ -19,6 +20,7 @@ async function get<T>(path: string): Promise<T> {
 export const fetchWeek = (weekKey = 'latest') => get<WeekResponse>(`/api/week/${weekKey}`);
 export const fetchHistory = () => get<HistoryResponse>('/api/history');
 export const fetchRules = () => get<RulesResponse>('/api/rules');
+export const fetchScenarios = () => get<ScenarioBacktestReport>('/api/scenarios');
 
 export const fetchAssets = (mode: RegimeMode, from?: string) =>
   get<AssetsResponse>(`/api/assets?mode=${mode}${from ? `&from=${from}` : ''}`);

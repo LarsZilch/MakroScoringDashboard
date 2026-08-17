@@ -5,12 +5,11 @@
  *
  * - `live`: die tatsaechlichen Snapshots aus data/snapshots/. Das ist das
  *   veroeffentlichte Gedaechtnis — nur die belastbaren Wochen zaehlen, derzeit
- *   53 ab KW 33/2025.
+ *   817 ab KW 51/2010.
  *
  * - `reduced`: das VERGLEICHSMODELL 2018. Es rechnet mit denselben Schwellen,
  *   aber nur mit den sechs Indikatoren, die historisch verfuegbar sind, und
- *   mit der verallgemeinerten Mehrheitsregel. Dadurch reicht es bis Mitte 2018
- *   zurueck — rund 420 statt 53 Wochen.
+ *   mit der verallgemeinerten Mehrheitsregel.
  *
  * ═══════════════════════════════════════════════════════════════════════════
  *  Das Vergleichsmodell ist NICHT die Verlaengerung des echten Modells.

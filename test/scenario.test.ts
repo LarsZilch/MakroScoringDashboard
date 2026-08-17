@@ -1,10 +1,15 @@
 /**
- * Szenariorechnung des Hilfe-Tabs.
+ * Szenariorechnung.
  *
- * Der Tab rechnet Szenarien mit demselben Scoring-Kern, der auch die
- * Snapshots erzeugt — er setzt einzelne Indikator-Scores und aggregiert neu.
- * Diese Tests halten fest, dass diese Rechnung stimmt, damit die Hilfe keine
- * Ergebnisse behauptet, die das Modell so nicht liefern wuerde.
+ * Szenarien werden mit demselben Scoring-Kern gerechnet, der auch die
+ * Snapshots erzeugt — applyScenario() setzt einzelne Indikator-Scores und
+ * aggregiert neu. Diese Tests halten fest, dass diese Rechnung stimmt, damit
+ * die Hilfe keine Ergebnisse behauptet, die das Modell so nicht liefern wuerde.
+ *
+ * Frueher stand hier ein Nachbau der Frontend-Rechnung. Genau das hatte einen
+ * Fehler verdeckt: der Nachbau setzte beim Override nur den Score, nicht die
+ * Qualitaet — und aggregateFactor() ignoriert Mitglieder ohne Wert. Getestet
+ * wird deshalb jetzt die echte Implementierung.
  *
  * Geprueft wird ausserdem die Uebersetzung der Bewertungsbaender in
  * Skalen-Abschnitte: die Baender sind eine Trefferliste, die Leiste braucht
@@ -12,14 +17,14 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { aggregateFactor, computeScoring, resolveRegime } from '../src/core/scoring.js';
+import { computeScoring } from '../src/core/scoring.js';
+import { SCENARIOS, applyScenario, scenarioById } from '../src/core/scenario.js';
 import { loadRules } from '../src/pipeline/load-rules.js';
 import { INDICATOR_IDS, type IndicatorId, type IndicatorInput, type Score } from '../src/core/types.js';
 import { bandsToSegments } from '../web/src/components/BandScale.js';
+import { SCENARIO_TEXTS } from '../web/src/content/help.js';
 
 const rules = loadRules('v1');
-
-const FACTOR_ORDER = ['business_cycle', 'liquidity', 'sentiment'] as const;
 
 /** Ausgangslage: die Werte aus der Vorlage, KW 32/2026 -> Gesamtscore +2. */
 const KW32: Record<IndicatorId, IndicatorInput> = {
@@ -34,34 +39,26 @@ const KW32: Record<IndicatorId, IndicatorInput> = {
   fear_greed: { measureValue: 60 },
 };
 
-/**
- * Dieselbe Rechnung wie in web/src/components/Help.tsx: einzelne Scores
- * ueberschreiben, Faktoren neu aggregieren, Regime aufloesen.
- */
-function runScenario(overrides: Partial<Record<IndicatorId, Score>>) {
-  const base = computeScoring(rules, KW32);
-  let total = 0;
-  const factors: Record<string, Score> = {};
+/** Ein Szenario aus dem Bestand auf die Ausgangslage anwenden. */
+function run(scenarioId: string, inputs = KW32) {
+  const base = computeScoring(rules, inputs);
+  const out = applyScenario(rules, base, scenarioById(scenarioId)!);
+  const factors = Object.fromEntries(out.factors.map((f) => [f.id, f.after])) as Record<
+    string,
+    Score
+  >;
+  return { ...out, factors, total: out.totalAfter, regime: out.regimeAfter };
+}
 
-  for (const factorId of FACTOR_ORDER) {
-    const members = INDICATOR_IDS.filter((id) => rules.indicators[id].factor === factorId).map(
-      (id) => {
-        const ind = base.indicators[id];
-        const override = overrides[id];
-        return override === undefined ? ind : { ...ind, score: override };
-      },
-    );
-    const agg = aggregateFactor(
-      factorId,
-      base.factors[factorId].label,
-      members,
-      rules.factorAggregation.minCount,
-    );
-    factors[factorId] = agg.score;
-    total += agg.score;
-  }
-
-  return { total, factors, regime: resolveRegime(rules, total) };
+/** Freie Annahmen, fuer Faelle ohne passendes Szenario im Bestand. */
+function runOverrides(overrides: Partial<Record<IndicatorId, Score>>, inputs = KW32) {
+  const base = computeScoring(rules, inputs);
+  const out = applyScenario(rules, base, { id: 'adhoc', overrides });
+  const factors = Object.fromEntries(out.factors.map((f) => [f.id, f.after])) as Record<
+    string,
+    Score
+  >;
+  return { ...out, factors, total: out.totalAfter, regime: out.regimeAfter };
 }
 
 describe('Ausgangslage', () => {
@@ -76,19 +73,20 @@ describe('Szenario: Liquiditaetsimpuls dreht ab', () => {
   it('nimmt dem Liquiditaetsfaktor die Mehrheit und zieht das Regime auf Neutral', () => {
     // gli faellt auf -1, MOVE verliert seinen positiven Beitrag.
     // Faktor 2 steht dann bei -1 / 0 / +1 -> keine Mehrheit -> 0.
-    const r = runScenario({ gli: -1, move: 0 });
+    const r = run('liquidity_turns');
     expect(r.factors.liquidity).toBe(0);
     expect(r.factors.business_cycle).toBe(1);
     expect(r.total).toBe(1);
     expect(r.regime.label).toBe('Neutral');
     expect(r.regime.cashBand).toEqual([20, 35]);
+    expect(r.changed).toBe(true);
   });
 });
 
 describe('Szenario: Sentiment kippt in Extreme Greed', () => {
   it('macht den Sentiment-Faktor negativ und zieht den Gesamtscore auf +1', () => {
     // Zwei von drei Sentiment-Indikatoren negativ -> Mehrheit -> Faktor -1.
-    const r = runScenario({ fear_greed: -1, aaii: -1 });
+    const r = run('greed_extreme');
     expect(r.factors.sentiment).toBe(-1);
     expect(r.total).toBe(1);
     expect(r.regime.label).toBe('Neutral');
@@ -98,7 +96,7 @@ describe('Szenario: Sentiment kippt in Extreme Greed', () => {
 describe('Szenario: Konjunktur bricht ein', () => {
   it('dreht den Business-Cycle-Faktor vollstaendig durch', () => {
     // Von +1 auf -1 ist ein Sprung von zwei Punkten im Gesamtscore.
-    const r = runScenario({ ism_mfg_pmi: -1, nfci: -1 });
+    const r = run('cycle_breaks');
     expect(r.factors.business_cycle).toBe(-1);
     expect(r.total).toBe(0);
     expect(r.regime.label).toBe('Neutral');
@@ -109,7 +107,7 @@ describe('Szenario: Funding-Stress', () => {
   it('dreht den Liquiditaetsfaktor auf -1 und fuehrt zu Neutral', () => {
     // gli steht in der Ausgangslage bereits auf -1; kommen sofr_iorb und
     // move dazu, sind alle drei negativ.
-    const r = runScenario({ sofr_iorb: -1, move: -1 });
+    const r = run('funding_stress');
     expect(r.factors.liquidity).toBe(-1);
     expect(r.total).toBe(0);
     expect(r.regime.label).toBe('Neutral');
@@ -120,14 +118,78 @@ describe('Ein einzelner Indikator reicht nie fuer einen Faktorwechsel', () => {
   it('laesst den Faktor stehen, wenn nur ein Indikator kippt', () => {
     // Die Mehrheitsregel braucht zwei. Faktor 1 hat +1/+1/0; kippt der ISM
     // auf 0, bleibt mit dem NFCI nur noch ein positiver -> Faktor faellt auf 0.
-    const r = runScenario({ ism_mfg_pmi: 0 });
+    const r = runOverrides({ ism_mfg_pmi: 0 });
     expect(r.factors.business_cycle).toBe(0);
 
     // Umgekehrt: kippt der ohnehin neutrale t10y2y, aendert sich nichts.
-    const r2 = runScenario({ t10y2y: -1 });
+    const r2 = runOverrides({ t10y2y: -1 });
     expect(r2.factors.business_cycle).toBe(1);
     expect(r2.total).toBe(2);
     expect(r2.regime.label).toBe('Risk On');
+  });
+});
+
+describe('Was sich bewegt und was nicht', () => {
+  it('meldet nur Indikatoren, die ihren Score tatsaechlich wechseln', () => {
+    // gli steht bereits auf -1, move auf +1. Nur move bewegt sich.
+    const r = run('funding_stress');
+    expect(r.moves.map((m) => m.id).sort()).toEqual(['move', 'sofr_iorb']);
+
+    // t10y2y steht in der Ausgangslage auf 0 — ein Override auf 0 bewegt nichts.
+    expect(runOverrides({ t10y2y: 0 }).moves).toEqual([]);
+  });
+
+  it('erkennt ein bereits eingetretenes Szenario', () => {
+    const base = computeScoring(rules, KW32);
+    const overrides = Object.fromEntries(
+      INDICATOR_IDS.map((id) => [id, base.indicators[id].score]),
+    ) as Partial<Record<IndicatorId, Score>>;
+
+    const r = runOverrides(overrides);
+    expect(r.alreadyTrue).toBe(true);
+    expect(r.moves).toEqual([]);
+    expect(r.totalAfter).toBe(r.totalBefore);
+  });
+});
+
+describe('Override auf einen Indikator ohne Wert', () => {
+  /*
+   * Der Fehler, den die frueher hier stehende Zweitimplementierung verdeckt
+   * hat: aggregateFactor() filtert Mitglieder mit quality "missing" heraus.
+   * Wird beim Override nur der Score gesetzt, bleibt er wirkungslos —
+   * waehrend die Anzeige eine Bewegung behauptet.
+   */
+  const ohneAaii = { ...KW32, aaii: { measureValue: null } };
+
+  it('wirkt trotzdem und weist die Annahme aus', () => {
+    const r = run('greed_extreme', ohneAaii);
+
+    expect(r.assumedWithoutValue).toEqual(['aaii']);
+    // AAII wird angesetzt, nicht bewegt — es taucht deshalb nicht in moves auf.
+    expect(r.moves.map((m) => m.id)).toEqual(['fear_greed']);
+    // Zwei negative Sentiment-Werte: der Faktor kippt, obwohl AAII fehlte.
+    expect(r.factors.sentiment).toBe(-1);
+  });
+
+  it('ist nicht "bereits eingetreten", nur weil sich nichts bewegt', () => {
+    // Ohne die assumedWithoutValue-Pruefung waere moves leer und die Kachel
+    // meldete faelschlich "dieses Szenario ist eingetreten".
+    const r = runOverrides({ aaii: 0 }, ohneAaii);
+    expect(r.moves).toEqual([]);
+    expect(r.alreadyTrue).toBe(false);
+  });
+});
+
+describe('Szenariotexte', () => {
+  it('hat zu jedem Szenario einen Text', () => {
+    // Die Typisierung erzwingt das bereits; ueber die API laeuft die Kennung
+    // aber als blosser String, deshalb hier noch einmal zur Laufzeit.
+    for (const s of SCENARIOS) {
+      expect(SCENARIO_TEXTS[s.id]?.title, s.id).toBeTruthy();
+      expect(SCENARIO_TEXTS[s.id]?.trigger, s.id).toBeTruthy();
+      expect(SCENARIO_TEXTS[s.id]?.narrative, s.id).toBeTruthy();
+    }
+    expect(Object.keys(SCENARIO_TEXTS)).toHaveLength(SCENARIOS.length);
   });
 });
 

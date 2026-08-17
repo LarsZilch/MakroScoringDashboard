@@ -89,6 +89,22 @@ export function nextIsoWeek(w: IsoWeek): IsoWeek {
 }
 
 /**
+ * Wochensprung um `n` Schritte, vorwaerts wie rueckwaerts.
+ *
+ * Bewusst schrittweise ueber nextIsoWeek/previousIsoWeek statt ueber eine
+ * Millisekundenrechnung: 2020 und 2026 haben 53 Wochen, und wer einfach
+ * n * 7 Tage addiert, landet bei Spruengen ueber solche Jahre auf der
+ * falschen Kalenderwoche.
+ */
+export function addIsoWeeks(w: IsoWeek, n: number): IsoWeek {
+  let cur = w;
+  for (let i = 0; i < Math.abs(n); i++) {
+    cur = n > 0 ? nextIsoWeek(cur) : previousIsoWeek(cur);
+  }
+  return cur;
+}
+
+/**
  * Dieselbe Kalenderwoche im Vorjahr.
  * KW 53 gibt es nicht in jedem Jahr - dann wird auf die letzte Woche gekappt.
  */

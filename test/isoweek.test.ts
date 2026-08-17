@@ -6,6 +6,7 @@
 
 import { describe, expect, it } from 'vitest';
 import {
+  addIsoWeeks,
   isoDate,
   isoWeekEnd,
   isoWeekKey,
@@ -92,6 +93,42 @@ describe('Wochen-Navigation', () => {
       isoYear: 2025,
       isoWeek: 32,
     });
+  });
+});
+
+describe('addIsoWeeks', () => {
+  /*
+   * Der Szenario-Backtest springt 4, 13 und 26 Wochen nach vorn. Wer dafuer
+   * n * 7 Tage addiert, landet bei Spruengen ueber ein 53-Wochen-Jahr auf der
+   * falschen Kalenderwoche — und der Fehler waere von aussen unsichtbar.
+   */
+  it('springt vorwaerts ueber einen Jahreswechsel', () => {
+    // 2025 hat 52 Wochen: KW 50 + 4 = KW 02/2026.
+    expect(addIsoWeeks({ isoYear: 2025, isoWeek: 50 }, 4)).toEqual({ isoYear: 2026, isoWeek: 2 });
+  });
+
+  it('zaehlt die 53. Woche mit', () => {
+    // 2020 hat 53 Wochen: KW 50/2020 + 4 = KW 01/2021, nicht KW 02.
+    expect(addIsoWeeks({ isoYear: 2020, isoWeek: 50 }, 4)).toEqual({ isoYear: 2021, isoWeek: 1 });
+    // 2026 ebenfalls: KW 40 + 13 = KW 53/2026.
+    expect(addIsoWeeks({ isoYear: 2026, isoWeek: 40 }, 13)).toEqual({ isoYear: 2026, isoWeek: 53 });
+  });
+
+  it('trifft ueber 26 Wochen dieselbe Woche wie 26 Einzelschritte', () => {
+    for (const start of [
+      { isoYear: 2020, isoWeek: 40 },
+      { isoYear: 2024, isoWeek: 52 },
+      { isoYear: 2026, isoWeek: 45 },
+    ]) {
+      let step = start;
+      for (let i = 0; i < 26; i++) step = nextIsoWeek(step);
+      expect(addIsoWeeks(start, 26), isoWeekKey(start)).toEqual(step);
+    }
+  });
+
+  it('laeuft mit negativem n rueckwaerts und mit 0 gar nicht', () => {
+    expect(addIsoWeeks({ isoYear: 2021, isoWeek: 2 }, -4)).toEqual({ isoYear: 2020, isoWeek: 51 });
+    expect(addIsoWeeks({ isoYear: 2026, isoWeek: 32 }, 0)).toEqual({ isoYear: 2026, isoWeek: 32 });
   });
 });
 
